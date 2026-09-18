@@ -1,25 +1,25 @@
 const express = require("express");
 const cors = require("cors");
-const connectDB = require("./config/db");
 require("dotenv").config();
+const connectDB = require("./config/db");
+const cityRoutes = require("./routes/cityRoutes");
 
 const app = express();
+
 connectDB();
-// Middleware
+
 app.use(cors());
 app.use(express.json());
 
-// Test route
+app.use("/api/cities", cityRoutes);
+
 app.get("/", (req, res) => {
     res.json({
         success: true,
         message: "Raasta API is running"
     });
 });
-
-// Port
 const PORT = process.env.PORT || 5000;
-
 app.listen(PORT, () => {
     console.log(`Raasta server running on port ${PORT}`);
 });
