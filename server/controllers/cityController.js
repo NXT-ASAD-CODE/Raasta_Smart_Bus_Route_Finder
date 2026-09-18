@@ -1,4 +1,4 @@
-const City = require("../models/City");
+const City = require("../models/city");
 
 // Get all cities
 const getCities = async (req, res, next) => {
