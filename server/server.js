@@ -4,6 +4,7 @@ require("dotenv").config();
 const connectDB = require("./config/db");
 const cityRoutes = require("./routes/cityRoutes");
 const stopRoutes = require("./routes/stopRoutes");
+const routeRoutes = require("./routes/routeRoutes");
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(express.json());
 
 app.use("/api/cities", cityRoutes);
 app.use("/api/stops", stopRoutes);
+app.use("/api/routes", routeRoutes);
 
 app.get("/", (req, res) => {
     res.json({
