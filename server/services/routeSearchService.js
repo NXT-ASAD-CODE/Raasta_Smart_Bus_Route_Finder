@@ -58,22 +58,30 @@ const searchOneTransferRoutes = async (fromStopId, toStopId) => {
     // Find routes that contain the starting stop
     const startingRoutes = routes.filter((route) =>
         route.stops.some(
-            (item) => item.stop._id.toString() === fromStopId
+            (item) =>
+                item.stop &&
+                item.stop._id &&
+                item.stop._id.toString() === fromStopId
         )
     );
 
     // Find routes that contain the destination stop
     const destinationRoutes = routes.filter((route) =>
         route.stops.some(
-            (item) => item.stop._id.toString() === toStopId
+            (item) =>
+                item.stop &&
+                item.stop._id &&
+                item.stop._id.toString() === toStopId
         )
     );
 
     for (const firstRoute of startingRoutes) {
         const fromIndex = firstRoute.stops.findIndex(
-            (item) => item.stop._id.toString() === fromStopId
+            (item) =>
+                item.stop &&
+                item.stop._id &&
+                item.stop._id.toString() === fromStopId
         );
-
         if (fromIndex === -1) {
             continue;
         }
@@ -91,12 +99,16 @@ const searchOneTransferRoutes = async (fromStopId, toStopId) => {
 
                 const transferIndex = secondRoute.stops.findIndex(
                     (item) =>
+                        item.stop &&
+                        item.stop._id &&
                         item.stop._id.toString() ===
                         transferStop._id.toString()
                 );
 
                 const destinationIndex = secondRoute.stops.findIndex(
                     (item) =>
+                        item.stop &&
+                        item.stop._id &&
                         item.stop._id.toString() === toStopId
                 );
 
@@ -153,6 +165,6 @@ const searchOneTransferRoutes = async (fromStopId, toStopId) => {
     return results;
 };
 module.exports = {
-    searchDirectRoutes ,
+    searchDirectRoutes,
     searchOneTransferRoutes
 };
