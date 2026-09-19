@@ -1,5 +1,6 @@
 const {
-    searchDirectRoutes
+    searchDirectRoutes,
+    searchOneTransferRoutes
 } = require("../services/routeSearchService");
 
 const searchRoutes = async (req, res, next) => {
@@ -20,16 +21,34 @@ const searchRoutes = async (req, res, next) => {
             });
         }
 
-        const results = await searchDirectRoutes(
+        // Step 1: Search for direct routes
+        const directRoutes = await searchDirectRoutes(
             fromStop,
             toStop
         );
 
-        res.status(200).json({
+        if (directRoutes.length > 0) {
+            return res.status(200).json({
+                success: true,
+                type: "direct",
+                count: directRoutes.length,
+                data: directRoutes
+            });
+        }
+
+        // Step 2: Search for one-transfer routes
+        const transferRoutes = await searchOneTransferRoutes(
+            fromStop,
+            toStop
+        );
+
+        return res.status(200).json({
             success: true,
-            count: results.length,
-            data: results
+            type: "one-transfer",
+            count: transferRoutes.length,
+            data: transferRoutes
         });
+
     } catch (error) {
         next(error);
     }
