@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const Stop = require("../models/stop");
+
 const {
     searchDirectRoutes,
     searchOneTransferRoutes
@@ -30,7 +32,22 @@ const searchRoutes = async (req, res, next) => {
                 message: "Invalid stop ID"
             });
         }
+        const startingStop = await Stop.findById(fromStop);
+        const destinationStop = await Stop.findById(toStop);
 
+        if (!startingStop) {
+            return res.status(404).json({
+                success: false,
+                message: "Starting stop not found"
+            });
+        }
+
+        if (!destinationStop) {
+            return res.status(404).json({
+                success: false,
+                message: "Destination stop not found"
+            });
+        }
         // Step 1: Search for direct routes
         const directRoutes = await searchDirectRoutes(
             fromStop,
