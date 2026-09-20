@@ -48,6 +48,15 @@ const searchRoutes = async (req, res, next) => {
                 message: "Destination stop not found"
             });
         }
+        if (
+            startingStop.city.toString() !==    
+            destinationStop.city.toString()
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Starting stop and destination stop must belong to the same city"
+            });
+        }
         // Step 1: Search for direct routes
         const directRoutes = await searchDirectRoutes(
             fromStop,
