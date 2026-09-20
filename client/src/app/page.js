@@ -8,8 +8,12 @@ import {
   Button,
   CircularProgress,
   Container,
+  Divider,
   MenuItem,
   Paper,
+  Step,
+  StepLabel,
+  Stepper,
   TextField,
   Typography
 } from "@mui/material";
@@ -49,7 +53,9 @@ export default function Home() {
 
   const handleSearch = async () => {
     if (!fromStop || !toStop) {
-      setError("Please select both starting and destination stops.");
+      setError(
+        "Please select both your starting stop and destination."
+      );
       return;
     }
 
@@ -78,16 +84,128 @@ export default function Home() {
     }
   };
 
+  const renderStops = (journeyStops) => {
+    if (!journeyStops || journeyStops.length === 0) {
+      return (
+        <Typography color="text.secondary">
+          No stop information available.
+        </Typography>
+      );
+    }
+
+    return (
+      <Stepper
+        orientation="vertical"
+        sx={{
+          mt: 2
+        }}
+      >
+        {journeyStops.map((stop, index) => {
+          const englishName =
+            stop.name || stop.stop?.name;
+
+          const urduName =
+            stop.nameUrdu || stop.stop?.nameUrdu;
+
+          return (
+            <Step
+              key={`${stop.id || stop.stop?._id}-${index}`}
+              active
+              completed={
+                index <
+                journeyStops.length - 1
+              }
+            >
+              <StepLabel>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    flexWrap: "wrap"
+                  }}
+                >
+                  {urduName && (
+                    <Typography
+                      component="span"
+                      sx={{
+                        fontSize: {
+                          xs: "1.2rem",
+                          sm: "1.4rem"
+                        },
+                        fontWeight: 600,
+                        direction: "rtl"
+                      }}
+                    >
+                      {urduName}
+                    </Typography>
+                  )}
+
+                  {urduName && (
+                    <Typography
+                      component="span"
+                      sx={{
+                        fontSize: "1.1rem",
+                        color: "text.secondary"
+                      }}
+                    >
+                      (
+                    </Typography>
+                  )}
+
+                  <Typography
+                    component="span"
+                    sx={{
+                      fontSize: {
+                        xs: "1rem",
+                        sm: "1.1rem"
+                      },
+                      fontWeight:
+                        index ===
+                          journeyStops.length -
+                          1
+                          ? 600
+                          : 400
+                    }}
+                  >
+                    {englishName}
+                  </Typography>
+
+                  {urduName && (
+                    <Typography
+                      component="span"
+                      sx={{
+                        fontSize: "1.1rem",
+                        color: "text.secondary"
+                      }}
+                    >
+                      )
+                    </Typography>
+                  )}
+                </Box>
+              </StepLabel>
+            </Step>
+          );
+        })}
+      </Stepper>
+    );
+  };
+
   return (
     <Box
       sx={{
         minHeight: "100vh",
         backgroundColor: "#f5f7fa",
-        py: { xs: 5, md: 8 }
+        py: {
+          xs: 4,
+          md: 7
+        }
       }}
     >
       <Container maxWidth="md">
-        {/* Header */}
+
+        {/* Hero Section */}
+
         <Box
           sx={{
             textAlign: "center",
@@ -98,7 +216,6 @@ export default function Home() {
             variant="h2"
             component="h1"
             sx={{
-              color: "text.primary",
               fontWeight: 700,
               fontSize: {
                 xs: "2.5rem",
@@ -128,16 +245,20 @@ export default function Home() {
               mt: 2
             }}
           >
-            Tell us where you want to go, and Raasta
-            will help you understand how to get there.
+            Tell us where you want to go, and
+            Raasta will explain how to get there.
           </Typography>
         </Box>
 
         {/* Search Card */}
+
         <Paper
           elevation={3}
           sx={{
-            p: { xs: 3, sm: 4 },
+            p: {
+              xs: 3,
+              sm: 4
+            },
             borderRadius: 3
           }}
         >
@@ -154,7 +275,9 @@ export default function Home() {
           {error && (
             <Alert
               severity="error"
-              sx={{ mb: 3 }}
+              sx={{
+                mb: 3
+              }}
               onClose={() => setError("")}
             >
               {error}
@@ -166,7 +289,7 @@ export default function Home() {
               sx={{
                 display: "flex",
                 justifyContent: "center",
-                py: 4
+                py: 5
               }}
             >
               <CircularProgress />
@@ -174,15 +297,20 @@ export default function Home() {
           ) : (
             <>
               {/* Starting Stop */}
+
               <TextField
                 select
                 fullWidth
                 label="Where are you starting?"
                 value={fromStop}
                 onChange={(event) =>
-                  setFromStop(event.target.value)
+                  setFromStop(
+                    event.target.value
+                  )
                 }
-                sx={{ mb: 3 }}
+                sx={{
+                  mb: 3
+                }}
               >
                 <MenuItem value="">
                   Select starting stop
@@ -194,20 +322,29 @@ export default function Home() {
                     value={stop._id}
                   >
                     {stop.name}
+
+                    {stop.nameUrdu
+                      ? ` (${stop.nameUrdu})`
+                      : ""}
                   </MenuItem>
                 ))}
               </TextField>
 
               {/* Destination Stop */}
+
               <TextField
                 select
                 fullWidth
                 label="Where do you want to go?"
                 value={toStop}
                 onChange={(event) =>
-                  setToStop(event.target.value)
+                  setToStop(
+                    event.target.value
+                  )
                 }
-                sx={{ mb: 3 }}
+                sx={{
+                  mb: 3
+                }}
               >
                 <MenuItem value="">
                   Select destination stop
@@ -219,11 +356,16 @@ export default function Home() {
                     value={stop._id}
                   >
                     {stop.name}
+
+                    {stop.nameUrdu
+                      ? ` (${stop.nameUrdu})`
+                      : ""}
                   </MenuItem>
                 ))}
               </TextField>
 
               {/* Search Button */}
+
               <Button
                 fullWidth
                 variant="contained"
@@ -250,40 +392,25 @@ export default function Home() {
           )}
         </Paper>
 
-        {/* Results */}
+        {/* Search Results */}
+
         {results && (
-          <Paper
-            elevation={3}
+          <Box
             sx={{
-              mt: 4,
-              p: { xs: 3, sm: 4 },
-              borderRadius: 3
+              mt: 4
             }}
           >
             <Typography
               variant="h5"
               sx={{
                 fontWeight: 600,
-                mb: 1
+                mb: 2
               }}
             >
               Your Journey
             </Typography>
 
-            <Typography
-              variant="body2"
-              sx={{
-                color: "text.secondary",
-                mb: 3
-              }}
-            >
-              {results.count === 0
-                ? "No route found."
-                : `${results.count} route option${results.count > 1
-                  ? "s"
-                  : ""
-                } found`}
-            </Typography>
+            {/* No Results */}
 
             {results.count === 0 && (
               <Alert severity="info">
@@ -293,169 +420,264 @@ export default function Home() {
               </Alert>
             )}
 
-            {/* Direct Routes */}
+            {/* Direct Route */}
+
             {results.type === "direct" &&
               results.data.map((route) => (
-                <Box
+                <Paper
                   key={route.routeId}
+                  elevation={2}
                   sx={{
-                    border: "1px solid #ddd",
-                    borderRadius: 2,
-                    p: 3,
-                    mb: 2
+                    p: {
+                      xs: 3,
+                      sm: 4
+                    },
+                    mb: 3,
+                    borderRadius: 3
                   }}
                 >
                   <Typography
-                    variant="h6"
+                    variant="overline"
+                    color="primary"
                     sx={{
-                      fontWeight: 600
+                      fontWeight: 700
                     }}
                   >
+                    Direct Route
+                  </Typography>
+
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      fontWeight: 600,
+                      mt: 0.5
+                    }}
+                  >
+                    Bus{" "}
                     {route.routeNumber}
                   </Typography>
 
                   <Typography
                     variant="body1"
-                    sx={{ mt: 0.5 }}
+                    color="text.secondary"
+                    sx={{
+                      mt: 0.5
+                    }}
                   >
                     {route.routeName}
                   </Typography>
 
-                  <Typography
-                    variant="body2"
+                  <Divider
                     sx={{
-                      color: "text.secondary",
-                      mt: 1
+                      my: 3
+                    }}
+                  />
+
+                  <Typography
+                    variant="subtitle1"
+                    sx={{
+                      fontWeight: 600
                     }}
                   >
-                    {route.startPoint} →{" "}
-                    {route.endPoint}
+                    Your stops
                   </Typography>
 
-                  <Box sx={{ mt: 2 }}>
-                    {route.stops.map((item) => (
-                      <Typography
-                        key={item.sequence}
-                        variant="body2"
-                        sx={{ mb: 0.5 }}
-                      >
-                        {item.sequence}.{" "}
-                        {item.stop?.name}
-                      </Typography>
-                    ))}
-                  </Box>
-                </Box>
+                  {renderStops(
+                    route.stops
+                  )}
+                </Paper>
               ))}
 
-            {/* One Transfer Routes */}
-            {results.type === "one-transfer" &&
-              results.data.map((route, index) => (
-                <Box
-                  key={index}
-                  sx={{
-                    border: "1px solid #ddd",
-                    borderRadius: 2,
-                    p: 3,
-                    mb: 2
-                  }}
-                >
-                  <Alert
-                    severity="info"
-                    sx={{ mb: 3 }}
-                  >
-                    Change bus at{" "}
-                    <strong>
-                      {
-                        route.transferStop
-                          .name
-                      }
-                    </strong>
-                  </Alert>
+            {/* One Transfer Route */}
 
-                  {route.journey.map(
-                    (journey, journeyIndex) => (
-                      <Box
-                        key={
-                          journey.routeId.toString()
-                        }
+            {results.type ===
+              "one-transfer" &&
+              results.data.map(
+                (route, index) => (
+                  <Paper
+                    key={index}
+                    elevation={2}
+                    sx={{
+                      p: {
+                        xs: 3,
+                        sm: 4
+                      },
+                      mb: 3,
+                      borderRadius: 3
+                    }}
+                  >
+                    <Typography
+                      variant="overline"
+                      color="primary"
+                      sx={{
+                        fontWeight: 700
+                      }}
+                    >
+                      One Transfer
+                    </Typography>
+
+                    <Typography
+                      variant="h5"
+                      sx={{
+                        fontWeight: 600,
+                        mt: 0.5
+                      }}
+                    >
+                      Your Journey
+                    </Typography>
+
+                    {/* First Bus */}
+
+                    <Box
+                      sx={{
+                        mt: 3
+                      }}
+                    >
+                      <Typography
+                        variant="subtitle1"
                         sx={{
-                          mb:
-                            journeyIndex ===
-                              0
-                              ? 3
-                              : 0
+                          fontWeight: 600
                         }}
                       >
-                        <Typography
-                          variant="h6"
-                          sx={{
-                            fontWeight: 600
-                          }}
-                        >
-                          Bus{" "}
+                        1. Take Bus{" "}
+                        {
+                          route
+                            .journey[0]
+                            .routeNumber
+                        }
+                      </Typography>
+
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                      >
+                        {
+                          route
+                            .journey[0]
+                            .routeName
+                        }
+                      </Typography>
+
+                      {renderStops(
+                        route
+                          .journey[0]
+                          .stops
+                      )}
+                    </Box>
+
+                    {/* Transfer Alert */}
+
+                    <Alert
+                      severity="warning"
+                      sx={{
+                        my: 3,
+                        borderRadius: 2
+                      }}
+                    >
+                      <Typography
+                        variant="subtitle1"
+                        sx={{
+                          fontWeight: 700
+                        }}
+                      >
+                        🔄 Change Bus — بس
+                        تبدیل کریں
+                      </Typography>
+
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          mt: 0.5
+                        }}
+                      >
+                        Get off at{" "}
+                        <strong>
                           {
-                            journey.routeNumber
+                            route
+                              .transferStop
+                              .name
                           }
-                        </Typography>
+                        </strong>
 
-                        <Typography
-                          variant="body1"
-                          sx={{
-                            mt: 0.5
-                          }}
-                        >
-                          {
-                            journey.routeName
-                          }
-                        </Typography>
+                        {route
+                          .transferStop
+                          .nameUrdu && (
+                            <>
+                              {" "}
+                              (
+                              {
+                                route
+                                  .transferStop
+                                  .nameUrdu
+                              }
+                              )
+                            </>
+                          )}{" "}
+                        and take the next
+                        bus.
+                      </Typography>
 
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            color: "text.secondary",
-                            mt: 1
-                          }}
-                        >
-                          {journey.from}{" "}
-                          →{" "}
-                          {journey.to}
-                        </Typography>
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          mt: 1,
+                          fontSize: {
+                            xs: "1rem",
+                            sm: "1.15rem"
+                          },
+                          fontWeight: 600,
+                          direction: "rtl",
+                          textAlign: "left"
+                        }}
+                      >
+                        {
+                          route
+                            .transferStop
+                            .nameUrdu
+                        }{" "}
+                        پر اتریں اور اگلی
+                        بس لیں۔
+                      </Typography>
+                    </Alert>
 
-                        <Box
-                          sx={{
-                            mt: 2
-                          }}
-                        >
-                          {journey.stops.map(
-                            (
-                              stop
-                            ) => (
-                              <Typography
-                                key={
-                                  stop.sequence
-                                }
-                                variant="body2"
-                                sx={{
-                                  mb: 0.5
-                                }}
-                              >
-                                {
-                                  stop.sequence
-                                }
-                                .{" "}
-                                {
-                                  stop.name
-                                }
-                              </Typography>
-                            )
-                          )}
-                        </Box>
-                      </Box>
-                    )
-                  )}
-                </Box>
-              ))}
-          </Paper>
+                    {/* Second Bus */}
+
+                    <Box>
+                      <Typography
+                        variant="subtitle1"
+                        sx={{
+                          fontWeight: 600
+                        }}
+                      >
+                        2. Take Bus{" "}
+                        {
+                          route
+                            .journey[1]
+                            .routeNumber
+                        }
+                      </Typography>
+
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                      >
+                        {
+                          route
+                            .journey[1]
+                            .routeName
+                        }
+                      </Typography>
+
+                      {renderStops(
+                        route
+                          .journey[1]
+                          .stops
+                      )}
+                    </Box>
+                  </Paper>
+                )
+              )}
+          </Box>
         )}
       </Container>
     </Box>
