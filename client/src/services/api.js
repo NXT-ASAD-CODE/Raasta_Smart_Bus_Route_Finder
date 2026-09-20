@@ -90,3 +90,17 @@ export const searchRoutes = async (
         })
     });
 };
+// =========================
+// Routes
+// =========================
+
+export const getRoutes = async () => {
+    return apiRequest("/routes");
+};
+
+export const createRoute = async (routeData) => {
+    return apiRequest("/routes", {
+        method: "POST",
+        body: JSON.stringify(routeData)
+    });
+};
