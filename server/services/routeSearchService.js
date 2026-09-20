@@ -135,28 +135,55 @@ const searchOneTransferRoutes = async (fromStopId, toStopId) => {
                     destinationIndex + 1
                 );
 
+                const formatStops = (journeyStops) => {
+                    return journeyStops
+                        .filter((item) => item.stop)
+                        .map((item) => ({
+                            id: item.stop._id,
+                            name: item.stop.name,
+                            nameUrdu: item.stop.nameUrdu,
+                            sequence: item.sequence
+                        }));
+                };
+
                 results.push({
                     type: "one-transfer",
 
                     transferStop: {
-                        _id: transferStop._id,
+                        id: transferStop._id,
                         name: transferStop.name,
                         nameUrdu: transferStop.nameUrdu
                     },
 
-                    firstRoute: {
-                        routeId: firstRoute._id,
-                        routeName: firstRoute.name,
-                        routeNumber: firstRoute.routeNumber,
-                        stops: firstJourneyStops
-                    },
+                    journey: [
+                        {
+                            routeId: firstRoute._id,
+                            routeName: firstRoute.name,
+                            routeNumber: firstRoute.routeNumber,
 
-                    secondRoute: {
-                        routeId: secondRoute._id,
-                        routeName: secondRoute.name,
-                        routeNumber: secondRoute.routeNumber,
-                        stops: secondJourneyStops
-                    }
+                            from: firstJourneyStops[0]?.stop?.name,
+
+                            to: firstJourneyStops[
+                                firstJourneyStops.length - 1
+                            ]?.stop?.name,
+
+                            stops: formatStops(firstJourneyStops)
+                        },
+
+                        {
+                            routeId: secondRoute._id,
+                            routeName: secondRoute.name,
+                            routeNumber: secondRoute.routeNumber,
+
+                            from: secondJourneyStops[0]?.stop?.name,
+
+                            to: secondJourneyStops[
+                                secondJourneyStops.length - 1
+                            ]?.stop?.name,
+
+                            stops: formatStops(secondJourneyStops)
+                        }
+                    ]
                 });
             }
         }
