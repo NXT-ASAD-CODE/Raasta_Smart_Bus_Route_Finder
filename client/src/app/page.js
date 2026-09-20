@@ -273,12 +273,11 @@ export default function Home() {
 
           return (
             <Step
-              key={`${
-                stop.id ||
+              key={`${stop.id ||
                 stop._id ||
                 stop.stop?._id ||
                 index
-              }-${index}`}
+                }-${index}`}
               active
               completed={
                 index <
@@ -331,7 +330,7 @@ export default function Home() {
                       },
                       fontWeight:
                         index ===
-                        journeyStops.length - 1
+                          journeyStops.length - 1
                           ? 600
                           : 400
                     }}
@@ -394,7 +393,8 @@ export default function Home() {
                 fontSize: {
                   xs: "3rem",
                   sm: "4.5rem"
-                }
+                },
+                color: "#000"
               }}
             >
               Raasta
@@ -651,7 +651,8 @@ export default function Home() {
               fontSize: {
                 xs: "2.5rem",
                 sm: "3.5rem"
-              }
+              },
+              color: "#000"
             }}
           >
             Raasta
@@ -1098,17 +1099,17 @@ export default function Home() {
                         {route
                           .transferStop
                           .nameUrdu && (
-                          <>
-                            {" "}
-                            (
-                            {
-                              route
-                                .transferStop
-                                .nameUrdu
-                            }
-                            )
-                          </>
-                        )}{" "}
+                            <>
+                              {" "}
+                              (
+                              {
+                                route
+                                  .transferStop
+                                  .nameUrdu
+                              }
+                              )
+                            </>
+                          )}{" "}
                         and take the next
                         bus.
                       </Typography>
