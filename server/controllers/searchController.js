@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const {
     searchDirectRoutes,
     searchOneTransferRoutes
@@ -18,6 +19,15 @@ const searchRoutes = async (req, res, next) => {
             return res.status(400).json({
                 success: false,
                 message: "Starting stop and destination stop cannot be the same"
+            });
+        }
+        if (
+            !mongoose.Types.ObjectId.isValid(fromStop) ||
+            !mongoose.Types.ObjectId.isValid(toStop)
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid stop ID"
             });
         }
 
