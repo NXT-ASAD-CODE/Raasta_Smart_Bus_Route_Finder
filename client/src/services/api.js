@@ -6,15 +6,34 @@ const apiRequest = async (endpoint, options = {}) => {
     const response = await fetch(
         `${API_BASE_URL}${endpoint}`,
         {
+            ...options,
+
             headers: {
                 "Content-Type": "application/json",
                 ...options.headers
-            },
-            ...options
+            }
         }
     );
 
-    const data = await response.json();
+    const contentType =
+        response.headers.get("content-type") || "";
+
+    let data;
+
+    if (contentType.includes("application/json")) {
+        data = await response.json();
+    } else {
+        const text = await response.text();
+
+        console.error(
+            "API returned non-JSON response:",
+            text
+        );
+
+        throw new Error(
+            `Server returned ${response.status} instead of JSON. Check that the backend is running on port 5000.`
+        );
+    }
 
     if (!response.ok) {
         throw new Error(
@@ -24,6 +43,10 @@ const apiRequest = async (endpoint, options = {}) => {
 
     return data;
 };
+
+// =========================
+// Cities
+// =========================
 
 export const getCities = async () => {
     return apiRequest("/cities");
@@ -36,9 +59,17 @@ export const createCity = async (cityData) => {
     });
 };
 
+// =========================
+// Stops
+// =========================
+
 export const getStops = async () => {
     return apiRequest("/stops");
 };
+
+// =========================
+// Route Search
+// =========================
 
 export const searchRoutes = async (
     fromStop,
