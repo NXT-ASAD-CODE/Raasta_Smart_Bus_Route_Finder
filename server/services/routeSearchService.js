@@ -1,206 +1,407 @@
 const Route = require("../models/route");
 
+/*
+|--------------------------------------------------------------------------
+| Helper: Get the position of a stop inside a route
+|--------------------------------------------------------------------------
+*/
+
+const getStopIndex = (route, stopId) => {
+    return route.stops.findIndex(
+        (item) =>
+            item.stop &&
+            item.stop._id.toString() === stopId.toString()
+    );
+};
+
+/*
+|--------------------------------------------------------------------------
+| Helper: Check whether a route can travel from A to B
+|--------------------------------------------------------------------------
+|
+| A must appear before B in the route.
+|
+*/
+
+const canTravelBetween = (
+    route,
+    fromStop,
+    toStop
+) => {
+    const fromIndex = getStopIndex(
+        route,
+        fromStop
+    );
+
+    const toIndex = getStopIndex(
+        route,
+        toStop
+    );
+
+    return (
+        fromIndex !== -1 &&
+        toIndex !== -1 &&
+        fromIndex < toIndex
+    );
+};
+
+/*
+|--------------------------------------------------------------------------
+| Helper: Get stops between two points
+|--------------------------------------------------------------------------
+*/
+
+const getJourneyStops = (
+    route,
+    fromStop,
+    toStop
+) => {
+    const fromIndex = getStopIndex(
+        route,
+        fromStop
+    );
+
+    const toIndex = getStopIndex(
+        route,
+        toStop
+    );
+
+    if (
+        fromIndex === -1 ||
+        toIndex === -1 ||
+        fromIndex > toIndex
+    ) {
+        return [];
+    }
+
+    return route.stops
+        .slice(fromIndex, toIndex + 1)
+        .map((item) => item.stop)
+        .filter(Boolean);
+};
+
+/*
+|--------------------------------------------------------------------------
+| Load routes for a city
+|--------------------------------------------------------------------------
+*/
+
+const getCityRoutes = async (cityId) => {
+    return Route.find({
+        city: cityId,
+        isActive: true
+    })
+        .populate(
+            "stops.stop",
+            "name nameUrdu location landmarks"
+        )
+        .sort({
+            routeNumber: 1
+        })
+        .lean();
+};
+
+/*
+|--------------------------------------------------------------------------
+| Direct Routes
+|--------------------------------------------------------------------------
+*/
+
 const searchDirectRoutes = async (
-    fromStopId,
-    toStopId,
+    fromStop,
+    toStop,
     cityId
 ) => {
-    const routes = await Route.find({
-        isActive: true,
-        city: cityId,
-        "stops.stop": {
-            $all: [fromStopId, toStopId]
-        }
-    })
-        .populate("city", "name slug")
-        .populate("stops.stop", "name nameUrdu location");
+    const routes = await getCityRoutes(cityId);
 
     const results = [];
 
     for (const route of routes) {
-        const fromIndex = route.stops.findIndex(
-            (item) => item.stop._id.toString() === fromStopId
-        );
-
-        const toIndex = route.stops.findIndex(
-            (item) => item.stop._id.toString() === toStopId
-        );
-
-        if (fromIndex === -1 || toIndex === -1) {
+        if (
+            !canTravelBetween(
+                route,
+                fromStop,
+                toStop
+            )
+        ) {
             continue;
         }
 
-        // The bus must reach the starting stop before
-        // reaching the destination stop.
-        if (fromIndex < toIndex) {
-            const journeyStops = route.stops.slice(
-                fromIndex,
-                toIndex + 1
-            );
+        const journeyStops = getJourneyStops(
+            route,
+            fromStop,
+            toStop
+        );
 
-            results.push({
-                routeId: route._id,
-                routeName: route.name,
+        if (journeyStops.length < 2) {
+            continue;
+        }
+
+        results.push({
+            route: {
+                _id: route._id,
+                name: route.name,
                 routeNumber: route.routeNumber,
                 startPoint: route.startPoint,
-                endPoint: route.endPoint,
-                stops: journeyStops
-            });
-        }
+                endPoint: route.endPoint
+            },
+
+            fromStop,
+            toStop,
+
+            stops: journeyStops,
+
+            stopCount: journeyStops.length
+        });
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Sort direct routes by number of stops
+    |--------------------------------------------------------------------------
+    |
+    | A shorter journey appears first.
+    |
+    */
+
+    results.sort(
+        (a, b) =>
+            a.stopCount - b.stopCount
+    );
 
     return results;
 };
+
+/*
+|--------------------------------------------------------------------------
+| One-Transfer Routes
+|--------------------------------------------------------------------------
+*/
+
 const searchOneTransferRoutes = async (
-    fromStopId,
-    toStopId,
+    fromStop,
+    toStop,
     cityId
 ) => {
-    const routes = await Route.find({
-        isActive: true,
-        city: cityId
-    })
-        .populate("city", "name slug")
-        .populate("stops.stop", "name nameUrdu location");
+    const routes = await getCityRoutes(cityId);
 
     const results = [];
 
-    // Find routes that contain the starting stop
-    const startingRoutes = routes.filter((route) =>
-        route.stops.some(
-            (item) =>
-                item.stop &&
-                item.stop._id &&
-                item.stop._id.toString() === fromStopId
-        )
-    );
+    /*
+    |--------------------------------------------------------------------------
+    | Find every possible first route
+    |--------------------------------------------------------------------------
+    */
 
-    // Find routes that contain the destination stop
-    const destinationRoutes = routes.filter((route) =>
-        route.stops.some(
-            (item) =>
-                item.stop &&
-                item.stop._id &&
-                item.stop._id.toString() === toStopId
-        )
-    );
-
-    for (const firstRoute of startingRoutes) {
-        const fromIndex = firstRoute.stops.findIndex(
-            (item) =>
-                item.stop &&
-                item.stop._id &&
-                item.stop._id.toString() === fromStopId
+    for (const firstRoute of routes) {
+        const fromIndex = getStopIndex(
+            firstRoute,
+            fromStop
         );
+
         if (fromIndex === -1) {
             continue;
         }
 
-        // Check every stop after the starting stop
-        for (let i = fromIndex + 1; i < firstRoute.stops.length; i++) {
-            const transferStop = firstRoute.stops[i].stop;
+        /*
+        |--------------------------------------------------------------------------
+        | The transfer stop must be AFTER the starting stop.
+        |--------------------------------------------------------------------------
+        */
 
-            // Find a second route containing the transfer stop
-            // and destination
-            for (const secondRoute of destinationRoutes) {
-                if (firstRoute._id.toString() === secondRoute._id.toString()) {
-                    continue;
-                }
-
-                const transferIndex = secondRoute.stops.findIndex(
-                    (item) =>
-                        item.stop &&
-                        item.stop._id &&
-                        item.stop._id.toString() ===
-                        transferStop._id.toString()
+        const possibleTransferStops =
+            firstRoute.stops
+                .slice(fromIndex + 1)
+                .filter(
+                    (item) => item.stop
                 );
 
-                const destinationIndex = secondRoute.stops.findIndex(
-                    (item) =>
-                        item.stop &&
-                        item.stop._id &&
-                        item.stop._id.toString() === toStopId
-                );
+        for (const transferItem of possibleTransferStops) {
+            const transferStop =
+                transferItem.stop;
+
+            const transferStopId =
+                transferStop._id.toString();
+
+            /*
+            |--------------------------------------------------------------------------
+            | Don't transfer at the final destination.
+            |--------------------------------------------------------------------------
+            */
+
+            if (
+                transferStopId ===
+                toStop.toString()
+            ) {
+                continue;
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Find a second route:
+            |
+            | transfer stop -> destination
+            |--------------------------------------------------------------------------
+            */
+
+            for (const secondRoute of routes) {
+                /*
+                |--------------------------------------------------------------------------
+                | Don't use the same route twice.
+                |--------------------------------------------------------------------------
+                */
 
                 if (
-                    transferIndex === -1 ||
-                    destinationIndex === -1
+                    firstRoute._id.toString() ===
+                    secondRoute._id.toString()
                 ) {
                     continue;
                 }
 
-                // The second bus must travel from
-                // transfer stop -> destination
-                if (transferIndex >= destinationIndex) {
+                if (
+                    !canTravelBetween(
+                        secondRoute,
+                        transferStopId,
+                        toStop
+                    )
+                ) {
                     continue;
                 }
 
-                const firstJourneyStops = firstRoute.stops.slice(
-                    fromIndex,
-                    i + 1
-                );
+                const firstJourneyStops =
+                    getJourneyStops(
+                        firstRoute,
+                        fromStop,
+                        transferStopId
+                    );
 
-                const secondJourneyStops = secondRoute.stops.slice(
-                    transferIndex,
-                    destinationIndex + 1
-                );
+                const secondJourneyStops =
+                    getJourneyStops(
+                        secondRoute,
+                        transferStopId,
+                        toStop
+                    );
 
-                const formatStops = (journeyStops) => {
-                    return journeyStops
-                        .filter((item) => item.stop)
-                        .map((item) => ({
-                            id: item.stop._id,
-                            name: item.stop.name,
-                            nameUrdu: item.stop.nameUrdu,
-                            sequence: item.sequence
-                        }));
-                };
+                if (
+                    firstJourneyStops.length < 2 ||
+                    secondJourneyStops.length < 2
+                ) {
+                    continue;
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | Create a unique key.
+                |
+                | This prevents the same:
+                |
+                | R-01 -> R-02 at Civic Centre
+                |
+                | journey from appearing more than once.
+                |--------------------------------------------------------------------------
+                */
+
+                const journeyKey = [
+                    firstRoute._id.toString(),
+                    secondRoute._id.toString(),
+                    transferStopId
+                ].join("-");
+
+                const alreadyExists =
+                    results.some(
+                        (result) =>
+                            result.journeyKey ===
+                            journeyKey
+                    );
+
+                if (alreadyExists) {
+                    continue;
+                }
 
                 results.push({
+                    journeyKey,
+
                     type: "one-transfer",
 
-                    transferStop: {
-                        id: transferStop._id,
-                        name: transferStop.name,
-                        nameUrdu: transferStop.nameUrdu
+                    firstRoute: {
+                        _id: firstRoute._id,
+                        name: firstRoute.name,
+                        routeNumber:
+                            firstRoute.routeNumber,
+                        startPoint:
+                            firstRoute.startPoint,
+                        endPoint:
+                            firstRoute.endPoint
                     },
 
-                    journey: [
-                        {
-                            routeId: firstRoute._id,
-                            routeName: firstRoute.name,
-                            routeNumber: firstRoute.routeNumber,
+                    secondRoute: {
+                        _id: secondRoute._id,
+                        name: secondRoute.name,
+                        routeNumber:
+                            secondRoute.routeNumber,
+                        startPoint:
+                            secondRoute.startPoint,
+                        endPoint:
+                            secondRoute.endPoint
+                    },
 
-                            from: firstJourneyStops[0]?.stop?.name,
+                    fromStop,
 
-                            to: firstJourneyStops[
-                                firstJourneyStops.length - 1
-                            ]?.stop?.name,
+                    transferStop,
 
-                            stops: formatStops(firstJourneyStops)
-                        },
+                    toStop,
 
-                        {
-                            routeId: secondRoute._id,
-                            routeName: secondRoute.name,
-                            routeNumber: secondRoute.routeNumber,
+                    firstJourneyStops,
 
-                            from: secondJourneyStops[0]?.stop?.name,
+                    secondJourneyStops,
 
-                            to: secondJourneyStops[
-                                secondJourneyStops.length - 1
-                            ]?.stop?.name,
-
-                            stops: formatStops(secondJourneyStops)
-                        }
-                    ]
+                    totalStops:
+                        firstJourneyStops.length +
+                        secondJourneyStops.length -
+                        1
                 });
             }
         }
     }
 
-    return results;
+    /*
+    |--------------------------------------------------------------------------
+    | Remove internal helper property before sending response.
+    |--------------------------------------------------------------------------
+    */
+
+    const cleanResults = results.map(
+        (result) => {
+            const {
+                journeyKey,
+                ...cleanResult
+            } = result;
+
+            return cleanResult;
+        }
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | Shorter journeys first.
+    |--------------------------------------------------------------------------
+    */
+
+    cleanResults.sort(
+        (a, b) =>
+            a.totalStops -
+            b.totalStops
+    );
+
+    return cleanResults;
 };
+
+/*
+|--------------------------------------------------------------------------
+| Exports
+|--------------------------------------------------------------------------
+*/
+
 module.exports = {
     searchDirectRoutes,
     searchOneTransferRoutes
