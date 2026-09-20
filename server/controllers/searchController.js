@@ -35,6 +35,7 @@ const searchRoutes = async (req, res, next) => {
         const startingStop = await Stop.findById(fromStop);
         const destinationStop = await Stop.findById(toStop);
 
+
         if (!startingStop) {
             return res.status(404).json({
                 success: false,
@@ -49,7 +50,7 @@ const searchRoutes = async (req, res, next) => {
             });
         }
         if (
-            startingStop.city.toString() !==    
+            startingStop.city.toString() !==
             destinationStop.city.toString()
         ) {
             return res.status(400).json({
@@ -57,10 +58,12 @@ const searchRoutes = async (req, res, next) => {
                 message: "Starting stop and destination stop must belong to the same city"
             });
         }
+        const cityId = startingStop.city;
         // Step 1: Search for direct routes
         const directRoutes = await searchDirectRoutes(
             fromStop,
-            toStop
+            toStop,
+            cityId
         );
 
         if (directRoutes.length > 0) {
@@ -75,7 +78,8 @@ const searchRoutes = async (req, res, next) => {
         // Step 2: Search for one-transfer routes
         const transferRoutes = await searchOneTransferRoutes(
             fromStop,
-            toStop
+            toStop,
+            cityId
         );
 
         return res.status(200).json({

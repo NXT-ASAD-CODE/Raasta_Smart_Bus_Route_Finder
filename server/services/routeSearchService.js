@@ -1,8 +1,13 @@
 const Route = require("../models/route");
 
-const searchDirectRoutes = async (fromStopId, toStopId) => {
+const searchDirectRoutes = async (
+    fromStopId,
+    toStopId,
+    cityId
+) => {
     const routes = await Route.find({
         isActive: true,
+        city: cityId,
         "stops.stop": {
             $all: [fromStopId, toStopId]
         }
@@ -46,9 +51,14 @@ const searchDirectRoutes = async (fromStopId, toStopId) => {
 
     return results;
 };
-const searchOneTransferRoutes = async (fromStopId, toStopId) => {
+const searchOneTransferRoutes = async (
+    fromStopId,
+    toStopId,
+    cityId
+) => {
     const routes = await Route.find({
-        isActive: true
+        isActive: true,
+        city: cityId
     })
         .populate("city", "name slug")
         .populate("stops.stop", "name nameUrdu location");
