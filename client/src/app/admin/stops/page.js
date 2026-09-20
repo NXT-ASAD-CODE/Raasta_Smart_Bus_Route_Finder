@@ -291,9 +291,6 @@ export default function AddStopPage() {
                                     event.target.value
                                 )
                             }
-                            inputProps={{
-                                dir: "rtl"
-                            }}
                             sx={{
                                 mb: 3
                             }}
@@ -313,11 +310,6 @@ export default function AddStopPage() {
                                     event.target.value
                                 )
                             }
-                            inputProps={{
-                                step: "any",
-                                min: -90,
-                                max: 90
-                            }}
                             helperText="Example: 24.9180"
                             sx={{
                                 mb: 3
@@ -338,11 +330,6 @@ export default function AddStopPage() {
                                     event.target.value
                                 )
                             }
-                            inputProps={{
-                                step: "any",
-                                min: -180,
-                                max: 180
-                            }}
                             helperText="Example: 67.0976"
                             sx={{
                                 mb: 3
