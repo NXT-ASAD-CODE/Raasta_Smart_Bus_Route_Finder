@@ -67,6 +67,13 @@ export const getStops = async () => {
     return apiRequest("/stops");
 };
 
+export const createStop = async (stopData) => {
+    return apiRequest("/stops", {
+        method: "POST",
+        body: JSON.stringify(stopData)
+    });
+};
+
 // =========================
 // Route Search
 // =========================
