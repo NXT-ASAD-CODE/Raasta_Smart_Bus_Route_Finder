@@ -22,7 +22,10 @@ import {
 
 import SwapVertIcon from "@mui/icons-material/SwapVert";
 
-import { getStops, searchRoutes } from "../services/api";
+import {
+  getStops,
+  searchRoutes
+} from "../services/api";
 
 export default function Home() {
   const [stops, setStops] = useState([]);
@@ -30,11 +33,22 @@ export default function Home() {
   const [fromStop, setFromStop] = useState("");
   const [toStop, setToStop] = useState("");
 
-  const [loadingStops, setLoadingStops] = useState(true);
-  const [searching, setSearching] = useState(false);
+  const [loadingStops, setLoadingStops] =
+    useState(true);
+
+  const [searching, setSearching] =
+    useState(false);
 
   const [error, setError] = useState("");
-  const [results, setResults] = useState(null);
+
+  const [results, setResults] =
+    useState(null);
+
+  /*
+  |--------------------------------------------------------------------------
+  | Load Stops
+  |--------------------------------------------------------------------------
+  */
 
   useEffect(() => {
     const loadStops = async () => {
@@ -55,11 +69,18 @@ export default function Home() {
     loadStops();
   }, []);
 
+  /*
+  |--------------------------------------------------------------------------
+  | Search Routes
+  |--------------------------------------------------------------------------
+  */
+
   const handleSearch = async () => {
     if (!fromStop || !toStop) {
       setError(
         "Please select both your starting stop and destination."
       );
+
       return;
     }
 
@@ -67,6 +88,7 @@ export default function Home() {
       setError(
         "Starting stop and destination stop cannot be the same."
       );
+
       return;
     }
 
@@ -88,6 +110,12 @@ export default function Home() {
     }
   };
 
+  /*
+  |--------------------------------------------------------------------------
+  | Swap Stops
+  |--------------------------------------------------------------------------
+  */
+
   const handleSwap = () => {
     setFromStop(toStop);
     setToStop(fromStop);
@@ -96,8 +124,117 @@ export default function Home() {
     setError("");
   };
 
+  /*
+  |--------------------------------------------------------------------------
+  | Render Stop Name
+  |--------------------------------------------------------------------------
+  */
+
+  const renderStopName = (
+    stop,
+    index,
+    total
+  ) => {
+    if (!stop) {
+      return null;
+    }
+
+    const englishName =
+      stop.name ||
+      stop.stop?.name ||
+      "Unknown stop";
+
+    const urduName =
+      stop.nameUrdu ||
+      stop.stop?.nameUrdu;
+
+    return (
+      <Step
+        key={`${stop._id || stop.id || stop.stop?._id}-${index}`}
+        active
+        completed={index < total - 1}
+      >
+        <StepLabel>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+              flexWrap: "wrap"
+            }}
+          >
+            {urduName && (
+              <Typography
+                component="span"
+                sx={{
+                  fontSize: {
+                    xs: "1.2rem",
+                    sm: "1.4rem"
+                  },
+                  fontWeight: 600,
+                  direction: "rtl"
+                }}
+              >
+                {urduName}
+              </Typography>
+            )}
+
+            {urduName && (
+              <Typography
+                component="span"
+                sx={{
+                  fontSize: "1.1rem",
+                  color: "text.secondary"
+                }}
+              >
+                (
+              </Typography>
+            )}
+
+            <Typography
+              component="span"
+              sx={{
+                fontSize: {
+                  xs: "1rem",
+                  sm: "1.1rem"
+                },
+                fontWeight:
+                  index === total - 1
+                    ? 600
+                    : 400
+              }}
+            >
+              {englishName}
+            </Typography>
+
+            {urduName && (
+              <Typography
+                component="span"
+                sx={{
+                  fontSize: "1.1rem",
+                  color: "text.secondary"
+                }}
+              >
+                )
+              </Typography>
+            )}
+          </Box>
+        </StepLabel>
+      </Step>
+    );
+  };
+
+  /*
+  |--------------------------------------------------------------------------
+  | Render Stops Timeline
+  |--------------------------------------------------------------------------
+  */
+
   const renderStops = (journeyStops) => {
-    if (!journeyStops || journeyStops.length === 0) {
+    if (
+      !journeyStops ||
+      journeyStops.length === 0
+    ) {
       return (
         <Typography color="text.secondary">
           No stop information available.
@@ -112,92 +249,14 @@ export default function Home() {
           mt: 2
         }}
       >
-        {journeyStops.map((stop, index) => {
-          const englishName =
-            stop.name || stop.stop?.name;
-
-          const urduName =
-            stop.nameUrdu || stop.stop?.nameUrdu;
-
-          return (
-            <Step
-              key={`${stop.id || stop.stop?._id}-${index}`}
-              active
-              completed={
-                index <
-                journeyStops.length - 1
-              }
-            >
-              <StepLabel>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1,
-                    flexWrap: "wrap"
-                  }}
-                >
-                  {urduName && (
-                    <Typography
-                      component="span"
-                      sx={{
-                        fontSize: {
-                          xs: "1.2rem",
-                          sm: "1.4rem"
-                        },
-                        fontWeight: 600,
-                        direction: "rtl"
-                      }}
-                    >
-                      {urduName}
-                    </Typography>
-                  )}
-
-                  {urduName && (
-                    <Typography
-                      component="span"
-                      sx={{
-                        fontSize: "1.1rem",
-                        color: "text.secondary"
-                      }}
-                    >
-                      (
-                    </Typography>
-                  )}
-
-                  <Typography
-                    component="span"
-                    sx={{
-                      fontSize: {
-                        xs: "1rem",
-                        sm: "1.1rem"
-                      },
-                      fontWeight:
-                        index ===
-                          journeyStops.length - 1
-                          ? 600
-                          : 400
-                    }}
-                  >
-                    {englishName}
-                  </Typography>
-
-                  {urduName && (
-                    <Typography
-                      component="span"
-                      sx={{
-                        fontSize: "1.1rem",
-                        color: "text.secondary"
-                      }}
-                    >
-                      )
-                    </Typography>
-                  )}
-                </Box>
-              </StepLabel>
-            </Step>
-          );
-        })}
+        {journeyStops.map(
+          (stop, index) =>
+            renderStopName(
+              stop,
+              index,
+              journeyStops.length
+            )
+        )}
       </Stepper>
     );
   };
@@ -215,7 +274,9 @@ export default function Home() {
     >
       <Container maxWidth="md">
 
-        {/* Hero Section */}
+        {/* =========================================================
+            HERO SECTION
+        ========================================================= */}
 
         <Box
           sx={{
@@ -261,7 +322,9 @@ export default function Home() {
           </Typography>
         </Box>
 
-        {/* Search Card */}
+        {/* =========================================================
+            SEARCH CARD
+        ========================================================= */}
 
         <Paper
           elevation={3}
@@ -318,6 +381,7 @@ export default function Home() {
                   setFromStop(
                     event.target.value
                   );
+
                   setResults(null);
                   setError("");
                 }}
@@ -352,7 +416,9 @@ export default function Home() {
                   my: 1
                 }}
               >
-                <Tooltip title="Swap starting point and destination">
+                <Tooltip
+                  title="Swap starting point and destination"
+                >
                   <span>
                     <IconButton
                       onClick={handleSwap}
@@ -392,6 +458,7 @@ export default function Home() {
                   setToStop(
                     event.target.value
                   );
+
                   setResults(null);
                   setError("");
                 }}
@@ -453,7 +520,9 @@ export default function Home() {
           )}
         </Paper>
 
-        {/* Search Results */}
+        {/* =========================================================
+            SEARCH RESULTS
+        ========================================================= */}
 
         {results && (
           <Box
@@ -471,7 +540,9 @@ export default function Home() {
               Your Journey
             </Typography>
 
-            {/* No Results */}
+            {/* =====================================================
+                NO RESULTS
+            ===================================================== */}
 
             {results.count === 0 && (
               <Alert severity="info">
@@ -481,12 +552,14 @@ export default function Home() {
               </Alert>
             )}
 
-            {/* Direct Route */}
+            {/* =====================================================
+                DIRECT ROUTES
+            ===================================================== */}
 
             {results.type === "direct" &&
               results.data.map((route) => (
                 <Paper
-                  key={route.routeId}
+                  key={route.route._id}
                   elevation={2}
                   sx={{
                     p: {
@@ -515,7 +588,7 @@ export default function Home() {
                     }}
                   >
                     Bus{" "}
-                    {route.routeNumber}
+                    {route.route.routeNumber}
                   </Typography>
 
                   <Typography
@@ -525,7 +598,7 @@ export default function Home() {
                       mt: 0.5
                     }}
                   >
-                    {route.routeName}
+                    {route.route.name}
                   </Typography>
 
                   <Divider
@@ -549,13 +622,15 @@ export default function Home() {
                 </Paper>
               ))}
 
-            {/* One Transfer Route */}
+            {/* =====================================================
+                ONE TRANSFER ROUTES
+            ===================================================== */}
 
             {results.type === "one-transfer" &&
               results.data.map(
                 (route, index) => (
                   <Paper
-                    key={index}
+                    key={`${route.firstRoute._id}-${route.secondRoute._id}-${index}`}
                     elevation={2}
                     sx={{
                       p: {
@@ -586,7 +661,9 @@ export default function Home() {
                       Your Journey
                     </Typography>
 
-                    {/* First Bus */}
+                    {/* =================================================
+                        FIRST BUS
+                    ================================================= */}
 
                     <Box
                       sx={{
@@ -601,8 +678,7 @@ export default function Home() {
                       >
                         1. Take Bus{" "}
                         {
-                          route
-                            .journey[0]
+                          route.firstRoute
                             .routeNumber
                         }
                       </Typography>
@@ -612,20 +688,19 @@ export default function Home() {
                         color="text.secondary"
                       >
                         {
-                          route
-                            .journey[0]
-                            .routeName
+                          route.firstRoute
+                            .name
                         }
                       </Typography>
 
                       {renderStops(
-                        route
-                          .journey[0]
-                          .stops
+                        route.firstJourneyStops
                       )}
                     </Box>
 
-                    {/* Transfer Alert */}
+                    {/* =================================================
+                        TRANSFER ALERT
+                    ================================================= */}
 
                     <Alert
                       severity="warning"
@@ -655,52 +730,58 @@ export default function Home() {
                           {
                             route
                               .transferStop
-                              .name
+                              ?.name
                           }
                         </strong>
 
                         {route
                           .transferStop
-                          .nameUrdu && (
-                            <>
-                              {" "}
-                              (
-                              {
-                                route
-                                  .transferStop
-                                  .nameUrdu
-                              }
-                              )
-                            </>
-                          )}{" "}
+                          ?.nameUrdu && (
+                          <>
+                            {" "}
+                            (
+                            {
+                              route
+                                .transferStop
+                                .nameUrdu
+                            }
+                            )
+                          </>
+                        )}{" "}
                         and take the next
                         bus.
                       </Typography>
 
-                      <Typography
-                        variant="body1"
-                        sx={{
-                          mt: 1,
-                          fontSize: {
-                            xs: "1rem",
-                            sm: "1.15rem"
-                          },
-                          fontWeight: 600,
-                          direction: "rtl",
-                          textAlign: "left"
-                        }}
-                      >
-                        {
-                          route
-                            .transferStop
-                            .nameUrdu
-                        }{" "}
-                        پر اتریں اور اگلی
-                        بس لیں۔
-                      </Typography>
+                      {route
+                        .transferStop
+                        ?.nameUrdu && (
+                        <Typography
+                          variant="body1"
+                          sx={{
+                            mt: 1,
+                            fontSize: {
+                              xs: "1rem",
+                              sm: "1.15rem"
+                            },
+                            fontWeight: 600,
+                            direction: "rtl",
+                            textAlign: "left"
+                          }}
+                        >
+                          {
+                            route
+                              .transferStop
+                              .nameUrdu
+                          }{" "}
+                          پر اتریں اور اگلی
+                          بس لیں۔
+                        </Typography>
+                      )}
                     </Alert>
 
-                    {/* Second Bus */}
+                    {/* =================================================
+                        SECOND BUS
+                    ================================================= */}
 
                     <Box>
                       <Typography
@@ -711,8 +792,7 @@ export default function Home() {
                       >
                         2. Take Bus{" "}
                         {
-                          route
-                            .journey[1]
+                          route.secondRoute
                             .routeNumber
                         }
                       </Typography>
@@ -722,16 +802,13 @@ export default function Home() {
                         color="text.secondary"
                       >
                         {
-                          route
-                            .journey[1]
-                            .routeName
+                          route.secondRoute
+                            .name
                         }
                       </Typography>
 
                       {renderStops(
-                        route
-                          .journey[1]
-                          .stops
+                        route.secondJourneyStops
                       )}
                     </Box>
                   </Paper>
