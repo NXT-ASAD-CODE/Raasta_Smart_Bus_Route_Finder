@@ -23,51 +23,104 @@ import {
 import SwapVertIcon from "@mui/icons-material/SwapVert";
 
 import {
+  getCities,
   getStops,
   searchRoutes
 } from "../services/api";
 
 export default function Home() {
+  const [cities, setCities] = useState([]);
   const [stops, setStops] = useState([]);
 
-  const [fromStop, setFromStop] = useState("");
-  const [toStop, setToStop] = useState("");
+  const [selectedCity, setSelectedCity] =
+    useState("");
 
-  const [loadingStops, setLoadingStops] =
+  const [fromStop, setFromStop] =
+    useState("");
+
+  const [toStop, setToStop] =
+    useState("");
+
+  const [loadingData, setLoadingData] =
     useState(true);
 
   const [searching, setSearching] =
     useState(false);
 
-  const [error, setError] = useState("");
+  const [error, setError] =
+    useState("");
 
   const [results, setResults] =
     useState(null);
 
   /*
   |--------------------------------------------------------------------------
-  | Load Stops
+  | Load Cities and Stops
   |--------------------------------------------------------------------------
   */
 
   useEffect(() => {
-    const loadStops = async () => {
+    const loadData = async () => {
       try {
-        setLoadingStops(true);
+        setLoadingData(true);
         setError("");
 
-        const response = await getStops();
+        const [
+          citiesResponse,
+          stopsResponse
+        ] = await Promise.all([
+          getCities(),
+          getStops()
+        ]);
 
-        setStops(response.data || []);
+        setCities(
+          citiesResponse.data || []
+        );
+
+        setStops(
+          stopsResponse.data || []
+        );
       } catch (error) {
         setError(error.message);
       } finally {
-        setLoadingStops(false);
+        setLoadingData(false);
       }
     };
 
-    loadStops();
+    loadData();
   }, []);
+
+  /*
+  |--------------------------------------------------------------------------
+  | Filter Stops by Selected City
+  |--------------------------------------------------------------------------
+  */
+
+  const cityStops = stops.filter(
+    (stop) =>
+      stop.city?._id === selectedCity ||
+      stop.city === selectedCity
+  );
+
+  /*
+  |--------------------------------------------------------------------------
+  | City Change
+  |--------------------------------------------------------------------------
+  */
+
+  const handleCityChange = (event) => {
+    const cityId = event.target.value;
+
+    setSelectedCity(cityId);
+
+    // Clear old stops when city changes
+    setFromStop("");
+    setToStop("");
+
+    // Clear old search results
+    setResults(null);
+    setError("");
+  };
 
   /*
   |--------------------------------------------------------------------------
@@ -76,6 +129,14 @@ export default function Home() {
   */
 
   const handleSearch = async () => {
+    if (!selectedCity) {
+      setError(
+        "Please select a city first."
+      );
+
+      return;
+    }
+
     if (!fromStop || !toStop) {
       setError(
         "Please select both your starting stop and destination."
@@ -150,9 +211,15 @@ export default function Home() {
 
     return (
       <Step
-        key={`${stop._id || stop.id || stop.stop?._id}-${index}`}
+        key={`${
+          stop._id ||
+          stop.id ||
+          stop.stop?._id
+        }-${index}`}
         active
-        completed={index < total - 1}
+        completed={
+          index < total - 1
+        }
       >
         <StepLabel>
           <Box
@@ -230,13 +297,17 @@ export default function Home() {
   |--------------------------------------------------------------------------
   */
 
-  const renderStops = (journeyStops) => {
+  const renderStops = (
+    journeyStops
+  ) => {
     if (
       !journeyStops ||
       journeyStops.length === 0
     ) {
       return (
-        <Typography color="text.secondary">
+        <Typography
+          color="text.secondary"
+        >
           No stop information available.
         </Typography>
       );
@@ -317,8 +388,9 @@ export default function Home() {
               mt: 2
             }}
           >
-            Tell us where you want to go, and
-            Raasta will explain how to get there.
+            Tell us where you want to go,
+            and Raasta will explain how to
+            get there.
           </Typography>
         </Box>
 
@@ -352,17 +424,20 @@ export default function Home() {
               sx={{
                 mb: 3
               }}
-              onClose={() => setError("")}
+              onClose={() =>
+                setError("")
+              }
             >
               {error}
             </Alert>
           )}
 
-          {loadingStops ? (
+          {loadingData ? (
             <Box
               sx={{
                 display: "flex",
-                justifyContent: "center",
+                justifyContent:
+                  "center",
                 py: 5
               }}
             >
@@ -370,7 +445,44 @@ export default function Home() {
             </Box>
           ) : (
             <>
-              {/* Starting Stop */}
+              {/* =================================================
+                  CITY
+              ================================================= */}
+
+              <TextField
+                select
+                fullWidth
+                required
+                label="Select City"
+                value={selectedCity}
+                onChange={
+                  handleCityChange
+                }
+                sx={{
+                  mb: 3
+                }}
+              >
+                <MenuItem value="">
+                  Select city
+                </MenuItem>
+
+                {cities.map((city) => (
+                  <MenuItem
+                    key={city._id}
+                    value={city._id}
+                  >
+                    {city.name}
+
+                    {city.province
+                      ? `, ${city.province}`
+                      : ""}
+                  </MenuItem>
+                ))}
+              </TextField>
+
+              {/* =================================================
+                  STARTING STOP
+              ================================================= */}
 
               <TextField
                 select
@@ -385,6 +497,14 @@ export default function Home() {
                   setResults(null);
                   setError("");
                 }}
+                disabled={!selectedCity}
+                helperText={
+                  !selectedCity
+                    ? "Select a city first."
+                    : cityStops.length === 0
+                    ? "No stops available for this city."
+                    : ""
+                }
                 sx={{
                   mb: 2
                 }}
@@ -393,7 +513,7 @@ export default function Home() {
                   Select starting stop
                 </MenuItem>
 
-                {stops.map((stop) => (
+                {cityStops.map((stop) => (
                   <MenuItem
                     key={stop._id}
                     value={stop._id}
@@ -407,12 +527,15 @@ export default function Home() {
                 ))}
               </TextField>
 
-              {/* Swap Button */}
+              {/* =================================================
+                  SWAP BUTTON
+              ================================================= */}
 
               <Box
                 sx={{
                   display: "flex",
-                  justifyContent: "center",
+                  justifyContent:
+                    "center",
                   my: 1
                 }}
               >
@@ -421,7 +544,9 @@ export default function Home() {
                 >
                   <span>
                     <IconButton
-                      onClick={handleSwap}
+                      onClick={
+                        handleSwap
+                      }
                       disabled={
                         !fromStop &&
                         !toStop
@@ -447,7 +572,9 @@ export default function Home() {
                 </Tooltip>
               </Box>
 
-              {/* Destination Stop */}
+              {/* =================================================
+                  DESTINATION STOP
+              ================================================= */}
 
               <TextField
                 select
@@ -462,6 +589,14 @@ export default function Home() {
                   setResults(null);
                   setError("");
                 }}
+                disabled={!selectedCity}
+                helperText={
+                  !selectedCity
+                    ? "Select a city first."
+                    : cityStops.length === 0
+                    ? "No stops available for this city."
+                    : ""
+                }
                 sx={{
                   mt: 1,
                   mb: 3
@@ -471,7 +606,7 @@ export default function Home() {
                   Select destination stop
                 </MenuItem>
 
-                {stops.map((stop) => (
+                {cityStops.map((stop) => (
                   <MenuItem
                     key={stop._id}
                     value={stop._id}
@@ -485,18 +620,27 @@ export default function Home() {
                 ))}
               </TextField>
 
-              {/* Search Button */}
+              {/* =================================================
+                  SEARCH BUTTON
+              ================================================= */}
 
               <Button
                 fullWidth
                 variant="contained"
                 size="large"
-                onClick={handleSearch}
-                disabled={searching}
+                onClick={
+                  handleSearch
+                }
+                disabled={
+                  searching ||
+                  !selectedCity ||
+                  cityStops.length === 0
+                }
                 sx={{
                   py: 1.5,
                   borderRadius: 2,
-                  textTransform: "none",
+                  textTransform:
+                    "none",
                   fontSize: "1rem"
                 }}
               >
@@ -510,7 +654,8 @@ export default function Home() {
                       }}
                     />
 
-                    Finding your route...
+                    Finding your
+                    route...
                   </>
                 ) : (
                   "Find My Route"
@@ -546,9 +691,9 @@ export default function Home() {
 
             {results.count === 0 && (
               <Alert severity="info">
-                We could not find a direct or
-                one-transfer route between these
-                stops.
+                We could not find a direct
+                or one-transfer route
+                between these stops.
               </Alert>
             )}
 
@@ -556,79 +701,95 @@ export default function Home() {
                 DIRECT ROUTES
             ===================================================== */}
 
-            {results.type === "direct" &&
-              results.data.map((route) => (
-                <Paper
-                  key={route.route._id}
-                  elevation={2}
-                  sx={{
-                    p: {
-                      xs: 3,
-                      sm: 4
-                    },
-                    mb: 3,
-                    borderRadius: 3
-                  }}
-                >
-                  <Typography
-                    variant="overline"
-                    color="primary"
+            {results.type ===
+              "direct" &&
+              results.data.map(
+                (route) => (
+                  <Paper
+                    key={
+                      route.route
+                        ._id
+                    }
+                    elevation={2}
                     sx={{
-                      fontWeight: 700
+                      p: {
+                        xs: 3,
+                        sm: 4
+                      },
+                      mb: 3,
+                      borderRadius: 3
                     }}
                   >
-                    Direct Route
-                  </Typography>
+                    <Typography
+                      variant="overline"
+                      color="primary"
+                      sx={{
+                        fontWeight: 700
+                      }}
+                    >
+                      Direct Route
+                    </Typography>
 
-                  <Typography
-                    variant="h5"
-                    sx={{
-                      fontWeight: 600,
-                      mt: 0.5
-                    }}
-                  >
-                    Bus{" "}
-                    {route.route.routeNumber}
-                  </Typography>
+                    <Typography
+                      variant="h5"
+                      sx={{
+                        fontWeight: 600,
+                        mt: 0.5
+                      }}
+                    >
+                      Bus{" "}
+                      {
+                        route.route
+                          .routeNumber
+                      }
+                    </Typography>
 
-                  <Typography
-                    variant="body1"
-                    color="text.secondary"
-                    sx={{
-                      mt: 0.5
-                    }}
-                  >
-                    {route.route.name}
-                  </Typography>
+                    <Typography
+                      variant="body1"
+                      color="text.secondary"
+                      sx={{
+                        mt: 0.5
+                      }}
+                    >
+                      {
+                        route.route
+                          .name
+                      }
+                    </Typography>
 
-                  <Divider
-                    sx={{
-                      my: 3
-                    }}
-                  />
+                    <Divider
+                      sx={{
+                        my: 3
+                      }}
+                    />
 
-                  <Typography
-                    variant="subtitle1"
-                    sx={{
-                      fontWeight: 600
-                    }}
-                  >
-                    Your stops
-                  </Typography>
+                    <Typography
+                      variant="subtitle1"
+                      sx={{
+                        fontWeight: 600
+                      }}
+                    >
+                      Your stops
+                    </Typography>
 
-                  {renderStops(
-                    route.stops
-                  )}
-                </Paper>
-              ))}
+                    {renderStops(
+                      route.stops
+                    )}
+                  </Paper>
+                )
+              )}
 
             {/* =====================================================
                 ONE TRANSFER ROUTES
             ===================================================== */}
 
-            {results.type === "one-transfer" &&
+            {results.type ===
+              "one-transfer" &&
               results.data.map(
-                (route, index) => (
+                (
+                  route,
+                  index
+                ) => (
                   <Paper
                     key={`${route.firstRoute._id}-${route.secondRoute._id}-${index}`}
                     elevation={2}
@@ -678,7 +839,8 @@ export default function Home() {
                       >
                         1. Take Bus{" "}
                         {
-                          route.firstRoute
+                          route
+                            .firstRoute
                             .routeNumber
                         }
                       </Typography>
@@ -688,13 +850,15 @@ export default function Home() {
                         color="text.secondary"
                       >
                         {
-                          route.firstRoute
+                          route
+                            .firstRoute
                             .name
                         }
                       </Typography>
 
                       {renderStops(
-                        route.firstJourneyStops
+                        route
+                          .firstJourneyStops
                       )}
                     </Box>
 
@@ -748,8 +912,8 @@ export default function Home() {
                             )
                           </>
                         )}{" "}
-                        and take the next
-                        bus.
+                        and take the
+                        next bus.
                       </Typography>
 
                       {route
@@ -764,8 +928,10 @@ export default function Home() {
                               sm: "1.15rem"
                             },
                             fontWeight: 600,
-                            direction: "rtl",
-                            textAlign: "left"
+                            direction:
+                              "rtl",
+                            textAlign:
+                              "left"
                           }}
                         >
                           {
@@ -773,8 +939,8 @@ export default function Home() {
                               .transferStop
                               .nameUrdu
                           }{" "}
-                          پر اتریں اور اگلی
-                          بس لیں۔
+                          پر اتریں اور
+                          اگلی بس لیں۔
                         </Typography>
                       )}
                     </Alert>
@@ -792,7 +958,8 @@ export default function Home() {
                       >
                         2. Take Bus{" "}
                         {
-                          route.secondRoute
+                          route
+                            .secondRoute
                             .routeNumber
                         }
                       </Typography>
@@ -802,13 +969,15 @@ export default function Home() {
                         color="text.secondary"
                       >
                         {
-                          route.secondRoute
+                          route
+                            .secondRoute
                             .name
                         }
                       </Typography>
 
                       {renderStops(
-                        route.secondJourneyStops
+                        route
+                          .secondJourneyStops
                       )}
                     </Box>
                   </Paper>
