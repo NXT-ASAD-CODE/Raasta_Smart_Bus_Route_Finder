@@ -9,14 +9,18 @@ import {
   CircularProgress,
   Container,
   Divider,
+  IconButton,
   MenuItem,
   Paper,
   Step,
   StepLabel,
   Stepper,
   TextField,
+  Tooltip,
   Typography
 } from "@mui/material";
+
+import SwapVertIcon from "@mui/icons-material/SwapVert";
 
 import { getStops, searchRoutes } from "../services/api";
 
@@ -82,6 +86,14 @@ export default function Home() {
     } finally {
       setSearching(false);
     }
+  };
+
+  const handleSwap = () => {
+    setFromStop(toStop);
+    setToStop(fromStop);
+
+    setResults(null);
+    setError("");
   };
 
   const renderStops = (journeyStops) => {
@@ -162,8 +174,7 @@ export default function Home() {
                       },
                       fontWeight:
                         index ===
-                          journeyStops.length -
-                          1
+                          journeyStops.length - 1
                           ? 600
                           : 400
                     }}
@@ -303,13 +314,15 @@ export default function Home() {
                 fullWidth
                 label="Where are you starting?"
                 value={fromStop}
-                onChange={(event) =>
+                onChange={(event) => {
                   setFromStop(
                     event.target.value
-                  )
-                }
+                  );
+                  setResults(null);
+                  setError("");
+                }}
                 sx={{
-                  mb: 3
+                  mb: 2
                 }}
               >
                 <MenuItem value="">
@@ -330,6 +343,44 @@ export default function Home() {
                 ))}
               </TextField>
 
+              {/* Swap Button */}
+
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  my: 1
+                }}
+              >
+                <Tooltip title="Swap starting point and destination">
+                  <span>
+                    <IconButton
+                      onClick={handleSwap}
+                      disabled={
+                        !fromStop &&
+                        !toStop
+                      }
+                      color="primary"
+                      aria-label="Swap starting point and destination"
+                      sx={{
+                        border: "1px solid",
+                        borderColor:
+                          "primary.main",
+                        width: 48,
+                        height: 48,
+                        "&:hover": {
+                          backgroundColor:
+                            "primary.main",
+                          color: "white"
+                        }
+                      }}
+                    >
+                      <SwapVertIcon />
+                    </IconButton>
+                  </span>
+                </Tooltip>
+              </Box>
+
               {/* Destination Stop */}
 
               <TextField
@@ -337,12 +388,15 @@ export default function Home() {
                 fullWidth
                 label="Where do you want to go?"
                 value={toStop}
-                onChange={(event) =>
+                onChange={(event) => {
                   setToStop(
                     event.target.value
-                  )
-                }
+                  );
+                  setResults(null);
+                  setError("");
+                }}
                 sx={{
+                  mt: 1,
                   mb: 3
                 }}
               >
@@ -380,10 +434,17 @@ export default function Home() {
                 }}
               >
                 {searching ? (
-                  <CircularProgress
-                    size={24}
-                    color="inherit"
-                  />
+                  <>
+                    <CircularProgress
+                      size={24}
+                      color="inherit"
+                      sx={{
+                        mr: 1
+                      }}
+                    />
+
+                    Finding your route...
+                  </>
                 ) : (
                   "Find My Route"
                 )}
@@ -490,8 +551,7 @@ export default function Home() {
 
             {/* One Transfer Route */}
 
-            {results.type ===
-              "one-transfer" &&
+            {results.type === "one-transfer" &&
               results.data.map(
                 (route, index) => (
                   <Paper
@@ -580,8 +640,8 @@ export default function Home() {
                           fontWeight: 700
                         }}
                       >
-                        🔄 Change Bus — بس
-                        تبدیل کریں
+                        🔄 Change Bus —
+                        بس تبدیل کریں
                       </Typography>
 
                       <Typography
