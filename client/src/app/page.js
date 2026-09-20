@@ -273,12 +273,11 @@ export default function Home() {
 
           return (
             <Step
-              key={`${
-                stop.id ||
+              key={`${stop.id ||
                 stop._id ||
                 stop.stop?._id ||
                 index
-              }-${index}`}
+                }-${index}`}
               active
               completed={
                 index <
@@ -331,7 +330,7 @@ export default function Home() {
                       },
                       fontWeight:
                         index ===
-                        journeyStops.length - 1
+                          journeyStops.length - 1
                           ? 600
                           : 400
                     }}
@@ -679,8 +678,8 @@ export default function Home() {
                 handleOpenCityDialog
               }
               sx={{
-                backgroundColor: "#e3f2fd",
-                color: "#1976d2",
+                backgroundColor: "#1976d2",
+                color: "#ffffff",
                 borderRadius: "50px",
                 px: {
                   xs: 3,
@@ -694,14 +693,16 @@ export default function Home() {
                 },
                 fontWeight: 600,
                 boxShadow:
-                  "0 5px 20px rgba(25,118,210,0.15)",
+                  "0 6px 20px rgba(25, 118, 210, 0.3)",
 
                 animation:
                   "raastaPulse 2s ease-in-out infinite",
 
                 "&:hover": {
-                  backgroundColor: "#bbdefb",
-                  color: "#1565c0"
+                  backgroundColor: "#1565c0",
+                  color: "#ffffff",
+                  boxShadow:
+                    "0 8px 25px rgba(25, 118, 210, 0.4)"
                 },
 
                 "@keyframes raastaPulse": {
@@ -1513,17 +1514,17 @@ export default function Home() {
                         {route
                           .transferStop
                           .nameUrdu && (
-                          <>
-                            {" "}
-                            (
-                            {
-                              route
-                                .transferStop
-                                .nameUrdu
-                            }
-                            )
-                          </>
-                        )}{" "}
+                            <>
+                              {" "}
+                              (
+                              {
+                                route
+                                  .transferStop
+                                  .nameUrdu
+                              }
+                              )
+                            </>
+                          )}{" "}
                         and take the next
                         bus.
                       </Typography>
