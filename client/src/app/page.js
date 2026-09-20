@@ -25,9 +25,6 @@ import {
 } from "@mui/material";
 
 import SwapVertIcon from "@mui/icons-material/SwapVert";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import LocationCityIcon from "@mui/icons-material/LocationCity";
-import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
 
 import {
   getCities,
@@ -37,7 +34,7 @@ import {
 
 export default function Home() {
   // =========================
-  // Page State
+  // PAGE STATE
   // =========================
 
   const [showRouteForm, setShowRouteForm] =
@@ -46,23 +43,23 @@ export default function Home() {
   const [cityDialogOpen, setCityDialogOpen] =
     useState(false);
 
-  const [selectedCity, setSelectedCity] =
-    useState(null);
-
   // =========================
-  // Cities
+  // CITIES
   // =========================
 
   const [cities, setCities] = useState([]);
 
-  const [loadingCities, setLoadingCities] =
-    useState(false);
-
   const [selectedCityId, setSelectedCityId] =
     useState("");
 
+  const [selectedCity, setSelectedCity] =
+    useState(null);
+
+  const [loadingCities, setLoadingCities] =
+    useState(true);
+
   // =========================
-  // Stops
+  // STOPS
   // =========================
 
   const [stops, setStops] = useState([]);
@@ -71,7 +68,7 @@ export default function Home() {
     useState(false);
 
   // =========================
-  // Route Search
+  // SEARCH
   // =========================
 
   const [fromStop, setFromStop] =
@@ -86,14 +83,10 @@ export default function Home() {
   const [results, setResults] =
     useState(null);
 
-  // =========================
-  // Errors
-  // =========================
-
   const [error, setError] = useState("");
 
   // =========================
-  // Load Cities
+  // LOAD CITIES
   // =========================
 
   useEffect(() => {
@@ -116,7 +109,7 @@ export default function Home() {
   }, []);
 
   // =========================
-  // Open City Dialog
+  // OPEN CITY DIALOG
   // =========================
 
   const handleOpenCityDialog = () => {
@@ -125,15 +118,7 @@ export default function Home() {
   };
 
   // =========================
-  // Close City Dialog
-  // =========================
-
-  const handleCloseCityDialog = () => {
-    setCityDialogOpen(false);
-  };
-
-  // =========================
-  // Continue With City
+  // CONTINUE AFTER CITY
   // =========================
 
   const handleContinueCity = async () => {
@@ -159,18 +144,18 @@ export default function Home() {
 
       const allStops = response.data || [];
 
-      // Only show stops belonging to selected city
-      const cityStops = allStops.filter(
-        (stop) => {
-          const cityId =
-            stop.city?._id || stop.city;
+      // Only show stops from selected city
+      const cityStops = allStops.filter((stop) => {
+        const stopCityId =
+          stop.city?._id || stop.city;
 
-          return cityId === selectedCityId;
-        }
-      );
+        return (
+          stopCityId?.toString() ===
+          selectedCityId.toString()
+        );
+      });
 
       setStops(cityStops);
-
       setSelectedCity(city);
 
       setFromStop("");
@@ -179,7 +164,7 @@ export default function Home() {
 
       setCityDialogOpen(false);
 
-      // Change landing page into route form
+      // Change landing page into form
       setShowRouteForm(true);
     } catch (error) {
       setError(error.message);
@@ -189,7 +174,7 @@ export default function Home() {
   };
 
   // =========================
-  // Back To Home
+  // BACK TO HOME
   // =========================
 
   const handleBackToHome = () => {
@@ -206,7 +191,7 @@ export default function Home() {
   };
 
   // =========================
-  // Search Route
+  // SEARCH ROUTE
   // =========================
 
   const handleSearch = async () => {
@@ -214,7 +199,6 @@ export default function Home() {
       setError(
         "Please select both your starting stop and destination."
       );
-
       return;
     }
 
@@ -222,7 +206,6 @@ export default function Home() {
       setError(
         "Starting stop and destination stop cannot be the same."
       );
-
       return;
     }
 
@@ -245,7 +228,7 @@ export default function Home() {
   };
 
   // =========================
-  // Swap Stops
+  // SWAP
   // =========================
 
   const handleSwap = () => {
@@ -257,7 +240,7 @@ export default function Home() {
   };
 
   // =========================
-  // Render Stops
+  // RENDER STOPS
   // =========================
 
   const renderStops = (journeyStops) => {
@@ -332,8 +315,7 @@ export default function Home() {
                       component="span"
                       sx={{
                         fontSize: "1.1rem",
-                        color:
-                          "text.secondary"
+                        color: "text.secondary"
                       }}
                     >
                       (
@@ -362,8 +344,7 @@ export default function Home() {
                       component="span"
                       sx={{
                         fontSize: "1.1rem",
-                        color:
-                          "text.secondary"
+                        color: "text.secondary"
                       }}
                     >
                       )
@@ -378,95 +359,72 @@ export default function Home() {
     );
   };
 
-  // =========================
+  // ==========================================================
   // LANDING PAGE
-  // =========================
+  // ==========================================================
 
   if (!showRouteForm) {
     return (
       <Box
         sx={{
           minHeight: "100vh",
-          background:
-            "linear-gradient(135deg, #f5f7fa 0%, #e3f2fd 100%)",
+          backgroundColor: "#f5f7fa",
           display: "flex",
           alignItems: "center",
-          justifyContent: "center",
-          py: 5
+          py: {
+            xs: 4,
+            md: 7
+          }
         }}
       >
         <Container maxWidth="md">
+
+          {/* HERO */}
+
           <Box
             sx={{
               textAlign: "center"
             }}
           >
-            {/* Logo / Name */}
-
             <Typography
+              variant="h2"
               component="h1"
               sx={{
-                fontWeight: 800,
+                fontWeight: 700,
                 fontSize: {
-                  xs: "3.5rem",
-                  sm: "5rem",
-                  md: "6rem"
-                },
-                letterSpacing: "-2px",
-                color: "primary.main"
+                  xs: "3rem",
+                  sm: "4.5rem"
+                }
               }}
             >
               Raasta
             </Typography>
 
-            {/* Heading */}
-
             <Typography
-              variant="h4"
-              sx={{
-                fontWeight: 600,
-                mt: 1,
-                fontSize: {
-                  xs: "1.8rem",
-                  sm: "2.3rem",
-                  md: "2.6rem"
-                }
-              }}
-            >
-              Welcome to Raasta
-            </Typography>
-
-            <Typography
-              variant="h6"
+              variant="h5"
               sx={{
                 color: "text.secondary",
                 mt: 1
               }}
             >
-              The Smart Bus Route Finder
+              Smart Bus Route Finder
             </Typography>
 
-            {/* Description */}
-
             <Typography
+              variant="body1"
               sx={{
-                maxWidth: 650,
-                mx: "auto",
-                mt: 3,
                 color: "text.secondary",
-                fontSize: {
-                  xs: "1rem",
-                  sm: "1.1rem"
-                },
-                lineHeight: 1.8
+                maxWidth: 600,
+                mx: "auto",
+                mt: 2
               }}
             >
               Tell us where you want to go,
               and Raasta will explain how to
-              get there using public transport.
+              get there.
             </Typography>
 
-            {/* City Button */}
+            {/* CITY BUTTON */}
 
             <Box
               sx={{
@@ -475,52 +433,43 @@ export default function Home() {
             >
               <Button
                 variant="contained"
-                size="large"
-                startIcon={
-                  <LocationCityIcon />
-                }
                 onClick={
                   handleOpenCityDialog
                 }
                 sx={{
+                  backgroundColor: "#e3f2fd",
+                  color: "#1976d2",
+                  borderRadius: "50px",
                   px: {
                     xs: 3,
-                    sm: 5
+                    sm: 4
                   },
-                  py: 1.7,
-                  borderRadius: 50,
+                  py: 1.5,
                   textTransform: "none",
                   fontSize: {
-                    xs: "0.95rem",
-                    sm: "1.05rem"
+                    xs: "0.9rem",
+                    sm: "1rem"
                   },
-                  backgroundColor:
-                    "#e3f2fd",
-                  color: "primary.main",
-                  border:
-                    "1px solid #90caf9",
                   boxShadow:
-                    "0 5px 20px rgba(25,118,210,0.15)",
+                    "0 3px 10px rgba(25,118,210,0.15)",
+
                   animation:
-                    "raastaPulse 2.2s ease-in-out infinite",
+                    "raastaPulse 2s ease-in-out infinite",
 
                   "&:hover": {
-                    backgroundColor:
-                      "#bbdefb"
+                    backgroundColor: "#bbdefb",
+                    color: "#1565c0"
                   },
 
                   "@keyframes raastaPulse": {
                     "0%": {
-                      transform:
-                        "scale(1)"
+                      transform: "scale(1)"
                     },
                     "50%": {
-                      transform:
-                        "scale(1.05)"
+                      transform: "scale(1.05)"
                     },
                     "100%": {
-                      transform:
-                        "scale(1)"
+                      transform: "scale(1)"
                     }
                   }
                 }}
@@ -529,37 +478,21 @@ export default function Home() {
                 the Route
               </Button>
             </Box>
-
-            {/* Small Information */}
-
-            <Typography
-              variant="body2"
-              sx={{
-                mt: 4,
-                color: "text.secondary"
-              }}
-            >
-              Find your bus. Understand
-              your journey.
-            </Typography>
           </Box>
+
         </Container>
 
         {/* CITY DIALOG */}
 
         <Dialog
           open={cityDialogOpen}
-          onClose={
-            handleCloseCityDialog
+          onClose={() =>
+            setCityDialogOpen(false)
           }
           fullWidth
           maxWidth="sm"
         >
-          <DialogTitle
-            sx={{
-              fontWeight: 700
-            }}
-          >
+          <DialogTitle>
             Select Your City
           </DialogTitle>
 
@@ -625,12 +558,12 @@ export default function Home() {
           <DialogActions
             sx={{
               px: 3,
-              pb: 3
+              pb: 2
             }}
           >
             <Button
-              onClick={
-                handleCloseCityDialog
+              onClick={() =>
+                setCityDialogOpen(false)
               }
               sx={{
                 textTransform: "none"
@@ -649,8 +582,7 @@ export default function Home() {
                 loadingStops
               }
               sx={{
-                textTransform: "none",
-                borderRadius: 2
+                textTransform: "none"
               }}
             >
               {loadingStops ? (
@@ -662,7 +594,6 @@ export default function Home() {
                       mr: 1
                     }}
                   />
-
                   Loading...
                 </>
               ) : (
@@ -675,9 +606,9 @@ export default function Home() {
     );
   }
 
-  // =========================
-  // ROUTE FORM PAGE
-  // =========================
+  // ==========================================================
+  // ROUTE FORM
+  // ==========================================================
 
   return (
     <Box
@@ -685,43 +616,42 @@ export default function Home() {
         minHeight: "100vh",
         backgroundColor: "#f5f7fa",
         py: {
-          xs: 3,
-          md: 6
+          xs: 4,
+          md: 7
         }
       }}
     >
       <Container maxWidth="md">
 
-        {/* Back Button */}
+        {/* BACK TO HOME */}
 
         <Button
-          startIcon={<ArrowBackIcon />}
           onClick={handleBackToHome}
           sx={{
             mb: 3,
-            textTransform: "none",
-            fontWeight: 600
+            textTransform: "none"
           }}
         >
-          Back to Home
+          ← Back to Home
         </Button>
 
-        {/* Header */}
+        {/* HERO */}
 
         <Box
           sx={{
             textAlign: "center",
-            mb: 4
+            mb: 5
           }}
         >
           <Typography
+            variant="h2"
+            component="h1"
             sx={{
-              fontWeight: 800,
+              fontWeight: 700,
               fontSize: {
-                xs: "2.8rem",
-                sm: "4rem"
-              },
-              color: "primary.main"
+                xs: "2.5rem",
+                sm: "3.5rem"
+              }
             }}
           >
             Raasta
@@ -730,95 +660,64 @@ export default function Home() {
           <Typography
             variant="h5"
             sx={{
-              fontWeight: 600,
+              color: "text.secondary",
               mt: 1
             }}
           >
-            Find Your Bus Route
+            Smart Bus Route Finder
           </Typography>
 
-          {/* Selected City */}
-
-          <Box
+          <Typography
+            variant="body1"
             sx={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 1,
-              mt: 2,
-              px: 2,
-              py: 1,
-              borderRadius: 50,
-              backgroundColor:
-                "#e3f2fd",
-              color: "primary.main"
+              color: "text.secondary",
+              maxWidth: 600,
+              mx: "auto",
+              mt: 2
             }}
           >
-            <LocationCityIcon
-              fontSize="small"
-            />
-
-            <Typography
-              variant="body2"
-              sx={{
-                fontWeight: 600
-              }}
-            >
+            Selected city:{" "}
+            <strong>
               {selectedCity?.name}
-            </Typography>
-          </Box>
+            </strong>
+          </Typography>
         </Box>
 
-        {/* Error */}
-
-        {error && (
-          <Alert
-            severity="error"
-            sx={{
-              mb: 3
-            }}
-            onClose={() =>
-              setError("")
-            }
-          >
-            {error}
-          </Alert>
-        )}
-
-        {/* Route Form */}
+        {/* FORM */}
 
         <Paper
           elevation={3}
           sx={{
             p: {
-              xs: 2.5,
+              xs: 3,
               sm: 4
             },
             borderRadius: 3
           }}
         >
-          <Box
+          <Typography
+            variant="h5"
             sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
+              fontWeight: 600,
               mb: 3
             }}
           >
-            <DirectionsBusIcon
-              color="primary"
-            />
+            Find Your Route
+          </Typography>
 
-            <Typography
-              variant="h5"
+          {error && (
+            <Alert
+              severity="error"
               sx={{
-                fontWeight: 600
+                mb: 3
               }}
+              onClose={() =>
+                setError("")
+              }
             >
-              Where do you want to go?
-            </Typography>
-          </Box>
-
-          {/* Loading Stops */}
+              {error}
+            </Alert>
+          )}
 
           {loadingStops ? (
             <Box
@@ -833,7 +732,7 @@ export default function Home() {
             </Box>
           ) : (
             <>
-              {/* Starting Stop */}
+              {/* STARTING STOP */}
 
               <TextField
                 select
@@ -870,19 +769,16 @@ export default function Home() {
                 ))}
               </TextField>
 
-              {/* Swap */}
+              {/* SWAP */}
 
               <Box
                 sx={{
                   display: "flex",
-                  justifyContent:
-                    "center",
+                  justifyContent: "center",
                   my: 1
                 }}
               >
-                <Tooltip
-                  title="Swap starting point and destination"
-                >
+                <Tooltip title="Swap starting point and destination">
                   <span>
                     <IconButton
                       onClick={
@@ -915,7 +811,7 @@ export default function Home() {
                 </Tooltip>
               </Box>
 
-              {/* Destination */}
+              {/* DESTINATION */}
 
               <TextField
                 select
@@ -953,7 +849,7 @@ export default function Home() {
                 ))}
               </TextField>
 
-              {/* Search */}
+              {/* SEARCH */}
 
               <Button
                 fullWidth
@@ -990,9 +886,9 @@ export default function Home() {
           )}
         </Paper>
 
-        {/* =========================
+        {/* ==================================================
             SEARCH RESULTS
-        ========================= */}
+        ================================================== */}
 
         {results && (
           <Box
@@ -1010,101 +906,90 @@ export default function Home() {
               Your Journey
             </Typography>
 
-            {/* No Results */}
+            {/* NO RESULTS */}
 
             {results.count === 0 && (
               <Alert severity="info">
                 We could not find a direct
-                or one-transfer route
-                between these stops.
+                or one-transfer route between
+                these stops.
               </Alert>
             )}
 
-            {/* Direct Route */}
+            {/* DIRECT ROUTE */}
 
             {results.type === "direct" &&
-              results.data.map(
-                (route) => (
-                  <Paper
-                    key={
-                      route.routeId
-                    }
-                    elevation={2}
+              results.data.map((route) => (
+                <Paper
+                  key={route.routeId}
+                  elevation={2}
+                  sx={{
+                    p: {
+                      xs: 3,
+                      sm: 4
+                    },
+                    mb: 3,
+                    borderRadius: 3
+                  }}
+                >
+                  <Typography
+                    variant="overline"
+                    color="primary"
                     sx={{
-                      p: {
-                        xs: 3,
-                        sm: 4
-                      },
-                      mb: 3,
-                      borderRadius: 3
+                      fontWeight: 700
                     }}
                   >
-                    <Typography
-                      variant="overline"
-                      color="primary"
-                      sx={{
-                        fontWeight: 700
-                      }}
-                    >
-                      Direct Route
-                    </Typography>
+                    Direct Route
+                  </Typography>
 
-                    <Typography
-                      variant="h5"
-                      sx={{
-                        fontWeight: 600,
-                        mt: 0.5
-                      }}
-                    >
-                      Bus{" "}
-                      {
-                        route.routeNumber
-                      }
-                    </Typography>
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      fontWeight: 600,
+                      mt: 0.5
+                    }}
+                  >
+                    Bus{" "}
+                    {route.routeNumber}
+                  </Typography>
 
-                    <Typography
-                      variant="body1"
-                      color="text.secondary"
-                      sx={{
-                        mt: 0.5
-                      }}
-                    >
-                      {
-                        route.routeName
-                      }
-                    </Typography>
+                  <Typography
+                    variant="body1"
+                    color="text.secondary"
+                    sx={{
+                      mt: 0.5
+                    }}
+                  >
+                    {route.routeName}
+                  </Typography>
 
-                    <Divider
-                      sx={{
-                        my: 3
-                      }}
-                    />
+                  <Divider
+                    sx={{
+                      my: 3
+                    }}
+                  />
 
-                    <Typography
-                      variant="subtitle1"
-                      sx={{
-                        fontWeight: 600
-                      }}
-                    >
-                      Your stops
-                    </Typography>
+                  <Typography
+                    variant="subtitle1"
+                    sx={{
+                      fontWeight: 600
+                    }}
+                  >
+                    Your stops
+                  </Typography>
 
-                    {renderStops(
-                      route.stops
-                    )}
-                  </Paper>
-                )
-              )}
+                  {renderStops(
+                    route.stops
+                  )}
+                </Paper>
+              ))}
 
-            {/* One Transfer */}
+            {/* ONE TRANSFER */}
 
             {results.type ===
               "one-transfer" &&
               results.data.map(
-                (
-                  route,
-                  index
-                ) => (
+                (route, index) => (
                   <Paper
                     key={index}
                     elevation={2}
@@ -1137,7 +1022,7 @@ export default function Home() {
                       Your Journey
                     </Typography>
 
-                    {/* First Bus */}
+                    {/* FIRST BUS */}
 
                     <Box
                       sx={{
@@ -1176,7 +1061,7 @@ export default function Home() {
                       )}
                     </Box>
 
-                    {/* Transfer */}
+                    {/* TRANSFER */}
 
                     <Alert
                       severity="warning"
@@ -1238,8 +1123,7 @@ export default function Home() {
                           },
                           fontWeight: 600,
                           direction: "rtl",
-                          textAlign:
-                            "left"
+                          textAlign: "left"
                         }}
                       >
                         {
@@ -1252,7 +1136,7 @@ export default function Home() {
                       </Typography>
                     </Alert>
 
-                    {/* Second Bus */}
+                    {/* SECOND BUS */}
 
                     <Box>
                       <Typography
