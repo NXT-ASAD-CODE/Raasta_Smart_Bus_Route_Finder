@@ -118,7 +118,7 @@ export default function Home() {
   };
 
   // =========================
-  // CONTINUE AFTER CITY
+  // CONTINUE WITH CITY
   // =========================
 
   const handleContinueCity = async () => {
@@ -144,7 +144,7 @@ export default function Home() {
 
       const allStops = response.data || [];
 
-      // Only show stops from selected city
+      // Only show stops belonging to selected city
       const cityStops = allStops.filter((stop) => {
         const stopCityId =
           stop.city?._id || stop.city;
@@ -164,7 +164,7 @@ export default function Home() {
 
       setCityDialogOpen(false);
 
-      // Change landing page into form
+      // Replace landing page with route form
       setShowRouteForm(true);
     } catch (error) {
       setError(error.message);
@@ -273,11 +273,12 @@ export default function Home() {
 
           return (
             <Step
-              key={`${stop.id ||
+              key={`${
+                stop.id ||
                 stop._id ||
                 stop.stop?._id ||
                 index
-                }-${index}`}
+              }-${index}`}
               active
               completed={
                 index <
@@ -330,7 +331,7 @@ export default function Home() {
                       },
                       fontWeight:
                         index ===
-                          journeyStops.length - 1
+                        journeyStops.length - 1
                           ? 600
                           : 400
                     }}
@@ -367,119 +368,527 @@ export default function Home() {
       <Box
         sx={{
           minHeight: "100vh",
-          backgroundColor: "#f5f7fa",
+          background:
+            "linear-gradient(135deg, #f8fbff 0%, #eef7ff 50%, #ffffff 100%)",
           display: "flex",
           alignItems: "center",
+          position: "relative",
+          overflow: "hidden",
           py: {
-            xs: 4,
-            md: 7
+            xs: 5,
+            md: 8
           }
         }}
       >
-        <Container maxWidth="md">
+        {/* Decorative Circle */}
 
+        <Box
+          sx={{
+            position: "absolute",
+            width: {
+              xs: 220,
+              md: 380
+            },
+            height: {
+              xs: 220,
+              md: 380
+            },
+            borderRadius: "50%",
+            background:
+              "rgba(25, 118, 210, 0.07)",
+            top: {
+              xs: -80,
+              md: -130
+            },
+            right: {
+              xs: -80,
+              md: -100
+            }
+          }}
+        />
+
+        {/* Decorative Circle */}
+
+        <Box
+          sx={{
+            position: "absolute",
+            width: {
+              xs: 180,
+              md: 280
+            },
+            height: {
+              xs: 180,
+              md: 280
+            },
+            borderRadius: "50%",
+            background:
+              "rgba(25, 118, 210, 0.05)",
+            bottom: -100,
+            left: -80
+          }}
+        />
+
+        <Container
+          maxWidth="lg"
+          sx={{
+            position: "relative",
+            zIndex: 1
+          }}
+        >
           {/* HERO */}
 
           <Box
             sx={{
-              textAlign: "center"
+              textAlign: "center",
+              maxWidth: 850,
+              mx: "auto"
             }}
           >
+            {/* Badge */}
+
+            <Box
+              sx={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 1,
+                px: 2,
+                py: 0.8,
+                borderRadius: 50,
+                backgroundColor: "#ffffff",
+                border: "1px solid #dbeafe",
+                boxShadow:
+                  "0 4px 15px rgba(0,0,0,0.05)",
+                mb: 3
+              }}
+            >
+              <Box
+                sx={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: "50%",
+                  backgroundColor: "#1976d2"
+                }}
+              />
+
+              <Typography
+                variant="body2"
+                sx={{
+                  fontWeight: 600,
+                  color: "#1976d2",
+                  letterSpacing: 1
+                }}
+              >
+                SMART PUBLIC TRANSPORT
+              </Typography>
+            </Box>
+
+            {/* Main Raasta Heading */}
+
             <Typography
-              variant="h2"
               component="h1"
               sx={{
-                fontWeight: 700,
+                fontWeight: 800,
                 fontSize: {
-                  xs: "3rem",
-                  sm: "4.5rem"
+                  xs: "3.4rem",
+                  sm: "5rem",
+                  md: "6.5rem"
                 },
-                color: "#000"
+                lineHeight: 0.95,
+                letterSpacing: "-4px",
+                color: "#111827"
               }}
             >
               Raasta
             </Typography>
 
-            <Typography
-              variant="h5"
-              sx={{
-                color: "text.secondary",
-                mt: 1
-              }}
-            >
-              Smart Bus Route Finder
-            </Typography>
+            {/* Subtitle */}
 
             <Typography
-              variant="body1"
               sx={{
-                color: "text.secondary",
-                maxWidth: 600,
+                mt: 2,
+                fontWeight: 600,
+                fontSize: {
+                  xs: "1.5rem",
+                  sm: "2rem",
+                  md: "2.4rem"
+                },
+                color: "#374151"
+              }}
+            >
+              Your Journey Starts Here.
+            </Typography>
+
+            {/* Description */}
+
+            <Typography
+              sx={{
+                mt: 2,
+                maxWidth: 650,
                 mx: "auto",
-                mt: 2
+                color: "#6b7280",
+                fontSize: {
+                  xs: "1rem",
+                  sm: "1.1rem"
+                },
+                lineHeight: 1.8
               }}
             >
               Tell us where you want to go,
-              and Raasta will explain how to
-              get there.
+              and Raasta will explain which bus
+              to take, where to get off, and how
+              to complete your journey.
             </Typography>
 
-            {/* CITY BUTTON */}
+            {/* Route Visual */}
 
             <Box
               sx={{
-                mt: 5
+                position: "relative",
+                width: "100%",
+                maxWidth: 650,
+                height: 100,
+                mx: "auto",
+                my: 4
               }}
             >
-              <Button
-                variant="contained"
-                onClick={
-                  handleOpenCityDialog
-                }
+              {/* Route Line */}
+
+              <Box
                 sx={{
-                  backgroundColor: "#e3f2fd",
-                  color: "#1976d2",
-                  borderRadius: "50px",
-                  px: {
-                    xs: 3,
-                    sm: 4
-                  },
-                  py: 1.5,
-                  textTransform: "none",
-                  fontSize: {
-                    xs: "0.9rem",
-                    sm: "1rem"
-                  },
+                  position: "absolute",
+                  left: "8%",
+                  right: "8%",
+                  top: "50%",
+                  height: 3,
+                  backgroundColor: "#90caf9",
+                  transform:
+                    "translateY(-50%)"
+                }}
+              />
+
+              {/* Start */}
+
+              <Box
+                sx={{
+                  position: "absolute",
+                  left: "5%",
+                  top: "50%",
+                  transform:
+                    "translate(-50%, -50%)",
+                  width: 20,
+                  height: 20,
+                  borderRadius: "50%",
+                  backgroundColor: "#ffffff",
+                  border:
+                    "5px solid #1976d2",
+                  zIndex: 2
+                }}
+              />
+
+              {/* Middle */}
+
+              <Box
+                sx={{
+                  position: "absolute",
+                  left: "50%",
+                  top: "50%",
+                  transform:
+                    "translate(-50%, -50%)",
+                  width: 24,
+                  height: 24,
+                  borderRadius: "50%",
+                  backgroundColor: "#1976d2",
+                  border:
+                    "5px solid #ffffff",
                   boxShadow:
-                    "0 3px 10px rgba(25,118,210,0.15)",
+                    "0 0 0 3px #90caf9",
+                  zIndex: 2
+                }}
+              />
 
-                  animation:
-                    "raastaPulse 2s ease-in-out infinite",
+              {/* Destination */}
 
-                  "&:hover": {
-                    backgroundColor: "#bbdefb",
-                    color: "#1565c0"
-                  },
+              <Box
+                sx={{
+                  position: "absolute",
+                  right: "5%",
+                  top: "50%",
+                  transform:
+                    "translate(50%, -50%)",
+                  width: 20,
+                  height: 20,
+                  borderRadius: "50%",
+                  backgroundColor: "#ffffff",
+                  border:
+                    "5px solid #1976d2",
+                  zIndex: 2
+                }}
+              />
 
-                  "@keyframes raastaPulse": {
-                    "0%": {
-                      transform: "scale(1)"
-                    },
-                    "50%": {
-                      transform: "scale(1.05)"
-                    },
-                    "100%": {
-                      transform: "scale(1)"
-                    }
-                  }
+              {/* Start Label */}
+
+              <Typography
+                sx={{
+                  position: "absolute",
+                  left: "1%",
+                  top: "75%",
+                  fontSize: "0.8rem",
+                  color: "#6b7280"
                 }}
               >
-                Select Your City to Check
-                the Route
-              </Button>
+                Start
+              </Typography>
+
+              {/* Journey Label */}
+
+              <Typography
+                sx={{
+                  position: "absolute",
+                  left: "50%",
+                  top: "75%",
+                  transform:
+                    "translateX(-50%)",
+                  fontSize: "0.8rem",
+                  color: "#1976d2",
+                  fontWeight: 600
+                }}
+              >
+                Your Journey
+              </Typography>
+
+              {/* Destination Label */}
+
+              <Typography
+                sx={{
+                  position: "absolute",
+                  right: "0%",
+                  top: "75%",
+                  fontSize: "0.8rem",
+                  color: "#6b7280"
+                }}
+              >
+                Destination
+              </Typography>
             </Box>
+
+            {/* CITY BUTTON */}
+
+            <Button
+              variant="contained"
+              onClick={
+                handleOpenCityDialog
+              }
+              sx={{
+                backgroundColor: "#e3f2fd",
+                color: "#1976d2",
+                borderRadius: "50px",
+                px: {
+                  xs: 3,
+                  sm: 4
+                },
+                py: 1.5,
+                textTransform: "none",
+                fontSize: {
+                  xs: "0.9rem",
+                  sm: "1rem"
+                },
+                fontWeight: 600,
+                boxShadow:
+                  "0 5px 20px rgba(25,118,210,0.15)",
+
+                animation:
+                  "raastaPulse 2s ease-in-out infinite",
+
+                "&:hover": {
+                  backgroundColor: "#bbdefb",
+                  color: "#1565c0"
+                },
+
+                "@keyframes raastaPulse": {
+                  "0%": {
+                    transform: "scale(1)"
+                  },
+                  "50%": {
+                    transform: "scale(1.05)"
+                  },
+                  "100%": {
+                    transform: "scale(1)"
+                  }
+                }
+              }}
+            >
+              Select Your City to Check the Route
+            </Button>
           </Box>
 
+          {/* FEATURE CARDS */}
+
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "1fr",
+                sm: "repeat(3, 1fr)"
+              },
+              gap: 2,
+              maxWidth: 850,
+              mx: "auto",
+              mt: 7
+            }}
+          >
+            {/* Feature 1 */}
+
+            <Paper
+              elevation={0}
+              sx={{
+                p: 2.5,
+                borderRadius: 3,
+                textAlign: "center",
+                backgroundColor:
+                  "rgba(255,255,255,0.8)",
+                border:
+                  "1px solid #e5e7eb",
+                transition: "0.3s",
+
+                "&:hover": {
+                  transform:
+                    "translateY(-5px)",
+                  boxShadow:
+                    "0 12px 30px rgba(0,0,0,0.08)"
+                }
+              }}
+            >
+              <Typography
+                sx={{
+                  fontSize: "1.8rem",
+                  mb: 1
+                }}
+              >
+                🚌
+              </Typography>
+
+              <Typography
+                sx={{
+                  fontWeight: 700
+                }}
+              >
+                Simple Routes
+              </Typography>
+
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{
+                  mt: 0.5
+                }}
+              >
+                Find the bus you need
+                without confusion.
+              </Typography>
+            </Paper>
+
+            {/* Feature 2 */}
+
+            <Paper
+              elevation={0}
+              sx={{
+                p: 2.5,
+                borderRadius: 3,
+                textAlign: "center",
+                backgroundColor:
+                  "rgba(255,255,255,0.8)",
+                border:
+                  "1px solid #e5e7eb",
+                transition: "0.3s",
+
+                "&:hover": {
+                  transform:
+                    "translateY(-5px)",
+                  boxShadow:
+                    "0 12px 30px rgba(0,0,0,0.08)"
+                }
+              }}
+            >
+              <Typography
+                sx={{
+                  fontSize: "1.8rem",
+                  mb: 1
+                }}
+              >
+                🔄
+              </Typography>
+
+              <Typography
+                sx={{
+                  fontWeight: 700
+                }}
+              >
+                Easy Transfers
+              </Typography>
+
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{
+                  mt: 0.5
+                }}
+              >
+                Know when to change
+                from one bus to another.
+              </Typography>
+            </Paper>
+
+            {/* Feature 3 */}
+
+            <Paper
+              elevation={0}
+              sx={{
+                p: 2.5,
+                borderRadius: 3,
+                textAlign: "center",
+                backgroundColor:
+                  "rgba(255,255,255,0.8)",
+                border:
+                  "1px solid #e5e7eb",
+                transition: "0.3s",
+
+                "&:hover": {
+                  transform:
+                    "translateY(-5px)",
+                  boxShadow:
+                    "0 12px 30px rgba(0,0,0,0.08)"
+                }
+              }}
+            >
+              <Typography
+                sx={{
+                  fontSize: "1.8rem",
+                  mb: 1
+                }}
+              >
+                اردو
+              </Typography>
+
+              <Typography
+                sx={{
+                  fontWeight: 700
+                }}
+              >
+                Urdu + English
+              </Typography>
+
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{
+                  mt: 0.5
+                }}
+              >
+                Understand your journey
+                in your preferred language.
+              </Typography>
+            </Paper>
+          </Box>
         </Container>
 
         {/* CITY DIALOG */}
@@ -492,7 +901,11 @@ export default function Home() {
           fullWidth
           maxWidth="sm"
         >
-          <DialogTitle>
+          <DialogTitle
+            sx={{
+              fontWeight: 600
+            }}
+          >
             Select Your City
           </DialogTitle>
 
@@ -594,6 +1007,7 @@ export default function Home() {
                       mr: 1
                     }}
                   />
+
                   Loading...
                 </>
               ) : (
@@ -607,7 +1021,7 @@ export default function Home() {
   }
 
   // ==========================================================
-  // ROUTE FORM
+  // ROUTE FORM PAGE
   // ==========================================================
 
   return (
@@ -652,7 +1066,7 @@ export default function Home() {
                 xs: "2.5rem",
                 sm: "3.5rem"
               },
-              color: "#000"
+              color: "#111827"
             }}
           >
             Raasta
@@ -684,7 +1098,7 @@ export default function Home() {
           </Typography>
         </Box>
 
-        {/* FORM */}
+        {/* SEARCH CARD */}
 
         <Paper
           elevation={3}
@@ -850,7 +1264,7 @@ export default function Home() {
                 ))}
               </TextField>
 
-              {/* SEARCH */}
+              {/* SEARCH BUTTON */}
 
               <Button
                 fullWidth
@@ -985,7 +1399,7 @@ export default function Home() {
                 </Paper>
               ))}
 
-            {/* ONE TRANSFER */}
+            {/* ONE TRANSFER ROUTE */}
 
             {results.type ===
               "one-transfer" &&
@@ -1099,17 +1513,17 @@ export default function Home() {
                         {route
                           .transferStop
                           .nameUrdu && (
-                            <>
-                              {" "}
-                              (
-                              {
-                                route
-                                  .transferStop
-                                  .nameUrdu
-                              }
-                              )
-                            </>
-                          )}{" "}
+                          <>
+                            {" "}
+                            (
+                            {
+                              route
+                                .transferStop
+                                .nameUrdu
+                            }
+                            )
+                          </>
+                        )}{" "}
                         and take the next
                         bus.
                       </Typography>
