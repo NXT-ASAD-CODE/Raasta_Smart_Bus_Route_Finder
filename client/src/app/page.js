@@ -33,7 +33,7 @@ import {
   getCities,
   getStops,
   searchRoutes
-} from "./services/api";
+} from "../services/api";
 
 export default function Home() {
   // =========================
