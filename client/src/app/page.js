@@ -1625,6 +1625,10 @@ function DirectRouteCard({ route }) {
    TRANSFER ROUTE CARD
 ========================================================= */
 
+/* =========================================================
+   TRANSFER ROUTE CARD
+========================================================= */
+
 function TransferRouteCard({ route }) {
     const journey = route.journey || [];
 
@@ -1633,8 +1637,7 @@ function TransferRouteCard({ route }) {
             elevation={0}
             sx={{
                 borderRadius: "20px",
-                border:
-                    "1px solid #dbe5f0",
+                border: "1px solid #dbe5f0",
                 backgroundColor: "#ffffff"
             }}
         >
@@ -1652,56 +1655,14 @@ function TransferRouteCard({ route }) {
                     }
                 }}
             >
-                <Box
-                    sx={{
-                        p: 2,
-                        borderRadius: "14px",
-                        backgroundColor: "#fff8e1",
-                        border:
-                            "1px solid #fde68a",
-                        mb: 3,
-                        display: "flex",
-                        alignItems: "flex-start",
-                        gap: 1.5
-                    }}
-                >
-                    <TransferWithinAStationIcon
-                        sx={{
-                            color: "#d97706",
-                            mt: 0.2
-                        }}
-                    />
-
-                    <Box>
-                        <Typography
-                            sx={{
-                                fontWeight: 800,
-                                color: "#92400e"
-                            }}
-                        >
-                            Change Bus at
-                        </Typography>
-
-                        <Typography
-                            sx={{
-                                color: "#78350f",
-                                mt: 0.3
-                            }}
-                        >
-                            {getTransferStopName(
-                                route.transferStop
-                            )}
-                        </Typography>
-                    </Box>
-                </Box>
-
                 {journey.map((leg, index) => (
                     <Box key={index}>
+                        {/* Bus heading */}
+
                         <Box
                             sx={{
                                 display: "flex",
-                                alignItems:
-                                    "center",
+                                alignItems: "center",
                                 gap: 1,
                                 mb: 1.5
                             }}
@@ -1730,19 +1691,69 @@ function TransferRouteCard({ route }) {
                             </Typography>
                         </Box>
 
+                        {/* This bus's journey */}
+
                         <JourneyTimeline
-                            stops={
-                                leg.stops || []
-                            }
+                            stops={leg.stops || []}
                         />
 
-                        {index <
-                            journey.length - 1 && (
-                            <Divider
-                                sx={{
-                                    my: 3
-                                }}
-                            />
+                        {/* 
+                            CHANGE BUS ALERT
+                            Appears AFTER the current bus journey
+                            and BEFORE the next bus journey.
+                        */}
+
+                        {index < journey.length - 1 && (
+                            <>
+                                <Box
+                                    sx={{
+                                        my: 3,
+                                        p: 2,
+                                        borderRadius: "14px",
+                                        backgroundColor: "#fff8e1",
+                                        border: "1px solid #fde68a",
+                                        display: "flex",
+                                        alignItems: "flex-start",
+                                        gap: 1.5
+                                    }}
+                                >
+                                    <TransferWithinAStationIcon
+                                        sx={{
+                                            color: "#d97706",
+                                            mt: 0.2
+                                        }}
+                                    />
+
+                                    <Box>
+                                        <Typography
+                                            sx={{
+                                                fontWeight: 800,
+                                                color: "#92400e"
+                                            }}
+                                        >
+                                            Change Bus at
+                                        </Typography>
+
+                                        <Typography
+                                            sx={{
+                                                color: "#78350f",
+                                                mt: 0.3,
+                                                fontSize: "1rem"
+                                            }}
+                                        >
+                                            {getTransferStopName(
+                                                route.transferStop
+                                            )}
+                                        </Typography>
+                                    </Box>
+                                </Box>
+
+                                <Divider
+                                    sx={{
+                                        mb: 3
+                                    }}
+                                />
+                            </>
                         )}
                     </Box>
                 ))}
