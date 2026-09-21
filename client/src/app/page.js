@@ -1581,39 +1581,56 @@ function TransferRouteCard({ route }) {
                                 </Typography>
                             </Box>
 
-                            <Typography
+                            <Box
                                 sx={{
-                                    fontWeight:
-                                        800,
-                                    fontSize:
-                                        "1.05rem",
-                                    color:
-                                        "#78350f"
+                                    display: "flex",
+                                    alignItems:
+                                        "center",
+                                    flexWrap: "wrap",
+                                    columnGap: 1.5
                                 }}
                             >
-                                {
-                                    route
-                                        .transferStop
-                                        .name
-                                }
-                            </Typography>
-
-                            {route.transferStop
-                                .nameUrdu && (
                                 <Typography
+                                    component="span"
                                     sx={{
+                                        fontWeight:
+                                            800,
+                                        fontSize:
+                                            "1.05rem",
                                         color:
-                                            "#92400e",
-                                        mt: 0.5
+                                            "#78350f"
                                     }}
                                 >
                                     {
                                         route
                                             .transferStop
-                                            .nameUrdu
+                                            .name
                                     }
                                 </Typography>
-                            )}
+
+                                {route.transferStop
+                                    .nameUrdu && (
+                                    <Typography
+                                        component="span"
+                                        lang="ur"
+                                        dir="rtl"
+                                        sx={{
+                                            color:
+                                                "#78350f",
+                                            fontSize:
+                                                "1.4rem",
+                                            fontWeight: 600,
+                                            lineHeight: 1.8
+                                        }}
+                                    >
+                                        {
+                                            route
+                                                .transferStop
+                                                .nameUrdu
+                                        }
+                                    </Typography>
+                                )}
+                            </Box>
                         </Box>
                     </Box>
                 )}
@@ -1824,42 +1841,57 @@ function JourneyTimeline({ stops = [] }) {
                                     : 2.5
                             }}
                         >
-                            <Typography
+                            <Box
                                 sx={{
-                                    fontWeight:
-                                        isFirst ||
-                                        isLast
-                                            ? 800
-                                            : 500,
-                                    fontSize:
-                                        isFirst ||
-                                        isLast
-                                            ? "1rem"
-                                            : "0.95rem",
-                                    color:
-                                        isFirst
-                                            ? "#1565c0"
-                                            : isLast
-                                            ? "#0f172a"
-                                            : "#475569"
+                                    display: "flex",
+                                    alignItems:
+                                        "center",
+                                    flexWrap: "wrap",
+                                    columnGap: 1.5
                                 }}
                             >
-                                {stopName}
-                            </Typography>
-
-                            {stopUrdu && (
                                 <Typography
+                                    component="span"
                                     sx={{
-                                        color:
-                                            "#94a3b8",
+                                        fontWeight:
+                                            isFirst ||
+                                            isLast
+                                                ? 800
+                                                : 500,
                                         fontSize:
-                                            "0.82rem",
-                                        mt: 0.2
+                                            isFirst ||
+                                            isLast
+                                                ? "1rem"
+                                                : "0.95rem",
+                                        color:
+                                            isFirst
+                                                ? "#1565c0"
+                                                : isLast
+                                                ? "#0f172a"
+                                                : "#475569"
                                     }}
                                 >
-                                    {stopUrdu}
+                                    {stopName}
                                 </Typography>
-                            )}
+
+                                {stopUrdu && (
+                                    <Typography
+                                        component="span"
+                                        lang="ur"
+                                        dir="rtl"
+                                        sx={{
+                                            color:
+                                                "#0f172a",
+                                            fontSize:
+                                                "1.4rem",
+                                            fontWeight: 600,
+                                            lineHeight: 1.8
+                                        }}
+                                    >
+                                        {stopUrdu}
+                                    </Typography>
+                                )}
+                            </Box>
 
                             {isFirst && (
                                 <Typography
