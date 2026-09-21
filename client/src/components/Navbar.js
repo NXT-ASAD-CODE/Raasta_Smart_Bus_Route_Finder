@@ -23,22 +23,10 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 
 const navigationItems = [
-    {
-        label: "Home",
-        href: "/"
-    },
-    {
-        label: "Find Route",
-        href: "/find-route"
-    },
-    {
-        label: "Cities",
-        href: "/cities"
-    },
-    {
-        label: "About",
-        href: "/about"
-    }
+    { label: "Home", href: "/" },
+    { label: "Find Route", href: "/find-route" },
+    { label: "Cities", href: "/cities" },
+    { label: "About", href: "/about" }
 ];
 
 export default function Navbar() {
@@ -54,30 +42,24 @@ export default function Navbar() {
                 position="sticky"
                 elevation={0}
                 sx={{
-                    backgroundColor: "rgba(255, 255, 255, 0.92)",
-                    backdropFilter: "blur(12px)",
+                    background:
+                        "linear-gradient(135deg, #0d47a1 0%, #1976d2 55%, #42a5f5 100%)",
+                    color: "#ffffff",
                     borderBottom:
-                        "1px solid rgba(15, 23, 42, 0.08)",
-                    color: "#0f172a"
+                        "1px solid rgba(255, 255, 255, 0.15)",
+                    boxShadow:
+                        "0 4px 20px rgba(13, 71, 161, 0.25)"
                 }}
             >
                 <Toolbar
                     sx={{
-                        minHeight: {
-                            xs: 68,
-                            md: 76
-                        },
+                        minHeight: { xs: 68, md: 76 },
                         width: "100%",
                         maxWidth: "1250px",
                         mx: "auto",
-                        px: {
-                            xs: 2,
-                            sm: 3,
-                            md: 4
-                        }
+                        px: { xs: 2, sm: 3, md: 4 }
                     }}
                 >
-                    {/* Logo */}
                     <Box
                         component={Link}
                         href="/"
@@ -86,11 +68,8 @@ export default function Navbar() {
                             alignItems: "center",
                             gap: 1,
                             textDecoration: "none",
-                            color: "inherit",
-                            mr: {
-                                xs: "auto",
-                                md: 5
-                            }
+                            color: "#ffffff",
+                            mr: { xs: "auto", md: 5 }
                         }}
                     >
                         <Box
@@ -101,11 +80,13 @@ export default function Navbar() {
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
-                                background:
-                                    "linear-gradient(135deg, #1976d2, #42a5f5)",
-                                color: "#fff",
+                                backgroundColor:
+                                    "rgba(255, 255, 255, 0.16)",
+                                color: "#ffffff",
+                                border:
+                                    "1px solid rgba(255, 255, 255, 0.2)",
                                 boxShadow:
-                                    "0 6px 18px rgba(25, 118, 210, 0.25)"
+                                    "0 6px 18px rgba(0, 0, 0, 0.12)"
                             }}
                         >
                             <DirectionsBusIcon />
@@ -119,14 +100,13 @@ export default function Navbar() {
                                 },
                                 fontWeight: 800,
                                 letterSpacing: "-0.5px",
-                                color: "#0f172a"
+                                color: "#ffffff"
                             }}
                         >
                             Raasta
                         </Typography>
                     </Box>
 
-                    {/* Desktop Navigation */}
                     <Box
                         sx={{
                             display: {
@@ -143,18 +123,17 @@ export default function Navbar() {
                                 component={Link}
                                 href={item.href}
                                 sx={{
-                                    color: "#475569",
+                                    color: "rgba(255, 255, 255, 0.9)",
                                     textTransform: "none",
                                     fontSize: "0.95rem",
                                     fontWeight: 600,
                                     px: 1.8,
                                     py: 1,
                                     borderRadius: "10px",
-
                                     "&:hover": {
-                                        color: "#1976d2",
+                                        color: "#ffffff",
                                         backgroundColor:
-                                            "rgba(25, 118, 210, 0.07)"
+                                            "rgba(255, 255, 255, 0.12)"
                                     }
                                 }}
                             >
@@ -163,7 +142,6 @@ export default function Navbar() {
                         ))}
                     </Box>
 
-                    {/* Desktop CTA */}
                     <Box
                         sx={{
                             display: {
@@ -177,21 +155,23 @@ export default function Navbar() {
                             component={Link}
                             href="/find-route"
                             variant="contained"
-                            startIcon={
-                                <DirectionsBusIcon />
-                            }
+                            startIcon={<DirectionsBusIcon />}
                             disableElevation
                             sx={{
-                                backgroundColor: "#1976d2",
-                                color: "#fff",
+                                backgroundColor: "#ffffff",
+                                color: "#1565c0",
                                 textTransform: "none",
                                 fontWeight: 700,
                                 borderRadius: "12px",
                                 px: 2.3,
                                 py: 1.15,
-
+                                boxShadow:
+                                    "0 5px 15px rgba(0, 0, 0, 0.12)",
                                 "&:hover": {
-                                    backgroundColor: "#1565c0"
+                                    backgroundColor: "#f5f9ff",
+                                    color: "#0d47a1",
+                                    boxShadow:
+                                        "0 7px 18px rgba(0, 0, 0, 0.16)"
                                 }
                             }}
                         >
@@ -199,7 +179,6 @@ export default function Navbar() {
                         </Button>
                     </Box>
 
-                    {/* Mobile Menu Button */}
                     <IconButton
                         onClick={handleDrawerToggle}
                         aria-label="open navigation menu"
@@ -211,11 +190,10 @@ export default function Navbar() {
                             width: 44,
                             height: 44,
                             borderRadius: "12px",
-                            color: "#0f172a",
-
+                            color: "#ffffff",
                             "&:hover": {
                                 backgroundColor:
-                                    "rgba(15, 23, 42, 0.06)"
+                                    "rgba(255, 255, 255, 0.12)"
                             }
                         }}
                     >
@@ -224,7 +202,6 @@ export default function Navbar() {
                 </Toolbar>
             </AppBar>
 
-            {/* Mobile Drawer */}
             <Drawer
                 anchor="right"
                 open={mobileOpen}
@@ -237,14 +214,12 @@ export default function Navbar() {
                                 sm: 360
                             },
                             maxWidth: 360,
-                            borderRadius:
-                                "20px 0 0 20px",
+                            borderRadius: "20px 0 0 20px",
                             p: 2
                         }
                     }
                 }}
             >
-                {/* Drawer Header */}
                 <Box
                     sx={{
                         display: "flex",
@@ -271,12 +246,10 @@ export default function Navbar() {
                                 justifyContent: "center",
                                 background:
                                     "linear-gradient(135deg, #1976d2, #42a5f5)",
-                                color: "#fff"
+                                color: "#ffffff"
                             }}
                         >
-                            <DirectionsBusIcon
-                                fontSize="small"
-                            />
+                            <DirectionsBusIcon fontSize="small" />
                         </Box>
 
                         <Typography
@@ -297,31 +270,20 @@ export default function Navbar() {
                     </IconButton>
                 </Box>
 
-                {/* Mobile Navigation */}
-                <List
-                    sx={{
-                        mt: 2
-                    }}
-                >
+                <List sx={{ mt: 2 }}>
                     {navigationItems.map((item) => (
                         <ListItem
                             key={item.href}
                             disablePadding
-                            sx={{
-                                mb: 0.5
-                            }}
+                            sx={{ mb: 0.5 }}
                         >
                             <ListItemButton
                                 component={Link}
                                 href={item.href}
-                                onClick={
-                                    handleDrawerToggle
-                                }
+                                onClick={handleDrawerToggle}
                                 sx={{
-                                    borderRadius:
-                                        "12px",
+                                    borderRadius: "12px",
                                     py: 1.4,
-
                                     "&:hover": {
                                         backgroundColor:
                                             "rgba(25, 118, 210, 0.08)"
@@ -329,9 +291,7 @@ export default function Navbar() {
                                 }}
                             >
                                 <ListItemText
-                                    primary={
-                                        item.label
-                                    }
+                                    primary={item.label}
                                     primaryTypographyProps={{
                                         fontWeight: 600,
                                         color: "#334155"
@@ -342,7 +302,6 @@ export default function Navbar() {
                     ))}
                 </List>
 
-                {/* Mobile CTA */}
                 <Box
                     sx={{
                         mt: "auto",
@@ -354,19 +313,16 @@ export default function Navbar() {
                         href="/find-route"
                         variant="contained"
                         fullWidth
-                        startIcon={
-                            <DirectionsBusIcon />
-                        }
+                        startIcon={<DirectionsBusIcon />}
                         onClick={handleDrawerToggle}
                         disableElevation
                         sx={{
                             backgroundColor: "#1976d2",
-                            color: "#fff",
+                            color: "#ffffff",
                             textTransform: "none",
                             fontWeight: 700,
                             borderRadius: "12px",
                             py: 1.4,
-
                             "&:hover": {
                                 backgroundColor: "#1565c0"
                             }
