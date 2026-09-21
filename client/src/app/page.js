@@ -24,7 +24,6 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import FlagIcon from "@mui/icons-material/Flag";
 import SwapVertIcon from "@mui/icons-material/SwapVert";
 import SearchIcon from "@mui/icons-material/Search";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
 import RouteIcon from "@mui/icons-material/Route";
 import TransferWithinAStationIcon from "@mui/icons-material/TransferWithinAStation";
@@ -131,13 +130,6 @@ export default function Home() {
         setError("");
     };
 
-    const handleBackHome = () => {
-        setSelectedCity(null);
-        setFromStop("");
-        setToStop("");
-        setResults(null);
-        setError("");
-    };
 
     const cityStops = stops.filter(
         (stop) =>
@@ -475,30 +467,7 @@ export default function Home() {
                             }}
                         >
                             <Box>
-                                <Button
-                                    startIcon={
-                                        <ArrowBackIcon />
-                                    }
-                                    onClick={
-                                        handleBackHome
-                                    }
-                                    sx={{
-                                        textTransform:
-                                            "none",
-                                        color: "#64748b",
-                                        fontWeight: 600,
-                                        px: 0,
-                                        mb: 1,
-
-                                        "&:hover": {
-                                            background:
-                                                "transparent",
-                                            color: "#1976d2"
-                                        }
-                                    }}
-                                >
-                                    Back to Home
-                                </Button>
+                                
 
                                 <Typography
                                     sx={{

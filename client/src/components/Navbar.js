@@ -23,10 +23,22 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 
 const navigationItems = [
-    { label: "Home", href: "/" },
-    { label: "Find Route", href: "/find-route" },
-    { label: "Cities", href: "/cities" },
-    { label: "About", href: "/about" }
+    {
+        label: "Home",
+        href: "/"
+    },
+    {
+        label: "Find Route",
+        href: "/"
+    },
+    {
+        label: "Cities",
+        href: "/cities"
+    },
+    {
+        label: "About",
+        href: "/about"
+    }
 ];
 
 export default function Navbar() {
@@ -53,13 +65,22 @@ export default function Navbar() {
             >
                 <Toolbar
                     sx={{
-                        minHeight: { xs: 68, md: 76 },
+                        minHeight: {
+                            xs: 68,
+                            md: 76
+                        },
                         width: "100%",
                         maxWidth: "1250px",
                         mx: "auto",
-                        px: { xs: 2, sm: 3, md: 4 }
+                        px: {
+                            xs: 2,
+                            sm: 3,
+                            md: 4
+                        }
                     }}
                 >
+                    {/* Logo */}
+
                     <Box
                         component={Link}
                         href="/"
@@ -69,7 +90,10 @@ export default function Navbar() {
                             gap: 1,
                             textDecoration: "none",
                             color: "#ffffff",
-                            mr: { xs: "auto", md: 5 }
+                            mr: {
+                                xs: "auto",
+                                md: 5
+                            }
                         }}
                     >
                         <Box
@@ -107,6 +131,8 @@ export default function Navbar() {
                         </Typography>
                     </Box>
 
+                    {/* Desktop Navigation */}
+
                     <Box
                         sx={{
                             display: {
@@ -119,11 +145,12 @@ export default function Navbar() {
                     >
                         {navigationItems.map((item) => (
                             <Button
-                                key={item.href}
+                                key={item.label}
                                 component={Link}
                                 href={item.href}
                                 sx={{
-                                    color: "rgba(255, 255, 255, 0.9)",
+                                    color:
+                                        "rgba(255, 255, 255, 0.9)",
                                     textTransform: "none",
                                     fontSize: "0.95rem",
                                     fontWeight: 600,
@@ -142,6 +169,8 @@ export default function Navbar() {
                         ))}
                     </Box>
 
+                    {/* Desktop CTA */}
+
                     <Box
                         sx={{
                             display: {
@@ -153,9 +182,11 @@ export default function Navbar() {
                     >
                         <Button
                             component={Link}
-                            href="/find-route"
+                            href="/"
                             variant="contained"
-                            startIcon={<DirectionsBusIcon />}
+                            startIcon={
+                                <DirectionsBusIcon />
+                            }
                             disableElevation
                             sx={{
                                 backgroundColor: "#ffffff",
@@ -178,6 +209,8 @@ export default function Navbar() {
                             Find My Route
                         </Button>
                     </Box>
+
+                    {/* Mobile Menu Button */}
 
                     <IconButton
                         onClick={handleDrawerToggle}
@@ -202,6 +235,8 @@ export default function Navbar() {
                 </Toolbar>
             </AppBar>
 
+            {/* Mobile Drawer */}
+
             <Drawer
                 anchor="right"
                 open={mobileOpen}
@@ -214,17 +249,21 @@ export default function Navbar() {
                                 sm: 360
                             },
                             maxWidth: 360,
-                            borderRadius: "20px 0 0 20px",
+                            borderRadius:
+                                "20px 0 0 20px",
                             p: 2
                         }
                     }
                 }}
             >
+                {/* Drawer Header */}
+
                 <Box
                     sx={{
                         display: "flex",
                         alignItems: "center",
-                        justifyContent: "space-between",
+                        justifyContent:
+                            "space-between",
                         px: 1,
                         py: 1
                     }}
@@ -243,13 +282,16 @@ export default function Navbar() {
                                 borderRadius: "11px",
                                 display: "flex",
                                 alignItems: "center",
-                                justifyContent: "center",
+                                justifyContent:
+                                    "center",
                                 background:
                                     "linear-gradient(135deg, #1976d2, #42a5f5)",
                                 color: "#ffffff"
                             }}
                         >
-                            <DirectionsBusIcon fontSize="small" />
+                            <DirectionsBusIcon
+                                fontSize="small"
+                            />
                         </Box>
 
                         <Typography
@@ -270,19 +312,24 @@ export default function Navbar() {
                     </IconButton>
                 </Box>
 
+                {/* Drawer Navigation */}
+
                 <List sx={{ mt: 2 }}>
                     {navigationItems.map((item) => (
                         <ListItem
-                            key={item.href}
+                            key={item.label}
                             disablePadding
                             sx={{ mb: 0.5 }}
                         >
                             <ListItemButton
                                 component={Link}
                                 href={item.href}
-                                onClick={handleDrawerToggle}
+                                onClick={
+                                    handleDrawerToggle
+                                }
                                 sx={{
-                                    borderRadius: "12px",
+                                    borderRadius:
+                                        "12px",
                                     py: 1.4,
                                     "&:hover": {
                                         backgroundColor:
@@ -291,7 +338,9 @@ export default function Navbar() {
                                 }}
                             >
                                 <ListItemText
-                                    primary={item.label}
+                                    primary={
+                                        item.label
+                                    }
                                     primaryTypographyProps={{
                                         fontWeight: 600,
                                         color: "#334155"
@@ -302,6 +351,8 @@ export default function Navbar() {
                     ))}
                 </List>
 
+                {/* Mobile CTA */}
+
                 <Box
                     sx={{
                         mt: "auto",
@@ -310,21 +361,27 @@ export default function Navbar() {
                 >
                     <Button
                         component={Link}
-                        href="/find-route"
+                        href="/"
                         variant="contained"
                         fullWidth
-                        startIcon={<DirectionsBusIcon />}
-                        onClick={handleDrawerToggle}
+                        startIcon={
+                            <DirectionsBusIcon />
+                        }
+                        onClick={
+                            handleDrawerToggle
+                        }
                         disableElevation
                         sx={{
-                            backgroundColor: "#1976d2",
+                            backgroundColor:
+                                "#1976d2",
                             color: "#ffffff",
                             textTransform: "none",
                             fontWeight: 700,
                             borderRadius: "12px",
                             py: 1.4,
                             "&:hover": {
-                                backgroundColor: "#1565c0"
+                                backgroundColor:
+                                    "#1565c0"
                             }
                         }}
                     >
