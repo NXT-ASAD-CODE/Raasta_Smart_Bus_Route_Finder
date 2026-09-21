@@ -137,14 +137,19 @@ const searchDirectRoutes = async (
             continue;
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | Response structure matches frontend
+        |--------------------------------------------------------------------------
+        */
+
         results.push({
-            route: {
-                _id: route._id,
-                name: route.name,
-                routeNumber: route.routeNumber,
-                startPoint: route.startPoint,
-                endPoint: route.endPoint
-            },
+            routeId: route._id,
+            routeNumber: route.routeNumber,
+            routeName: route.name,
+
+            startPoint: route.startPoint,
+            endPoint: route.endPoint,
 
             fromStop,
             toStop,
@@ -157,11 +162,8 @@ const searchDirectRoutes = async (
 
     /*
     |--------------------------------------------------------------------------
-    | Sort direct routes by number of stops
+    | Shorter journeys first
     |--------------------------------------------------------------------------
-    |
-    | A shorter journey appears first.
-    |
     */
 
     results.sort(
@@ -205,7 +207,7 @@ const searchOneTransferRoutes = async (
 
         /*
         |--------------------------------------------------------------------------
-        | The transfer stop must be AFTER the starting stop.
+        | Transfer stop must be after starting stop
         |--------------------------------------------------------------------------
         */
 
@@ -225,7 +227,7 @@ const searchOneTransferRoutes = async (
 
             /*
             |--------------------------------------------------------------------------
-            | Don't transfer at the final destination.
+            | Don't transfer at destination
             |--------------------------------------------------------------------------
             */
 
@@ -238,16 +240,17 @@ const searchOneTransferRoutes = async (
 
             /*
             |--------------------------------------------------------------------------
-            | Find a second route:
+            | Find second route
+            |--------------------------------------------------------------------------
             |
             | transfer stop -> destination
-            |--------------------------------------------------------------------------
+            |
             */
 
             for (const secondRoute of routes) {
                 /*
                 |--------------------------------------------------------------------------
-                | Don't use the same route twice.
+                | Don't use the same route twice
                 |--------------------------------------------------------------------------
                 */
 
@@ -291,13 +294,7 @@ const searchOneTransferRoutes = async (
 
                 /*
                 |--------------------------------------------------------------------------
-                | Create a unique key.
-                |
-                | This prevents the same:
-                |
-                | R-01 -> R-02 at Civic Centre
-                |
-                | journey from appearing more than once.
+                | Unique journey key
                 |--------------------------------------------------------------------------
                 */
 
@@ -318,42 +315,65 @@ const searchOneTransferRoutes = async (
                     continue;
                 }
 
+                /*
+                |--------------------------------------------------------------------------
+                | Create result
+                |--------------------------------------------------------------------------
+                |
+                | IMPORTANT:
+                |
+                | The frontend expects:
+                |
+                | route.journey[0]
+                | route.journey[1]
+                |
+                |--------------------------------------------------------------------------
+                */
+
                 results.push({
                     journeyKey,
 
                     type: "one-transfer",
 
-                    firstRoute: {
-                        _id: firstRoute._id,
-                        name: firstRoute.name,
-                        routeNumber:
-                            firstRoute.routeNumber,
-                        startPoint:
-                            firstRoute.startPoint,
-                        endPoint:
-                            firstRoute.endPoint
-                    },
+                    journey: [
+                        {
+                            routeId: firstRoute._id,
+                            routeNumber:
+                                firstRoute.routeNumber,
+                            routeName:
+                                firstRoute.name,
 
-                    secondRoute: {
-                        _id: secondRoute._id,
-                        name: secondRoute.name,
-                        routeNumber:
-                            secondRoute.routeNumber,
-                        startPoint:
-                            secondRoute.startPoint,
-                        endPoint:
-                            secondRoute.endPoint
-                    },
+                            startPoint:
+                                firstRoute.startPoint,
+                            endPoint:
+                                firstRoute.endPoint,
+
+                            stops:
+                                firstJourneyStops
+                        },
+
+                        {
+                            routeId: secondRoute._id,
+                            routeNumber:
+                                secondRoute.routeNumber,
+                            routeName:
+                                secondRoute.name,
+
+                            startPoint:
+                                secondRoute.startPoint,
+                            endPoint:
+                                secondRoute.endPoint,
+
+                            stops:
+                                secondJourneyStops
+                        }
+                    ],
 
                     fromStop,
 
                     transferStop,
 
                     toStop,
-
-                    firstJourneyStops,
-
-                    secondJourneyStops,
 
                     totalStops:
                         firstJourneyStops.length +
@@ -366,7 +386,7 @@ const searchOneTransferRoutes = async (
 
     /*
     |--------------------------------------------------------------------------
-    | Remove internal helper property before sending response.
+    | Remove internal helper property
     |--------------------------------------------------------------------------
     */
 
@@ -383,7 +403,7 @@ const searchOneTransferRoutes = async (
 
     /*
     |--------------------------------------------------------------------------
-    | Shorter journeys first.
+    | Shorter journeys first
     |--------------------------------------------------------------------------
     */
 
