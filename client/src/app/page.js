@@ -1252,8 +1252,10 @@ function StopLabel({ stop }) {
                     lang="ur"
                     dir="rtl"
                     sx={{
-                        fontSize: "1.05rem",
-                        color: "#64748b"
+                        fontSize: "1.4rem",
+                        fontWeight: 600,
+                        lineHeight: 1.8,
+                        color: "#0f172a"
                     }}
                 >
                     {stop.nameUrdu}
