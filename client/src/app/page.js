@@ -268,10 +268,7 @@ function DirectRouteCard({ route }) {
             <Box
                 sx={{
                     bgcolor: "#eff6ff",
-                    px: {
-                        xs: 2,
-                        sm: 3
-                    },
+                    px: { xs: 2, sm: 3 },
                     py: 2
                 }}
             >
@@ -312,14 +309,7 @@ function DirectRouteCard({ route }) {
                 </Stack>
             </Box>
 
-            <CardContent
-                sx={{
-                    p: {
-                        xs: 2,
-                        sm: 3
-                    }
-                }}
-            >
+            <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
                 <Stack
                     direction={{
                         xs: "column",
@@ -418,10 +408,7 @@ function TransferRouteCard({ route }) {
             <Box
                 sx={{
                     bgcolor: "#f8fafc",
-                    px: {
-                        xs: 2,
-                        sm: 3
-                    },
+                    px: { xs: 2, sm: 3 },
                     py: 2
                 }}
             >
@@ -461,26 +448,16 @@ function TransferRouteCard({ route }) {
                 </Stack>
             </Box>
 
-            <CardContent
-                sx={{
-                    p: {
-                        xs: 2,
-                        sm: 3
-                    }
-                }}
-            >
+            <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
                 <Stack spacing={3}>
                     {route.journey?.map(
                         (journey, index) => (
-                            <Box
-                                key={`${journey.routeId}-${index}`}
-                            >
+                            <Box key={journey.routeId}>
                                 <Stack
                                     direction="row"
                                     spacing={1}
                                     sx={{
-                                        alignItems:
-                                            "center",
+                                        alignItems: "center",
                                         mb: 2
                                     }}
                                 >
@@ -496,9 +473,7 @@ function TransferRouteCard({ route }) {
                                                 fontWeight: 800
                                             }}
                                         >
-                                            {
-                                                journey.routeName
-                                            }
+                                            {journey.routeName}
                                         </Typography>
 
                                         <Typography
@@ -602,9 +577,8 @@ function NoRouteCard() {
                         mx: "auto"
                     }}
                 >
-                    We could not find a direct or
-                    one-transfer route between these
-                    stops.
+                    We could not find a direct or one-transfer
+                    route between these stops.
                 </Typography>
             </CardContent>
         </Card>
@@ -633,14 +607,12 @@ function RouteResults({ results }) {
                           route={route}
                       />
                   ))
-                : results.data.map(
-                      (route, index) => (
-                          <TransferRouteCard
-                              key={`${route.fromStop}-${index}`}
-                              route={route}
-                          />
-                      )
-                  )}
+                : results.data.map((route, index) => (
+                      <TransferRouteCard
+                          key={`${route.fromStop}-${index}`}
+                          route={route}
+                      />
+                  ))}
         </Stack>
     );
 }
@@ -732,9 +704,7 @@ export default function Home() {
                     ? stop.city?._id
                     : stop.city;
 
-            return (
-                cityId === selectedCity._id
-            );
+            return cityId === selectedCity._id;
         });
     }, [stops, selectedCity]);
 
@@ -834,8 +804,10 @@ export default function Home() {
                 }}
             >
                 <Stack
-                    alignItems="center"
                     spacing={2}
+                    sx={{
+                        alignItems: "center"
+                    }}
                 >
                     <CircularProgress />
 
@@ -905,8 +877,7 @@ export default function Home() {
                                 },
                                 fontWeight: 900,
                                 lineHeight: 1.05,
-                                letterSpacing:
-                                    "-0.04em",
+                                letterSpacing: "-0.04em",
                                 color: "#0f172a"
                             }}
                         >
@@ -942,8 +913,8 @@ export default function Home() {
                             }}
                             spacing={2}
                             sx={{
-                                mt: 4,
-                                justifyContent: "center"
+                                justifyContent: "center",
+                                mt: 4
                             }}
                         >
                             <Button
@@ -1101,7 +1072,9 @@ export default function Home() {
                                                     fontWeight: 800
                                                 }}
                                             >
-                                                {city.name}
+                                                {
+                                                    city.name
+                                                }
                                             </Typography>
 
                                             <Typography
@@ -1121,9 +1094,7 @@ export default function Home() {
                         </Stack>
                     </DialogContent>
 
-                    <DialogActions
-                        sx={{ p: 2 }}
-                    >
+                    <DialogActions sx={{ p: 2 }}>
                         <Button
                             onClick={() =>
                                 setCityDialogOpen(
@@ -1322,10 +1293,11 @@ export default function Home() {
                                                 "1px solid #cbd5e1",
                                             bgcolor:
                                                 "#fff",
-                                            "&:hover": {
-                                                bgcolor:
-                                                    "#f8fafc"
-                                            }
+                                            "&:hover":
+                                                {
+                                                    bgcolor:
+                                                        "#f8fafc"
+                                                }
                                         }}
                                     >
                                         <SwapVertIcon />
@@ -1451,8 +1423,7 @@ export default function Home() {
                                 sx={{
                                     justifyContent:
                                         "space-between",
-                                    alignItems:
-                                        "center",
+                                    alignItems: "center",
                                     mb: 2
                                 }}
                             >
