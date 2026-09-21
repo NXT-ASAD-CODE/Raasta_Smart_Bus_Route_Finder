@@ -2,6 +2,8 @@ import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 
 import "./globals.css";
 
+import Navbar from "../components/Navbar";
+
 export const metadata = {
     title: "Raasta - Smart Bus Route Finder",
     description:
@@ -13,6 +15,8 @@ export default function RootLayout({ children }) {
         <html lang="en">
             <body>
                 <AppRouterCacheProvider>
+                    <Navbar />
+
                     {children}
                 </AppRouterCacheProvider>
             </body>
