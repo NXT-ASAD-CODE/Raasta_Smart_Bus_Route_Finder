@@ -1625,10 +1625,6 @@ function DirectRouteCard({ route }) {
    TRANSFER ROUTE CARD
 ========================================================= */
 
-/* =========================================================
-   TRANSFER ROUTE CARD
-========================================================= */
-
 function TransferRouteCard({ route }) {
     const journey = route.journey || [];
 
@@ -1655,108 +1651,195 @@ function TransferRouteCard({ route }) {
                     }
                 }}
             >
-                {journey.map((leg, index) => (
-                    <Box key={index}>
-                        {/* Bus heading */}
+                {journey.map((leg, index) => {
+                    const isLastLeg =
+                        index === journey.length - 1;
 
-                        <Box
-                            sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 1,
-                                mb: 1.5
-                            }}
-                        >
-                            <DirectionsBusIcon
-                                sx={{
-                                    color: "#1976d2"
-                                }}
-                            />
+                    const nextLeg =
+                        journey[index + 1];
 
-                            <Typography
+                    return (
+                        <Box key={index}>
+                            {/* Bus heading */}
+
+                            <Box
                                 sx={{
-                                    fontWeight: 800,
-                                    color: "#0f172a"
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 1,
+                                    mb: 1.5,
+                                    flexWrap: "wrap"
                                 }}
                             >
-                                Bus {leg.routeNumber}
-                            </Typography>
-
-                            <Typography
-                                sx={{
-                                    color: "#64748b"
-                                }}
-                            >
-                                — {leg.routeName}
-                            </Typography>
-                        </Box>
-
-                        {/* This bus's journey */}
-
-                        <JourneyTimeline
-                            stops={leg.stops || []}
-                        />
-
-                        {/* 
-                            CHANGE BUS ALERT
-                            Appears AFTER the current bus journey
-                            and BEFORE the next bus journey.
-                        */}
-
-                        {index < journey.length - 1 && (
-                            <>
-                                <Box
+                                <DirectionsBusIcon
                                     sx={{
-                                        my: 3,
-                                        p: 2,
-                                        borderRadius: "14px",
-                                        backgroundColor: "#fff8e1",
-                                        border: "1px solid #fde68a",
-                                        display: "flex",
-                                        alignItems: "flex-start",
-                                        gap: 1.5
-                                    }}
-                                >
-                                    <TransferWithinAStationIcon
-                                        sx={{
-                                            color: "#d97706",
-                                            mt: 0.2
-                                        }}
-                                    />
-
-                                    <Box>
-                                        <Typography
-                                            sx={{
-                                                fontWeight: 800,
-                                                color: "#92400e"
-                                            }}
-                                        >
-                                            Change Bus at
-                                        </Typography>
-
-                                        <Typography
-                                            sx={{
-                                                color: "#78350f",
-                                                mt: 0.3,
-                                                fontSize: "1rem"
-                                            }}
-                                        >
-                                            {getTransferStopName(
-                                                route.transferStop
-                                            )}
-                                        </Typography>
-                                    </Box>
-                                </Box>
-
-                                <Divider
-                                    sx={{
-                                        mb: 3
+                                        color: "#1976d2"
                                     }}
                                 />
-                            </>
-                        )}
-                    </Box>
-                ))}
+
+                                <Typography
+                                    sx={{
+                                        fontWeight: 800,
+                                        color: "#0f172a"
+                                    }}
+                                >
+                                    Bus {leg.routeNumber}
+                                </Typography>
+
+                                <Typography
+                                    sx={{
+                                        color: "#64748b"
+                                    }}
+                                >
+                                    — {leg.routeName}
+                                </Typography>
+                            </Box>
+
+                            {/* Current bus journey */}
+
+                            <JourneyTimeline
+                                stops={leg.stops || []}
+                            />
+
+                            {/* Transfer instruction */}
+
+                            {!isLastLeg && (
+                                <>
+                                    <Box
+                                        sx={{
+                                            my: 3,
+                                            p: {
+                                                xs: 2,
+                                                sm: 2.5
+                                            },
+                                            borderRadius: "16px",
+                                            backgroundColor:
+                                                "#fff8e1",
+                                            border:
+                                                "1px solid #fde68a",
+                                            display: "flex",
+                                            alignItems:
+                                                "flex-start",
+                                            gap: 1.5
+                                        }}
+                                    >
+                                        {/* Transfer icon */}
+
+                                        <Box
+                                            sx={{
+                                                width: 42,
+                                                height: 42,
+                                                borderRadius:
+                                                    "12px",
+                                                display: "flex",
+                                                alignItems:
+                                                    "center",
+                                                justifyContent:
+                                                    "center",
+                                                backgroundColor:
+                                                    "#fef3c7",
+                                                flexShrink: 0
+                                            }}
+                                        >
+                                            <TransferWithinAStationIcon
+                                                sx={{
+                                                    color:
+                                                        "#d97706"
+                                                }}
+                                            />
+                                        </Box>
+
+                                        {/* Transfer information */}
+
+                                        <Box>
+                                            <Typography
+                                                sx={{
+                                                    fontWeight: 800,
+                                                    color:
+                                                        "#92400e",
+                                                    fontSize:
+                                                        "1.05rem"
+                                                }}
+                                            >
+                                                Change Bus at
+                                            </Typography>
+
+                                            <Typography
+                                                sx={{
+                                                    fontWeight: 700,
+                                                    color:
+                                                        "#78350f",
+                                                    mt: 0.3,
+                                                    fontSize:
+                                                        "1.05rem"
+                                                }}
+                                            >
+                                                {getTransferStopName(
+                                                    route.transferStop
+                                                )}
+                                            </Typography>
+
+                                            <Typography
+                                                sx={{
+                                                    color:
+                                                        "#92400e",
+                                                    mt: 0.7,
+                                                    fontSize:
+                                                        "0.9rem"
+                                                }}
+                                            >
+                                                Get off here and
+                                                take the next bus.
+                                            </Typography>
+
+                                            {nextLeg && (
+                                                <Box
+                                                    sx={{
+                                                        display:
+                                                            "flex",
+                                                        alignItems:
+                                                            "center",
+                                                        gap: 0.7,
+                                                        mt: 1
+                                                    }}
+                                                >
+                                                    <DirectionsBusIcon
+                                                        sx={{
+                                                            fontSize: 18,
+                                                            color:
+                                                                "#d97706"
+                                                        }}
+                                                    />
+
+                                                    <Typography
+                                                        sx={{
+                                                            fontWeight: 700,
+                                                            color:
+                                                                "#92400e",
+                                                            fontSize:
+                                                                "0.88rem"
+                                                        }}
+                                                    >
+                                                        Next: Bus{" "}
+                                                        {
+                                                            nextLeg.routeNumber
+                                                        }
+                                                    </Typography>
+                                                </Box>
+                                            )}
+                                        </Box>
+                                    </Box>
+
+                                    <Divider
+                                        sx={{
+                                            mb: 3
+                                        }}
+                                    />
+                                </>
+                            )}
+                        </Box>
+                    );
+                })}
             </CardContent>
         </Card>
     );
