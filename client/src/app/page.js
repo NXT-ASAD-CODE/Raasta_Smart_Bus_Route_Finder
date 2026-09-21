@@ -646,6 +646,57 @@ export default function Home() {
                                             IconComponent={
                                                 KeyboardArrowDownIcon
                                             }
+                                            renderValue={(
+                                                selectedId
+                                            ) => {
+                                                if (
+                                                    !selectedId
+                                                ) {
+                                                    return (
+                                                        <Box
+                                                            sx={{
+                                                                display:
+                                                                    "flex",
+                                                                alignItems:
+                                                                    "center",
+                                                                gap: 1,
+                                                                color:
+                                                                    "#64748b"
+                                                            }}
+                                                        >
+                                                            <LocationOnIcon
+                                                                sx={{
+                                                                    color:
+                                                                        "#1976d2"
+                                                                }}
+                                                            />
+                                                            Choose
+                                                            your
+                                                            starting
+                                                            stop
+                                                        </Box>
+                                                    );
+                                                }
+
+                                                const selectedStop =
+                                                    cityStops.find(
+                                                        (
+                                                            stop
+                                                        ) =>
+                                                            stop._id ===
+                                                            selectedId
+                                                    );
+
+                                                return selectedStop ? (
+                                                    <StopLabel
+                                                        stop={
+                                                            selectedStop
+                                                        }
+                                                    />
+                                                ) : (
+                                                    ""
+                                                );
+                                            }}
                                             sx={{
                                                 borderRadius:
                                                     "16px",
@@ -707,7 +758,11 @@ export default function Home() {
                                                             stop._id
                                                         }
                                                     >
-                                                        {stop.name}
+                                                        <StopLabel
+                                                            stop={
+                                                                stop
+                                                            }
+                                                        />
                                                     </MenuItem>
                                                 )
                                             )}
@@ -783,6 +838,56 @@ export default function Home() {
                                             IconComponent={
                                                 KeyboardArrowDownIcon
                                             }
+                                            renderValue={(
+                                                selectedId
+                                            ) => {
+                                                if (
+                                                    !selectedId
+                                                ) {
+                                                    return (
+                                                        <Box
+                                                            sx={{
+                                                                display:
+                                                                    "flex",
+                                                                alignItems:
+                                                                    "center",
+                                                                gap: 1,
+                                                                color:
+                                                                    "#64748b"
+                                                            }}
+                                                        >
+                                                            <FlagIcon
+                                                                sx={{
+                                                                    color:
+                                                                        "#1976d2"
+                                                                }}
+                                                            />
+                                                            Choose
+                                                            your
+                                                            destination
+                                                        </Box>
+                                                    );
+                                                }
+
+                                                const selectedStop =
+                                                    cityStops.find(
+                                                        (
+                                                            stop
+                                                        ) =>
+                                                            stop._id ===
+                                                            selectedId
+                                                    );
+
+                                                return selectedStop ? (
+                                                    <StopLabel
+                                                        stop={
+                                                            selectedStop
+                                                        }
+                                                    />
+                                                ) : (
+                                                    ""
+                                                );
+                                            }}
                                             sx={{
                                                 borderRadius:
                                                     "16px",
@@ -843,7 +948,11 @@ export default function Home() {
                                                             stop._id
                                                         }
                                                     >
-                                                        {stop.name}
+                                                        <StopLabel
+                                                            stop={
+                                                                stop
+                                                            }
+                                                        />
                                                     </MenuItem>
                                                 )
                                             )}
@@ -1120,6 +1229,40 @@ export default function Home() {
                     </Stack>
                 </DialogContent>
             </Dialog>
+        </Box>
+    );
+}
+
+/* =====================================================
+   STOP LABEL (Urdu on the left, English next to it)
+===================================================== */
+
+function StopLabel({ stop }) {
+    return (
+        <Box
+            sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1.5
+            }}
+        >
+            {stop.nameUrdu && (
+                <Typography
+                    component="span"
+                    lang="ur"
+                    dir="rtl"
+                    sx={{
+                        fontSize: "1.05rem",
+                        color: "#64748b"
+                    }}
+                >
+                    {stop.nameUrdu}
+                </Typography>
+            )}
+
+            <Typography component="span">
+                {stop.name}
+            </Typography>
         </Box>
     );
 }
