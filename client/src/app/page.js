@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+
 import {
     Alert,
     Box,
@@ -155,8 +156,7 @@ function JourneyTimeline({ stops }) {
         <Box sx={{ mt: 3 }}>
             {stops.map((stop, index) => {
                 const isFirst = index === 0;
-                const isLast =
-                    index === stops.length - 1;
+                const isLast = index === stops.length - 1;
 
                 return (
                     <Box
@@ -268,7 +268,10 @@ function DirectRouteCard({ route }) {
             <Box
                 sx={{
                     bgcolor: "#eff6ff",
-                    px: { xs: 2, sm: 3 },
+                    px: {
+                        xs: 2,
+                        sm: 3
+                    },
                     py: 2
                 }}
             >
@@ -277,8 +280,10 @@ function DirectRouteCard({ route }) {
                         xs: "column",
                         sm: "row"
                     }}
-                    justifyContent="space-between"
                     spacing={1}
+                    sx={{
+                        justifyContent: "space-between"
+                    }}
                 >
                     <Box>
                         <Typography
@@ -413,7 +418,10 @@ function TransferRouteCard({ route }) {
             <Box
                 sx={{
                     bgcolor: "#f8fafc",
-                    px: { xs: 2, sm: 3 },
+                    px: {
+                        xs: 2,
+                        sm: 3
+                    },
                     py: 2
                 }}
             >
@@ -422,8 +430,10 @@ function TransferRouteCard({ route }) {
                         xs: "column",
                         sm: "row"
                     }}
-                    justifyContent="space-between"
                     spacing={1}
+                    sx={{
+                        justifyContent: "space-between"
+                    }}
                 >
                     <Box>
                         <Typography
@@ -463,9 +473,7 @@ function TransferRouteCard({ route }) {
                     {route.journey?.map(
                         (journey, index) => (
                             <Box
-                                key={
-                                    journey.routeId
-                                }
+                                key={`${journey.routeId}-${index}`}
                             >
                                 <Stack
                                     direction="row"
@@ -541,9 +549,7 @@ function TransferRouteCard({ route }) {
                                                     "#7c2d12"
                                             }}
                                         >
-                                            {
-                                                transferStop
-                                            }
+                                            {transferStop}
                                         </Typography>
                                     </Box>
                                 )}
@@ -828,10 +834,8 @@ export default function Home() {
                 }}
             >
                 <Stack
+                    alignItems="center"
                     spacing={2}
-                    sx={{
-                        alignItems: "center"
-                    }}
                 >
                     <CircularProgress />
 
@@ -925,11 +929,10 @@ export default function Home() {
                                 lineHeight: 1.7
                             }}
                         >
-                            Tell us where you want
-                            to go, and Raasta
-                            explains which bus to
-                            take and where to get
-                            on and off.
+                            Tell us where you want to go,
+                            and Raasta explains which bus
+                            to take and where to get on
+                            and off.
                         </Typography>
 
                         <Stack
@@ -938,8 +941,10 @@ export default function Home() {
                                 sm: "row"
                             }}
                             spacing={2}
-                            justifyContent="center"
-                            sx={{ mt: 4 }}
+                            sx={{
+                                mt: 4,
+                                justifyContent: "center"
+                            }}
                         >
                             <Button
                                 variant="contained"
@@ -953,8 +958,7 @@ export default function Home() {
                                     )
                                 }
                                 sx={{
-                                    borderRadius:
-                                        "14px",
+                                    borderRadius: "14px",
                                     px: 4,
                                     py: 1.5,
                                     fontWeight: 800,
@@ -1157,8 +1161,9 @@ export default function Home() {
 
                     <Stack
                         direction="row"
-                        justifyContent="space-between"
                         sx={{
+                            justifyContent:
+                                "space-between",
                             alignItems: "center"
                         }}
                     >
@@ -1242,9 +1247,7 @@ export default function Home() {
                                     <Select
                                         value={fromStop}
                                         label="Starting Point"
-                                        onChange={(
-                                            event
-                                        ) =>
+                                        onChange={(event) =>
                                             setFromStop(
                                                 event
                                                     .target
@@ -1301,8 +1304,7 @@ export default function Home() {
 
                                 <Box
                                     sx={{
-                                        display:
-                                            "flex",
+                                        display: "flex",
                                         justifyContent:
                                             "center"
                                     }}
@@ -1320,11 +1322,10 @@ export default function Home() {
                                                 "1px solid #cbd5e1",
                                             bgcolor:
                                                 "#fff",
-                                            "&:hover":
-                                                {
-                                                    bgcolor:
-                                                        "#f8fafc"
-                                                }
+                                            "&:hover": {
+                                                bgcolor:
+                                                    "#f8fafc"
+                                            }
                                         }}
                                     >
                                         <SwapVertIcon />
@@ -1339,9 +1340,7 @@ export default function Home() {
                                     <Select
                                         value={toStop}
                                         label="Destination"
-                                        onChange={(
-                                            event
-                                        ) =>
+                                        onChange={(event) =>
                                             setToStop(
                                                 event
                                                     .target
@@ -1449,8 +1448,9 @@ export default function Home() {
                         <Box>
                             <Stack
                                 direction="row"
-                                justifyContent="space-between"
                                 sx={{
+                                    justifyContent:
+                                        "space-between",
                                     alignItems:
                                         "center",
                                     mb: 2
