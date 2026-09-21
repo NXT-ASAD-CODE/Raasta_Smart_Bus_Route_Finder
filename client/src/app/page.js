@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
     Alert,
@@ -10,35 +10,1331 @@ import {
     CardContent,
     Chip,
     CircularProgress,
-    Container,
     Dialog,
-    DialogActions,
     DialogContent,
     DialogTitle,
     Divider,
-    FormControl,
     IconButton,
-    InputLabel,
     MenuItem,
     Select,
     Stack,
     Typography
 } from "@mui/material";
 
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import AutorenewIcon from "@mui/icons-material/Autorenew";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
-import LocationCityIcon from "@mui/icons-material/LocationCity";
-import RouteIcon from "@mui/icons-material/Route";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import FlagIcon from "@mui/icons-material/Flag";
 import SwapVertIcon from "@mui/icons-material/SwapVert";
+import SearchIcon from "@mui/icons-material/Search";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
+import RouteIcon from "@mui/icons-material/Route";
+import TransferWithinAStationIcon from "@mui/icons-material/TransferWithinAStation";
+import CloseIcon from "@mui/icons-material/Close";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 import {
     getCities,
     getStops,
     searchRoutes
 } from "../services/api";
+
+export default function Home() {
+    const [cities, setCities] = useState([]);
+    const [stops, setStops] = useState([]);
+
+    const [selectedCity, setSelectedCity] = useState(null);
+    const [cityDialogOpen, setCityDialogOpen] = useState(false);
+
+    const [fromStop, setFromStop] = useState("");
+    const [toStop, setToStop] = useState("");
+
+    const [results, setResults] = useState(null);
+
+    const [loading, setLoading] = useState(false);
+    const [initialLoading, setInitialLoading] = useState(true);
+
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        const loadInitialData = async () => {
+            try {
+                setInitialLoading(true);
+
+                await Promise.all([
+                    loadCities(),
+                    loadStops()
+                ]);
+            } finally {
+                setInitialLoading(false);
+            }
+        };
+
+        loadInitialData();
+    }, []);
+
+    const loadCities = async () => {
+        try {
+            const response = await getCities();
+
+            setCities(response.data || []);
+        } catch (error) {
+            console.error(
+                "Failed to load cities:",
+                error
+            );
+        }
+    };
+
+    const loadStops = async () => {
+        try {
+            const response = await getStops();
+
+            setStops(response.data || []);
+        } catch (error) {
+            console.error(
+                "Failed to load stops:",
+                error
+            );
+        }
+    };
+
+    const handleCitySelect = (city) => {
+        setSelectedCity(city);
+
+        setCityDialogOpen(false);
+
+        setFromStop("");
+        setToStop("");
+
+        setResults(null);
+        setError("");
+    };
+
+    const handleFindRoute = async () => {
+        setError("");
+        setResults(null);
+
+        if (!fromStop || !toStop) {
+            setError(
+                "Please select both your starting point and destination."
+            );
+
+            return;
+        }
+
+        if (fromStop === toStop) {
+            setError(
+                "Starting point and destination cannot be the same."
+            );
+
+            return;
+        }
+
+        try {
+            setLoading(true);
+
+            const response = await searchRoutes(
+                fromStop,
+                toStop
+            );
+
+            setResults(response);
+        } catch (error) {
+            console.error(error);
+
+            setError(
+                error.message ||
+                    "Unable to find a route. Please try again."
+            );
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleSwap = () => {
+        setFromStop(toStop);
+        setToStop(fromStop);
+
+        setResults(null);
+        setError("");
+    };
+
+    const handleBackHome = () => {
+        setSelectedCity(null);
+
+        setFromStop("");
+        setToStop("");
+
+        setResults(null);
+        setError("");
+    };
+
+    const cityStops = stops.filter(
+        (stop) =>
+            stop.city?._id === selectedCity?._id ||
+            stop.city === selectedCity?._id
+    );
+
+    if (initialLoading) {
+        return (
+            <Box
+                sx={{
+                    minHeight:
+                        "calc(100svh - 76px)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    background:
+                        "linear-gradient(135deg, #f8fbff 0%, #eef6ff 50%, #ffffff 100%)"
+                }}
+            >
+                <CircularProgress
+                    sx={{
+                        color: "#1976d2"
+                    }}
+                />
+            </Box>
+        );
+    }
+
+    return (
+        <Box
+            sx={{
+                minHeight: "calc(100svh - 76px)",
+                background:
+                    "linear-gradient(135deg, #f8fbff 0%, #eef6ff 50%, #ffffff 100%)",
+                position: "relative",
+                overflow: "hidden"
+            }}
+        >
+            {/* Background decoration */}
+
+            <Box
+                sx={{
+                    position: "absolute",
+                    width: {
+                        xs: 220,
+                        sm: 300,
+                        md: 350
+                    },
+                    height: {
+                        xs: 220,
+                        sm: 300,
+                        md: 350
+                    },
+                    borderRadius: "50%",
+                    background:
+                        "rgba(25, 118, 210, 0.07)",
+                    top: {
+                        xs: -100,
+                        md: -150
+                    },
+                    right: {
+                        xs: -100,
+                        md: -100
+                    },
+                    pointerEvents: "none"
+                }}
+            />
+
+            <Box
+                sx={{
+                    position: "absolute",
+                    width: {
+                        xs: 200,
+                        sm: 260,
+                        md: 300
+                    },
+                    height: {
+                        xs: 200,
+                        sm: 260,
+                        md: 300
+                    },
+                    borderRadius: "50%",
+                    background:
+                        "rgba(25, 118, 210, 0.05)",
+                    bottom: -130,
+                    left: -100,
+                    pointerEvents: "none"
+                }}
+            />
+
+            {!selectedCity ? (
+                <Box
+                    sx={{
+                        height: {
+                            xs: "calc(100dvh - 68px)",
+                            md: "calc(100dvh - 76px)"
+                        },
+                        minHeight: {
+                            xs: "560px",
+                            md: "650px"
+                        },
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        position: "relative",
+                        px: {
+                            xs: 2,
+                            sm: 3,
+                            md: 4
+                        },
+                        overflow: "hidden"
+                    }}
+                >
+                    {/* Background circle */}
+
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            width: {
+                                xs: 220,
+                                md: 360
+                            },
+                            height: {
+                                xs: 220,
+                                md: 360
+                            },
+                            borderRadius: "50%",
+                            backgroundColor:
+                                "rgba(25, 118, 210, 0.06)",
+                            top: {
+                                xs: -100,
+                                md: -150
+                            },
+                            right: {
+                                xs: -100,
+                                md: -80
+                            },
+                            pointerEvents: "none"
+                        }}
+                    />
+
+                    {/* Main content */}
+
+                    <Box
+                        sx={{
+                            width: "100%",
+                            maxWidth: 1200,
+                            mx: "auto",
+                            textAlign: "center",
+                            position: "relative",
+                            zIndex: 1,
+
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+
+                            transform: {
+                                xs: "none",
+                                sm: "translateY(-5px)",
+                                md: "translateY(-8px)"
+                            }
+                        }}
+                    >
+                        {/* Badge */}
+
+                        <Chip
+                            icon={
+                                <DirectionsBusIcon
+                                    sx={{
+                                        color:
+                                            "#1976d2 !important"
+                                    }}
+                                />
+                            }
+                            label="SMART PUBLIC TRANSPORT"
+                            sx={{
+                                mb: {
+                                    xs: 2,
+                                    sm: 2.2,
+                                    md: 2.5
+                                },
+                                px: {
+                                    xs: 0.5,
+                                    sm: 1
+                                },
+                                py: {
+                                    xs: 1.8,
+                                    sm: 2
+                                },
+                                height: "auto",
+                                marginTop: "-50px",
+                                borderRadius: "50px",
+                                backgroundColor: "#e3f2fd",
+                                color: "#1565c0",
+                                fontWeight: 700,
+                                letterSpacing: {
+                                    xs: "0.5px",
+                                    sm: "1px"
+                                },
+                                fontSize: {
+                                    xs: "0.72rem",
+                                    sm: "0.82rem",
+                                    md: "0.88rem"
+                                }
+                            }}
+                        />
+
+                        {/* Raasta */}
+
+                        <Typography
+                            component="h1"
+                            sx={{
+                                fontWeight: 900,
+                                fontSize: {
+                                    xs: "clamp(3.8rem, 15vw, 5rem)",
+                                    sm: "clamp(4.5rem, 10vw, 6.5rem)",
+                                    md: "clamp(5rem, 8vw, 7rem)"
+                                },
+                                lineHeight: 0.9,
+                                letterSpacing: {
+                                    xs: "-3px",
+                                    sm: "-4px",
+                                    md: "-6px"
+                                },
+                                color: "#111827",
+                                mb: {
+                                    xs: 1.5,
+                                    sm: 1.5,
+                                    md: 1.8
+                                }
+                            }}
+                        >
+                            Raasta
+                        </Typography>
+
+                        {/* Subtitle */}
+
+                        <Typography
+                            component="h2"
+                            sx={{
+                                fontSize: {
+                                    xs: "1.35rem",
+                                    sm: "1.9rem",
+                                    md: "2.5rem"
+                                },
+                                fontWeight: 800,
+                                lineHeight: 1.15,
+                                color: "#1976d2",
+
+                                mb: {
+                                    xs: 1.5,
+                                    sm: 1.5,
+                                    md: 1.8
+                                }
+                            }}
+                        >
+                            Your Journey Starts Here.
+                        </Typography>
+
+                        {/* Description */}
+
+                        <Typography
+                            sx={{
+                                maxWidth: {
+                                    xs: 350,
+                                    sm: 650,
+                                    md: 850
+                                },
+                                mx: "auto",
+                                color: "#64748b",
+
+                                fontSize: {
+                                    xs: "0.9rem",
+                                    sm: "1rem",
+                                    md: "1.08rem"
+                                },
+
+                                lineHeight: 1.65,
+
+                                mb: {
+                                    xs: 2,
+                                    sm: 2.3,
+                                    md: 2.5
+                                }
+                            }}
+                        >
+                            Tell us where you are and where you want to
+                            go. Raasta helps you understand which bus
+                            route to take and how to reach your
+                            destination.
+                        </Typography>
+
+                        {/* Route visual */}
+
+                        <Box
+                            sx={{
+                                width: {
+                                    xs: "88%",
+                                    sm: "75%",
+                                    md: 850
+                                },
+                                maxWidth: 850,
+                                mx: "auto",
+
+                                mb: {
+                                    xs: 2,
+                                    sm: 2.3,
+                                    md: 2.5
+                                },
+
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center"
+                            }}
+                        >
+                            {/* Starting point */}
+
+                            <Box
+                                sx={{
+                                    width: {
+                                        xs: 14,
+                                        sm: 17
+                                    },
+                                    height: {
+                                        xs: 14,
+                                        sm: 17
+                                    },
+                                    flexShrink: 0,
+                                    borderRadius: "50%",
+                                    backgroundColor: "#1976d2",
+                                    boxShadow:
+                                        "0 0 0 7px rgba(25,118,210,0.12)"
+                                }}
+                            />
+
+                            {/* Line */}
+
+                            <Box
+                                sx={{
+                                    height: 3,
+                                    flex: 1,
+                                    background:
+                                        "linear-gradient(90deg, #1976d2, #90caf9)"
+                                }}
+                            />
+
+                            {/* Bus */}
+
+                            <DirectionsBusIcon
+                                sx={{
+                                    flexShrink: 0,
+                                    fontSize: {
+                                        xs: 42,
+                                        sm: 48,
+                                        md: 54
+                                    },
+                                    color: "#1976d2",
+                                    mx: {
+                                        xs: 1,
+                                        sm: 1.5,
+                                        md: 2
+                                    }
+                                }}
+                            />
+
+                            {/* Line */}
+
+                            <Box
+                                sx={{
+                                    height: 3,
+                                    flex: 1,
+                                    background:
+                                        "linear-gradient(90deg, #90caf9, #1976d2)"
+                                }}
+                            />
+
+                            {/* Destination */}
+
+                            <Box
+                                sx={{
+                                    width: {
+                                        xs: 14,
+                                        sm: 17
+                                    },
+                                    height: {
+                                        xs: 14,
+                                        sm: 17
+                                    },
+                                    flexShrink: 0,
+                                    borderRadius: "50%",
+                                    backgroundColor: "#1565c0",
+                                    boxShadow:
+                                        "0 0 0 7px rgba(21,101,192,0.12)"
+                                }}
+                            />
+                        </Box>
+
+                        {/* MAIN BUTTON */}
+
+                        <Button
+                            variant="contained"
+                            onClick={() =>
+                                setCityDialogOpen(true)
+                            }
+                            startIcon={<LocationOnIcon />}
+                            disableElevation
+                            sx={{
+                                width: {
+                                    xs: "100%",
+                                    sm: "auto"
+                                },
+
+                                maxWidth: {
+                                    xs: 400,
+                                    sm: "none"
+                                },
+
+                                minWidth: {
+                                    sm: 380,
+                                    md: 470
+                                },
+
+                                px: {
+                                    xs: 2,
+                                    sm: 4,
+                                    md: 5
+                                },
+
+                                py: {
+                                    xs: 1.25,
+                                    sm: 1.4,
+                                    md: 1.5
+                                },
+
+                                borderRadius: "50px",
+
+                                textTransform: "none",
+
+                                fontSize: {
+                                    xs: "0.9rem",
+                                    sm: "1rem",
+                                    md: "1.05rem"
+                                },
+
+                                fontWeight: 700,
+
+                                whiteSpace: "nowrap",
+
+                                backgroundColor: "#1976d2",
+
+                                boxShadow:
+                                    "0 8px 25px rgba(25,118,210,0.28)",
+
+                                "&:hover": {
+                                    backgroundColor: "#1565c0",
+                                    boxShadow:
+                                        "0 10px 30px rgba(25,118,210,0.4)"
+                                }
+                            }}
+                        >
+                            Select Your City to Check the Route
+                        </Button>
+                    </Box>
+                </Box>
+            ) : (
+                /* =====================================================
+                   ROUTE FINDER
+                ====================================================== */
+
+                <Box
+                    sx={{
+                        minHeight: "calc(100svh - 76px)",
+                        py: {
+                            xs: 3,
+                            sm: 5
+                        },
+                        px: {
+                            xs: 2,
+                            sm: 3
+                        },
+                        position: "relative"
+                    }}
+                >
+                    <Box
+                        sx={{
+                            maxWidth: 1050,
+                            mx: "auto"
+                        }}
+                    >
+                        {/* Header */}
+
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: {
+                                    xs: "flex-start",
+                                    sm: "center"
+                                },
+                                justifyContent:
+                                    "space-between",
+                                gap: 2,
+                                mb: 4,
+                                flexDirection: {
+                                    xs: "column",
+                                    sm: "row"
+                                }
+                            }}
+                        >
+                            <Box>
+                                <Button
+                                    startIcon={
+                                        <ArrowBackIcon />
+                                    }
+                                    onClick={
+                                        handleBackHome
+                                    }
+                                    sx={{
+                                        textTransform:
+                                            "none",
+                                        color: "#64748b",
+                                        fontWeight: 600,
+                                        px: 0,
+                                        mb: 1,
+                                        "&:hover": {
+                                            background:
+                                                "transparent",
+                                            color: "#1976d2"
+                                        }
+                                    }}
+                                >
+                                    Back to Home
+                                </Button>
+
+                                <Typography
+                                    sx={{
+                                        fontSize: {
+                                            xs: "2.5rem",
+                                            sm: "3.5rem"
+                                        },
+                                        fontWeight: 800,
+                                        color: "#111827",
+                                        lineHeight: 1
+                                    }}
+                                >
+                                    Raasta
+                                </Typography>
+
+                                <Typography
+                                    sx={{
+                                        color: "#64748b",
+                                        mt: 1
+                                    }}
+                                >
+                                    Find the best bus route for
+                                    your journey.
+                                </Typography>
+                            </Box>
+
+                            <Button
+                                variant="outlined"
+                                startIcon={
+                                    <LocationOnIcon />
+                                }
+                                onClick={() =>
+                                    setCityDialogOpen(true)
+                                }
+                                sx={{
+                                    textTransform:
+                                        "none",
+                                    borderRadius: "12px",
+                                    fontWeight: 700,
+                                    borderColor:
+                                        "#90caf9",
+                                    color: "#1565c0"
+                                }}
+                            >
+                                {selectedCity.name}
+                            </Button>
+                        </Box>
+
+                        {/* Route search card */}
+
+                        <Card
+                            elevation={0}
+                            sx={{
+                                borderRadius: "24px",
+                                border:
+                                    "1px solid #dbe5f0",
+                                backgroundColor:
+                                    "#ffffff",
+                                mb: 4
+                            }}
+                        >
+                            <CardContent
+                                sx={{
+                                    p: {
+                                        xs: 2.5,
+                                        sm: 4
+                                    },
+                                    "&:last-child": {
+                                        pb: {
+                                            xs: 2.5,
+                                            sm: 4
+                                        }
+                                    }
+                                }}
+                            >
+                                <Box
+                                    sx={{
+                                        display: "flex",
+                                        alignItems:
+                                            "center",
+                                        gap: 1,
+                                        mb: 3
+                                    }}
+                                >
+                                    <RouteIcon
+                                        sx={{
+                                            color: "#1976d2"
+                                        }}
+                                    />
+
+                                    <Typography
+                                        sx={{
+                                            fontWeight: 800,
+                                            fontSize:
+                                                "1.25rem",
+                                            color: "#0f172a"
+                                        }}
+                                    >
+                                        Plan Your Journey
+                                    </Typography>
+                                </Box>
+
+                                <Box
+                                    sx={{
+                                        display: "grid",
+                                        gridTemplateColumns: {
+                                            xs: "1fr",
+                                            md: "1fr auto 1fr"
+                                        },
+                                        gap: 2,
+                                        alignItems: "end"
+                                    }}
+                                >
+                                    {/* Starting point */}
+
+                                    <Box>
+                                        <Typography
+                                            sx={{
+                                                fontWeight: 700,
+                                                color:
+                                                    "#334155",
+                                                mb: 1
+                                            }}
+                                        >
+                                            Starting Point
+                                        </Typography>
+
+                                        <Select
+                                            fullWidth
+                                            value={fromStop}
+                                            onChange={(event) =>
+                                                setFromStop(
+                                                    event
+                                                        .target
+                                                        .value
+                                                )
+                                            }
+                                            displayEmpty
+                                            IconComponent={
+                                                KeyboardArrowDownIcon
+                                            }
+                                            renderValue={(
+                                                selectedId
+                                            ) => {
+                                                if (
+                                                    !selectedId
+                                                ) {
+                                                    return (
+                                                        <Box
+                                                            sx={{
+                                                                display:
+                                                                    "flex",
+                                                                alignItems:
+                                                                    "center",
+                                                                gap: 1,
+                                                                color:
+                                                                    "#64748b"
+                                                            }}
+                                                        >
+                                                            <LocationOnIcon
+                                                                sx={{
+                                                                    color:
+                                                                        "#1976d2"
+                                                                }}
+                                                            />
+
+                                                            Choose
+                                                            your
+                                                            starting
+                                                            stop
+                                                        </Box>
+                                                    );
+                                                }
+
+                                                const stop =
+                                                    cityStops.find(
+                                                        (
+                                                            item
+                                                        ) =>
+                                                            item._id ===
+                                                            selectedId
+                                                    );
+
+                                                return stop ? (
+                                                    <StopLabel
+                                                        stop={
+                                                            stop
+                                                        }
+                                                    />
+                                                ) : (
+                                                    ""
+                                                );
+                                            }}
+                                            sx={selectStyles}
+                                        >
+                                            <MenuItem
+                                                value=""
+                                                disabled
+                                            >
+                                                Choose your
+                                                starting stop
+                                            </MenuItem>
+
+                                            {cityStops.map(
+                                                (stop) => (
+                                                    <MenuItem
+                                                        key={
+                                                            stop._id
+                                                        }
+                                                        value={
+                                                            stop._id
+                                                        }
+                                                    >
+                                                        <StopLabel
+                                                            stop={
+                                                                stop
+                                                            }
+                                                        />
+                                                    </MenuItem>
+                                                )
+                                            )}
+                                        </Select>
+                                    </Box>
+
+                                    {/* Swap */}
+
+                                    <Box
+                                        sx={{
+                                            display: "flex",
+                                            justifyContent:
+                                                "center",
+                                            alignItems:
+                                                "center",
+                                            pb: {
+                                                xs: 0,
+                                                md: 0.3
+                                            }
+                                        }}
+                                    >
+                                        <IconButton
+                                            onClick={
+                                                handleSwap
+                                            }
+                                            disabled={
+                                                !fromStop &&
+                                                !toStop
+                                            }
+                                            sx={{
+                                                width: 48,
+                                                height: 48,
+                                                backgroundColor:
+                                                    "#e3f2fd",
+                                                color: "#1976d2",
+                                                border:
+                                                    "1px solid #bbdefb",
+                                                "&:hover": {
+                                                    backgroundColor:
+                                                        "#bbdefb"
+                                                }
+                                            }}
+                                        >
+                                            <SwapVertIcon />
+                                        </IconButton>
+                                    </Box>
+
+                                    {/* Destination */}
+
+                                    <Box>
+                                        <Typography
+                                            sx={{
+                                                fontWeight: 700,
+                                                color:
+                                                    "#334155",
+                                                mb: 1
+                                            }}
+                                        >
+                                            Destination
+                                        </Typography>
+
+                                        <Select
+                                            fullWidth
+                                            value={toStop}
+                                            onChange={(event) =>
+                                                setToStop(
+                                                    event
+                                                        .target
+                                                        .value
+                                                )
+                                            }
+                                            displayEmpty
+                                            IconComponent={
+                                                KeyboardArrowDownIcon
+                                            }
+                                            renderValue={(
+                                                selectedId
+                                            ) => {
+                                                if (
+                                                    !selectedId
+                                                ) {
+                                                    return (
+                                                        <Box
+                                                            sx={{
+                                                                display:
+                                                                    "flex",
+                                                                alignItems:
+                                                                    "center",
+                                                                gap: 1,
+                                                                color:
+                                                                    "#64748b"
+                                                            }}
+                                                        >
+                                                            <FlagIcon
+                                                                sx={{
+                                                                    color:
+                                                                        "#1976d2"
+                                                                }}
+                                                            />
+
+                                                            Choose
+                                                            your
+                                                            destination
+                                                        </Box>
+                                                    );
+                                                }
+
+                                                const stop =
+                                                    cityStops.find(
+                                                        (
+                                                            item
+                                                        ) =>
+                                                            item._id ===
+                                                            selectedId
+                                                    );
+
+                                                return stop ? (
+                                                    <StopLabel
+                                                        stop={
+                                                            stop
+                                                        }
+                                                    />
+                                                ) : (
+                                                    ""
+                                                );
+                                            }}
+                                            sx={selectStyles}
+                                        >
+                                            <MenuItem
+                                                value=""
+                                                disabled
+                                            >
+                                                Choose your
+                                                destination
+                                            </MenuItem>
+
+                                            {cityStops.map(
+                                                (stop) => (
+                                                    <MenuItem
+                                                        key={
+                                                            stop._id
+                                                        }
+                                                        value={
+                                                            stop._id
+                                                        }
+                                                    >
+                                                        <StopLabel
+                                                            stop={
+                                                                stop
+                                                            }
+                                                        />
+                                                    </MenuItem>
+                                                )
+                                            )}
+                                        </Select>
+                                    </Box>
+                                </Box>
+
+                                {/* Error */}
+
+                                {error && (
+                                    <Alert
+                                        severity="error"
+                                        onClose={() =>
+                                            setError("")
+                                        }
+                                        sx={{
+                                            mt: 3,
+                                            borderRadius:
+                                                "14px"
+                                        }}
+                                    >
+                                        {error}
+                                    </Alert>
+                                )}
+
+                                {/* Search button */}
+
+                                <Button
+                                    fullWidth
+                                    variant="contained"
+                                    onClick={
+                                        handleFindRoute
+                                    }
+                                    disabled={loading}
+                                    startIcon={
+                                        loading ? (
+                                            <CircularProgress
+                                                size={20}
+                                                color="inherit"
+                                            />
+                                        ) : (
+                                            <SearchIcon />
+                                        )
+                                    }
+                                    disableElevation
+                                    sx={{
+                                        mt: 3,
+                                        py: 1.5,
+                                        borderRadius:
+                                            "14px",
+                                        textTransform:
+                                            "none",
+                                        fontWeight: 800,
+                                        fontSize: "1rem",
+                                        backgroundColor:
+                                            "#1976d2",
+                                        "&:hover": {
+                                            backgroundColor:
+                                                "#1565c0"
+                                        }
+                                    }}
+                                >
+                                    {loading
+                                        ? "Finding Route..."
+                                        : "Find My Route"}
+                                </Button>
+                            </CardContent>
+                        </Card>
+
+                        {/* Results */}
+
+                        {results && (
+                            <RouteResults
+                                results={results}
+                            />
+                        )}
+                    </Box>
+                </Box>
+            )}
+
+            {/* City Selection Dialog */}
+
+            <Dialog
+                open={cityDialogOpen}
+                onClose={() =>
+                    setCityDialogOpen(false)
+                }
+                fullWidth
+                maxWidth="sm"
+                slotProps={{
+                    paper: {
+                        sx: {
+                            borderRadius: "24px",
+                            p: 1
+                        }
+                    }
+                }}
+            >
+                <DialogTitle
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent:
+                            "space-between",
+                        fontWeight: 800,
+                        color: "#0f172a"
+                    }}
+                >
+                    <Box>
+                        <Typography
+                            sx={{
+                                fontWeight: 800,
+                                fontSize: "1.4rem"
+                            }}
+                        >
+                            Select Your City
+                        </Typography>
+
+                        <Typography
+                            sx={{
+                                color: "#64748b",
+                                fontSize:
+                                    "0.9rem",
+                                mt: 0.5
+                            }}
+                        >
+                            Choose a city to find bus routes.
+                        </Typography>
+                    </Box>
+
+                    <IconButton
+                        onClick={() =>
+                            setCityDialogOpen(false)
+                        }
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                </DialogTitle>
+
+                <DialogContent>
+                    {cities.length === 0 ? (
+                        <Box
+                            sx={{
+                                py: 5,
+                                textAlign: "center"
+                            }}
+                        >
+                            <Typography
+                                sx={{
+                                    color: "#64748b"
+                                }}
+                            >
+                                No cities are available yet.
+                            </Typography>
+                        </Box>
+                    ) : (
+                        <Stack spacing={1.5} sx={{ pb: 2 }}>
+                            {cities.map((city) => (
+                                <Button
+                                    key={city._id}
+                                    onClick={() =>
+                                        handleCitySelect(
+                                            city
+                                        )
+                                    }
+                                    fullWidth
+                                    sx={{
+                                        justifyContent:
+                                            "flex-start",
+                                        textAlign: "left",
+                                        textTransform:
+                                            "none",
+                                        p: 2,
+                                        borderRadius:
+                                            "14px",
+                                        border:
+                                            "1px solid #e2e8f0",
+                                        color: "#0f172a",
+                                        "&:hover": {
+                                            backgroundColor:
+                                                "#f0f7ff",
+                                            borderColor:
+                                                "#90caf9"
+                                        }
+                                    }}
+                                >
+                                    <Box
+                                        sx={{
+                                            width: 44,
+                                            height: 44,
+                                            borderRadius:
+                                                "12px",
+                                            display:
+                                                "flex",
+                                            alignItems:
+                                                "center",
+                                            justifyContent:
+                                                "center",
+                                            backgroundColor:
+                                                "#e3f2fd",
+                                            color: "#1976d2",
+                                            mr: 2,
+                                            flexShrink: 0
+                                        }}
+                                    >
+                                        <LocationOnIcon />
+                                    </Box>
+
+                                    <Box>
+                                        <Typography
+                                            sx={{
+                                                fontWeight: 800,
+                                                fontSize:
+                                                    "1rem"
+                                            }}
+                                        >
+                                            {city.name}
+                                        </Typography>
+
+                                        <Typography
+                                            sx={{
+                                                color:
+                                                    "#64748b",
+                                                fontSize:
+                                                    "0.85rem"
+                                            }}
+                                        >
+                                            {city.province
+                                                ? `${city.province}, `
+                                                : ""}
+                                            {city.country ||
+                                                "Pakistan"}
+                                        </Typography>
+                                    </Box>
+                                </Button>
+                            ))}
+                        </Stack>
+                    )}
+                </DialogContent>
+            </Dialog>
+        </Box>
+    );
+}
+
+/* =========================================================
+   SELECT STYLES
+========================================================= */
+
+const selectStyles = {
+    borderRadius: "16px",
+    backgroundColor: "#f8fafc",
+
+    "& .MuiOutlinedInput-notchedOutline": {
+        borderColor: "#dbe3ec"
+    },
+
+    "&:hover .MuiOutlinedInput-notchedOutline": {
+        borderColor: "#90caf9"
+    },
+
+    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+        borderColor: "#1976d2"
+    }
+};
 
 /* =========================================================
    STOP LABEL
@@ -63,6 +1359,8 @@ function StopLabel({ stop }) {
 
             {stop.nameUrdu && (
                 <Typography
+                    lang="ur"
+                    dir="rtl"
                     sx={{
                         fontSize: {
                             xs: "1.15rem",
@@ -72,7 +1370,6 @@ function StopLabel({ stop }) {
                         fontWeight: 800,
                         color: "#1976d2",
                         lineHeight: 1.7,
-                        direction: "rtl",
                         textAlign: "left"
                     }}
                 >
@@ -87,60 +1384,53 @@ function StopLabel({ stop }) {
    FEATURE CARD
 ========================================================= */
 
-function FeatureCard({
-    icon,
-    title,
-    description
-}) {
+function FeatureCard({ icon, title, text }) {
     return (
         <Card
             elevation={0}
             sx={{
-                height: "100%",
-                border: "1px solid #e2e8f0",
-                borderRadius: "20px",
-                transition: "0.3s",
-                "&:hover": {
-                    transform: "translateY(-5px)",
-                    boxShadow:
-                        "0 15px 35px rgba(15, 23, 42, 0.08)"
-                }
+                borderRadius: "18px",
+                border:
+                    "1px solid rgba(25,118,210,0.12)",
+                backgroundColor:
+                    "rgba(255,255,255,0.72)"
             }}
         >
-            <CardContent sx={{ p: 3 }}>
-                <Box
+            <CardContent
+                sx={{
+                    py: 2,
+                    "&:last-child": {
+                        pb: 2
+                    }
+                }}
+            >
+                <Typography
                     sx={{
-                        width: 52,
-                        height: 52,
-                        borderRadius: "14px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        bgcolor: "#eff6ff",
-                        color: "#1976d2",
-                        mb: 2
+                        fontSize: "1.5rem",
+                        mb: 0.5
                     }}
                 >
                     {icon}
-                </Box>
+                </Typography>
 
                 <Typography
-                    variant="h6"
                     sx={{
                         fontWeight: 800,
-                        mb: 1
+                        color: "#0f172a",
+                        fontSize: "0.95rem"
                     }}
                 >
                     {title}
                 </Typography>
 
                 <Typography
-                    color="text.secondary"
                     sx={{
-                        lineHeight: 1.7
+                        color: "#64748b",
+                        fontSize: "0.78rem",
+                        mt: 0.5
                     }}
                 >
-                    {description}
+                    {text}
                 </Typography>
             </CardContent>
         </Card>
@@ -148,107 +1438,98 @@ function FeatureCard({
 }
 
 /* =========================================================
-   JOURNEY TIMELINE
+   ROUTE RESULTS
 ========================================================= */
 
-function JourneyTimeline({ stops }) {
-    return (
-        <Box sx={{ mt: 3 }}>
-            {stops.map((stop, index) => {
-                const isFirst = index === 0;
-                const isLast = index === stops.length - 1;
+function RouteResults({ results }) {
+    if (!results || results.count === 0) {
+        return <NoRouteCard />;
+    }
 
-                return (
-                    <Box
-                        key={`${stop._id}-${index}`}
+    if (results.type === "direct") {
+        return (
+            <Box>
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                        mb: 2
+                    }}
+                >
+                    <CheckCircleIcon
                         sx={{
-                            display: "flex",
-                            position: "relative"
+                            color: "#16a34a"
+                        }}
+                    />
+
+                    <Typography
+                        sx={{
+                            fontWeight: 800,
+                            fontSize: "1.3rem",
+                            color: "#0f172a"
                         }}
                     >
-                        <Box
-                            sx={{
-                                width: 36,
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "center"
-                            }}
-                        >
-                            <Box
-                                sx={{
-                                    width: 14,
-                                    height: 14,
-                                    borderRadius: "50%",
-                                    bgcolor:
-                                        isFirst || isLast
-                                            ? "#1976d2"
-                                            : "#94a3b8",
-                                    border:
-                                        isFirst || isLast
-                                            ? "3px solid #dbeafe"
-                                            : "3px solid #f1f5f9",
-                                    zIndex: 1
-                                }}
-                            />
+                        Direct Route Found
+                    </Typography>
+                </Box>
 
-                            {!isLast && (
-                                <Box
-                                    sx={{
-                                        width: 2,
-                                        flex: 1,
-                                        minHeight: 50,
-                                        bgcolor: "#cbd5e1"
-                                    }}
-                                />
-                            )}
-                        </Box>
+                <Stack spacing={2}>
+                    {results.data.map((route, index) => (
+                        <DirectRouteCard
+                            key={
+                                route.routeId ||
+                                index
+                            }
+                            route={route}
+                        />
+                    ))}
+                </Stack>
+            </Box>
+        );
+    }
 
-                        <Box
-                            sx={{
-                                flex: 1,
-                                pb: isLast ? 0 : 3,
-                                pl: 1
-                            }}
-                        >
-                            <Typography
-                                sx={{
-                                    fontWeight:
-                                        isFirst || isLast
-                                            ? 800
-                                            : 600,
-                                    color:
-                                        isFirst || isLast
-                                            ? "#0f172a"
-                                            : "#475569"
-                                }}
-                            >
-                                {stop.name}
-                            </Typography>
+    if (results.type === "one-transfer") {
+        return (
+            <Box>
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                        mb: 2
+                    }}
+                >
+                    <TransferWithinAStationIcon
+                        sx={{
+                            color: "#f59e0b"
+                        }}
+                    />
 
-                            {stop.nameUrdu && (
-                                <Typography
-                                    sx={{
-                                        fontSize: {
-                                            xs: "1.15rem",
-                                            sm: "1.3rem",
-                                            md: "1.45rem"
-                                        },
-                                        fontWeight: 800,
-                                        color: "#1976d2",
-                                        lineHeight: 1.7,
-                                        direction: "rtl",
-                                        textAlign: "left"
-                                    }}
-                                >
-                                    {stop.nameUrdu}
-                                </Typography>
-                            )}
-                        </Box>
-                    </Box>
-                );
-            })}
-        </Box>
-    );
+                    <Typography
+                        sx={{
+                            fontWeight: 800,
+                            fontSize: "1.3rem",
+                            color: "#0f172a"
+                        }}
+                    >
+                        1 Bus Change Required
+                    </Typography>
+                </Box>
+
+                <Stack spacing={2}>
+                    {results.data.map((route, index) => (
+                        <TransferRouteCard
+                            key={index}
+                            route={route}
+                        />
+                    ))}
+                </Stack>
+            </Box>
+        );
+    }
+
+    return <NoRouteCard />;
 }
 
 /* =========================================================
@@ -260,127 +1541,80 @@ function DirectRouteCard({ route }) {
         <Card
             elevation={0}
             sx={{
-                border: "1px solid #dbeafe",
                 borderRadius: "20px",
-                overflow: "hidden"
+                border:
+                    "1px solid #dbe5f0",
+                backgroundColor: "#ffffff"
             }}
         >
-            <Box
+            <CardContent
                 sx={{
-                    bgcolor: "#eff6ff",
-                    px: { xs: 2, sm: 3 },
-                    py: 2
+                    p: {
+                        xs: 2.5,
+                        sm: 3
+                    },
+                    "&:last-child": {
+                        pb: {
+                            xs: 2.5,
+                            sm: 3
+                        }
+                    }
                 }}
             >
-                <Stack
-                    direction={{
-                        xs: "column",
-                        sm: "row"
-                    }}
-                    spacing={1}
+                <Box
                     sx={{
-                        justifyContent: "space-between"
+                        display: "flex",
+                        justifyContent:
+                            "space-between",
+                        alignItems: {
+                            xs: "flex-start",
+                            sm: "center"
+                        },
+                        gap: 2,
+                        mb: 2,
+                        flexDirection: {
+                            xs: "column",
+                            sm: "row"
+                        }
                     }}
                 >
                     <Box>
+                        <Chip
+                            label={`Bus ${route.routeNumber}`}
+                            sx={{
+                                backgroundColor:
+                                    "#e3f2fd",
+                                color: "#1565c0",
+                                fontWeight: 800,
+                                mb: 1
+                            }}
+                        />
+
                         <Typography
                             sx={{
-                                fontWeight: 900,
+                                fontWeight: 800,
+                                fontSize: "1.2rem",
                                 color: "#0f172a"
                             }}
                         >
                             {route.routeName}
                         </Typography>
-
-                        <Typography
-                            variant="body2"
-                            color="text.secondary"
-                        >
-                            Route {route.routeNumber}
-                        </Typography>
                     </Box>
 
-                    <Chip
-                        icon={<CheckCircleIcon />}
-                        label="Direct Route"
-                        color="success"
-                        size="small"
-                    />
-                </Stack>
-            </Box>
-
-            <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
-                <Stack
-                    direction={{
-                        xs: "column",
-                        sm: "row"
-                    }}
-                    spacing={2}
-                    sx={{
-                        alignItems: {
-                            xs: "stretch",
-                            sm: "center"
-                        }
-                    }}
-                >
-                    <Box sx={{ flex: 1 }}>
-                        <Typography
-                            variant="body2"
-                            color="text.secondary"
-                        >
-                            Start
-                        </Typography>
-
-                        <Typography
-                            sx={{
-                                fontWeight: 800
-                            }}
-                        >
-                            {route.startPoint}
-                        </Typography>
-                    </Box>
-
-                    <ArrowForwardIcon
+                    <Typography
                         sx={{
-                            color: "#1976d2",
-                            display: {
-                                xs: "none",
-                                sm: "block"
-                            }
+                            color: "#64748b",
+                            fontSize: "0.9rem"
                         }}
-                    />
+                    >
+                        {route.stopCount} stops
+                    </Typography>
+                </Box>
 
-                    <Box sx={{ flex: 1 }}>
-                        <Typography
-                            variant="body2"
-                            color="text.secondary"
-                        >
-                            Destination
-                        </Typography>
-
-                        <Typography
-                            sx={{
-                                fontWeight: 800
-                            }}
-                        >
-                            {route.endPoint}
-                        </Typography>
-                    </Box>
-                </Stack>
-
-                <Divider sx={{ my: 3 }} />
-
-                <Typography
-                    sx={{
-                        fontWeight: 800,
-                        mb: 1
-                    }}
-                >
-                    Your Journey
-                </Typography>
+                <Divider sx={{ mb: 2.5 }} />
 
                 <JourneyTimeline
-                    stops={route.stops}
+                    stops={route.stops || []}
                 />
             </CardContent>
         </Card>
@@ -392,148 +1626,323 @@ function DirectRouteCard({ route }) {
 ========================================================= */
 
 function TransferRouteCard({ route }) {
-    const transferStop =
-        route.transferStop?.name ||
-        "Transfer Stop";
+    const journey = route.journey || [];
 
     return (
         <Card
             elevation={0}
             sx={{
-                border: "1px solid #e2e8f0",
                 borderRadius: "20px",
-                overflow: "hidden"
+                border:
+                    "1px solid #dbe5f0",
+                backgroundColor: "#ffffff"
             }}
         >
-            <Box
+            <CardContent
                 sx={{
-                    bgcolor: "#f8fafc",
-                    px: { xs: 2, sm: 3 },
-                    py: 2
+                    p: {
+                        xs: 2.5,
+                        sm: 3
+                    },
+                    "&:last-child": {
+                        pb: {
+                            xs: 2.5,
+                            sm: 3
+                        }
+                    }
                 }}
             >
-                <Stack
-                    direction={{
-                        xs: "column",
-                        sm: "row"
-                    }}
-                    spacing={1}
+                <Box
                     sx={{
-                        justifyContent: "space-between"
+                        p: 2,
+                        borderRadius: "14px",
+                        backgroundColor: "#fff8e1",
+                        border:
+                            "1px solid #fde68a",
+                        mb: 3,
+                        display: "flex",
+                        alignItems: "flex-start",
+                        gap: 1.5
                     }}
                 >
+                    <TransferWithinAStationIcon
+                        sx={{
+                            color: "#d97706",
+                            mt: 0.2
+                        }}
+                    />
+
                     <Box>
                         <Typography
                             sx={{
-                                fontWeight: 900
+                                fontWeight: 800,
+                                color: "#92400e"
                             }}
                         >
-                            One Transfer Journey
+                            Change Bus at
                         </Typography>
 
                         <Typography
-                            variant="body2"
-                            color="text.secondary"
+                            sx={{
+                                color: "#78350f",
+                                mt: 0.3
+                            }}
                         >
-                            Change buses once to reach
-                            your destination.
+                            {getTransferStopName(
+                                route.transferStop
+                            )}
                         </Typography>
                     </Box>
+                </Box>
 
-                    <Chip
-                        label="1 Transfer"
-                        color="warning"
-                        size="small"
-                    />
-                </Stack>
-            </Box>
+                {journey.map((leg, index) => (
+                    <Box key={index}>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems:
+                                    "center",
+                                gap: 1,
+                                mb: 1.5
+                            }}
+                        >
+                            <DirectionsBusIcon
+                                sx={{
+                                    color: "#1976d2"
+                                }}
+                            />
 
-            <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
-                <Stack spacing={3}>
-                    {route.journey?.map(
-                        (journey, index) => (
-                            <Box key={journey.routeId}>
-                                <Stack
-                                    direction="row"
-                                    spacing={1}
-                                    sx={{
-                                        alignItems: "center",
-                                        mb: 2
-                                    }}
-                                >
-                                    <DirectionsBusIcon
-                                        sx={{
-                                            color: "#1976d2"
-                                        }}
-                                    />
+                            <Typography
+                                sx={{
+                                    fontWeight: 800,
+                                    color: "#0f172a"
+                                }}
+                            >
+                                Bus {leg.routeNumber}
+                            </Typography>
 
-                                    <Box>
-                                        <Typography
-                                            sx={{
-                                                fontWeight: 800
-                                            }}
-                                        >
-                                            {journey.routeName}
-                                        </Typography>
+                            <Typography
+                                sx={{
+                                    color: "#64748b"
+                                }}
+                            >
+                                — {leg.routeName}
+                            </Typography>
+                        </Box>
 
-                                        <Typography
-                                            variant="body2"
-                                            color="text.secondary"
-                                        >
-                                            Route{" "}
-                                            {
-                                                journey.routeNumber
-                                            }
-                                        </Typography>
-                                    </Box>
-                                </Stack>
+                        <JourneyTimeline
+                            stops={
+                                leg.stops || []
+                            }
+                        />
 
-                                <JourneyTimeline
-                                    stops={
-                                        journey.stops
-                                    }
-                                />
-
-                                {index === 0 && (
-                                    <Box
-                                        sx={{
-                                            mt: 3,
-                                            p: 2,
-                                            bgcolor:
-                                                "#fff7ed",
-                                            border:
-                                                "1px solid #fed7aa",
-                                            borderRadius:
-                                                "14px"
-                                        }}
-                                    >
-                                        <Typography
-                                            sx={{
-                                                fontWeight: 800,
-                                                color:
-                                                    "#9a3412"
-                                            }}
-                                        >
-                                            Transfer at
-                                        </Typography>
-
-                                        <Typography
-                                            sx={{
-                                                fontWeight: 700,
-                                                color:
-                                                    "#7c2d12"
-                                            }}
-                                        >
-                                            {transferStop}
-                                        </Typography>
-                                    </Box>
-                                )}
-                            </Box>
-                        )
-                    )}
-                </Stack>
+                        {index <
+                            journey.length - 1 && (
+                            <Divider
+                                sx={{
+                                    my: 3
+                                }}
+                            />
+                        )}
+                    </Box>
+                ))}
             </CardContent>
         </Card>
+    );
+}
+
+/* =========================================================
+   JOURNEY TIMELINE
+========================================================= */
+
+function JourneyTimeline({ stops = [] }) {
+    if (!stops.length) {
+        return (
+            <Typography
+                sx={{
+                    color: "#64748b"
+                }}
+            >
+                No journey stops available.
+            </Typography>
+        );
+    }
+
+    return (
+        <Box>
+            {stops.map((item, index) => {
+                const stop =
+                    item.stop || item;
+
+                const isFirst = index === 0;
+                const isLast =
+                    index === stops.length - 1;
+
+                return (
+                    <Box
+                        key={
+                            stop._id ||
+                            `${stop.name}-${index}`
+                        }
+                        sx={{
+                            display: "flex",
+                            gap: 2,
+                            minHeight: isLast
+                                ? "auto"
+                                : 58
+                        }}
+                    >
+                        {/* Timeline */}
+
+                        <Box
+                            sx={{
+                                width: 22,
+                                position: "relative",
+                                display: "flex",
+                                justifyContent:
+                                    "center"
+                            }}
+                        >
+                            {!isLast && (
+                                <Box
+                                    sx={{
+                                        position:
+                                            "absolute",
+                                        top: 16,
+                                        bottom: -2,
+                                        width: 2,
+                                        backgroundColor:
+                                            "#bfdbfe"
+                                    }}
+                                />
+                            )}
+
+                            <Box
+                                sx={{
+                                    width:
+                                        isFirst ||
+                                        isLast
+                                            ? 16
+                                            : 10,
+                                    height:
+                                        isFirst ||
+                                        isLast
+                                            ? 16
+                                            : 10,
+                                    mt: 0.3,
+                                    borderRadius:
+                                        "50%",
+                                    backgroundColor:
+                                        isFirst
+                                            ? "#1976d2"
+                                            : isLast
+                                            ? "#1565c0"
+                                            : "#90caf9",
+                                    border:
+                                        "3px solid #ffffff",
+                                    boxShadow:
+                                        "0 0 0 1px #90caf9",
+                                    zIndex: 1
+                                }}
+                            />
+                        </Box>
+
+                        {/* Stop information */}
+
+                        <Box
+                            sx={{
+                                pb: isLast ? 0 : 2
+                            }}
+                        >
+                            <Typography
+                                sx={{
+                                    fontWeight:
+                                        isFirst ||
+                                        isLast
+                                            ? 800
+                                            : 600,
+                                    color: "#334155"
+                                }}
+                            >
+                                {stop.name}
+                            </Typography>
+
+                            {stop.nameUrdu && (
+                                <Typography
+                                    lang="ur"
+                                    dir="rtl"
+                                    sx={{
+                                        fontSize: {
+                                            xs: "1.15rem",
+                                            sm: "1.3rem",
+                                            md: "1.45rem"
+                                        },
+                                        fontWeight: 800,
+                                        color: "#1976d2",
+                                        lineHeight: 1.7,
+                                        textAlign: "left"
+                                    }}
+                                >
+                                    {stop.nameUrdu}
+                                </Typography>
+                            )}
+
+                            {isFirst && (
+                                <Typography
+                                    sx={{
+                                        fontSize:
+                                            "0.75rem",
+                                        color:
+                                            "#1976d2",
+                                        fontWeight:
+                                            700,
+                                        mt: 0.3
+                                    }}
+                                >
+                                    START
+                                </Typography>
+                            )}
+
+                            {isLast && (
+                                <Typography
+                                    sx={{
+                                        fontSize:
+                                            "0.75rem",
+                                        color:
+                                            "#1565c0",
+                                        fontWeight:
+                                            700,
+                                        mt: 0.3
+                                    }}
+                                >
+                                    DESTINATION
+                                </Typography>
+                            )}
+                        </Box>
+                    </Box>
+                );
+            })}
+        </Box>
+    );
+}
+
+/* =========================================================
+   TRANSFER STOP NAME
+========================================================= */
+
+function getTransferStopName(transferStop) {
+    if (!transferStop) {
+        return "Transfer point";
+    }
+
+    if (typeof transferStop === "string") {
+        return transferStop;
+    }
+
+    return (
+        transferStop.name ||
+        transferStop.stop?.name ||
+        "Transfer point"
     );
 }
 
@@ -546,929 +1955,69 @@ function NoRouteCard() {
         <Card
             elevation={0}
             sx={{
-                border: "1px solid #e2e8f0",
                 borderRadius: "20px",
+                border:
+                    "1px solid #e2e8f0",
+                backgroundColor: "#ffffff",
                 textAlign: "center"
             }}
         >
-            <CardContent sx={{ py: 6 }}>
-                <RouteIcon
+            <CardContent
+                sx={{
+                    p: {
+                        xs: 4,
+                        sm: 6
+                    }
+                }}
+            >
+                <Box
                     sx={{
-                        fontSize: 55,
-                        color: "#94a3b8",
-                        mb: 2
+                        width: 64,
+                        height: 64,
+                        mx: "auto",
+                        mb: 2,
+                        borderRadius: "18px",
+                        display: "flex",
+                        alignItems:
+                            "center",
+                        justifyContent:
+                            "center",
+                        backgroundColor:
+                            "#eff6ff",
+                        color: "#1976d2"
                     }}
-                />
+                >
+                    <RouteIcon
+                        sx={{
+                            fontSize: 32
+                        }}
+                    />
+                </Box>
 
                 <Typography
-                    variant="h6"
                     sx={{
                         fontWeight: 800,
+                        fontSize: "1.3rem",
+                        color: "#0f172a",
                         mb: 1
                     }}
                 >
-                    No route found
+                    No Route Found
                 </Typography>
 
                 <Typography
-                    color="text.secondary"
                     sx={{
+                        color: "#64748b",
                         maxWidth: 500,
-                        mx: "auto"
+                        mx: "auto",
+                        lineHeight: 1.7
                     }}
                 >
-                    We could not find a direct or one-transfer
-                    route between these stops.
+                    We couldn't find a direct or one-transfer
+                    route between these stops. Try choosing
+                    different locations.
                 </Typography>
             </CardContent>
         </Card>
-    );
-}
-
-/* =========================================================
-   ROUTE RESULTS
-========================================================= */
-
-function RouteResults({ results }) {
-    if (!results) {
-        return null;
-    }
-
-    if (!results.data?.length) {
-        return <NoRouteCard />;
-    }
-
-    return (
-        <Stack spacing={3}>
-            {results.type === "direct"
-                ? results.data.map((route) => (
-                      <DirectRouteCard
-                          key={route.routeId}
-                          route={route}
-                      />
-                  ))
-                : results.data.map((route, index) => (
-                      <TransferRouteCard
-                          key={`${route.fromStop}-${index}`}
-                          route={route}
-                      />
-                  ))}
-        </Stack>
-    );
-}
-
-/* =========================================================
-   HOME PAGE
-========================================================= */
-
-export default function Home() {
-    const [cities, setCities] = useState([]);
-    const [stops, setStops] = useState([]);
-
-    const [selectedCity, setSelectedCity] =
-        useState(null);
-
-    const [cityDialogOpen, setCityDialogOpen] =
-        useState(false);
-
-    const [fromStop, setFromStop] =
-        useState("");
-
-    const [toStop, setToStop] =
-        useState("");
-
-    const [results, setResults] =
-        useState(null);
-
-    const [loading, setLoading] =
-        useState(false);
-
-    const [initialLoading, setInitialLoading] =
-        useState(true);
-
-    const [error, setError] =
-        useState("");
-
-    /* =====================================================
-       LOAD DATA
-    ===================================================== */
-
-    useEffect(() => {
-        const loadData = async () => {
-            try {
-                setInitialLoading(true);
-                setError("");
-
-                const [
-                    citiesResponse,
-                    stopsResponse
-                ] = await Promise.all([
-                    getCities(),
-                    getStops()
-                ]);
-
-                setCities(
-                    citiesResponse?.data || []
-                );
-
-                setStops(
-                    stopsResponse?.data || []
-                );
-            } catch (error) {
-                console.error(error);
-
-                setError(
-                    error.message ||
-                        "Unable to load route data."
-                );
-            } finally {
-                setInitialLoading(false);
-            }
-        };
-
-        loadData();
-    }, []);
-
-    /* =====================================================
-       CITY STOPS
-    ===================================================== */
-
-    const cityStops = useMemo(() => {
-        if (!selectedCity) {
-            return [];
-        }
-
-        return stops.filter((stop) => {
-            const cityId =
-                typeof stop.city === "object"
-                    ? stop.city?._id
-                    : stop.city;
-
-            return cityId === selectedCity._id;
-        });
-    }, [stops, selectedCity]);
-
-    /* =====================================================
-       SELECT CITY
-    ===================================================== */
-
-    const handleCitySelect = (city) => {
-        setSelectedCity(city);
-        setCityDialogOpen(false);
-
-        setFromStop("");
-        setToStop("");
-        setResults(null);
-        setError("");
-    };
-
-    /* =====================================================
-       FIND ROUTE
-    ===================================================== */
-
-    const handleFindRoute = async () => {
-        if (!fromStop || !toStop) {
-            setError(
-                "Please select both starting point and destination."
-            );
-            return;
-        }
-
-        if (fromStop === toStop) {
-            setError(
-                "Starting point and destination cannot be the same."
-            );
-            return;
-        }
-
-        try {
-            setLoading(true);
-            setError("");
-            setResults(null);
-
-            const response =
-                await searchRoutes(
-                    fromStop,
-                    toStop
-                );
-
-            setResults(response);
-        } catch (error) {
-            console.error(error);
-
-            setError(
-                error.message ||
-                    "Unable to find a route."
-            );
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    /* =====================================================
-       SWAP STOPS
-    ===================================================== */
-
-    const handleSwap = () => {
-        setFromStop(toStop);
-        setToStop(fromStop);
-        setResults(null);
-        setError("");
-    };
-
-    /* =====================================================
-       BACK HOME
-    ===================================================== */
-
-    const handleBackHome = () => {
-        setSelectedCity(null);
-        setFromStop("");
-        setToStop("");
-        setResults(null);
-        setError("");
-    };
-
-    /* =====================================================
-       LOADING
-    ===================================================== */
-
-    if (initialLoading) {
-        return (
-            <Box
-                sx={{
-                    minHeight:
-                        "calc(100dvh - 76px)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center"
-                }}
-            >
-                <Stack
-                    spacing={2}
-                    sx={{
-                        alignItems: "center"
-                    }}
-                >
-                    <CircularProgress />
-
-                    <Typography color="text.secondary">
-                        Loading Raasta...
-                    </Typography>
-                </Stack>
-            </Box>
-        );
-    }
-
-    /* =====================================================
-       LANDING PAGE
-    ===================================================== */
-
-    if (!selectedCity) {
-        return (
-            <Box
-                sx={{
-                    height: {
-                        xs: "calc(100dvh - 68px)",
-                        md: "calc(100dvh - 76px)"
-                    },
-                    minHeight: {
-                        xs: "560px",
-                        md: "650px"
-                    },
-                    overflow: "hidden",
-                    bgcolor: "#f8fafc"
-                }}
-            >
-                <Container
-                    maxWidth="lg"
-                    sx={{
-                        height: "100%",
-                        display: "flex",
-                        alignItems: "center"
-                    }}
-                >
-                    <Box
-                        sx={{
-                            width: "100%",
-                            textAlign: "center"
-                        }}
-                    >
-                        <Chip
-                            icon={
-                                <DirectionsBusIcon />
-                            }
-                            label="Smart Bus Route Finder"
-                            sx={{
-                                mb: 2,
-                                mt: "-50px",
-                                fontWeight: 700,
-                                bgcolor: "#eff6ff",
-                                color: "#1976d2"
-                            }}
-                        />
-
-                        <Typography
-                            component="h1"
-                            sx={{
-                                fontSize: {
-                                    xs: "2.4rem",
-                                    sm: "3.5rem",
-                                    md: "5rem"
-                                },
-                                fontWeight: 900,
-                                lineHeight: 1.05,
-                                letterSpacing: "-0.04em",
-                                color: "#0f172a"
-                            }}
-                        >
-                            Know Your Route.
-                            <br />
-                            Know Your Way.
-                        </Typography>
-
-                        <Typography
-                            sx={{
-                                mt: 2,
-                                maxWidth: 700,
-                                mx: "auto",
-                                color: "#64748b",
-                                fontSize: {
-                                    xs: "1rem",
-                                    sm: "1.1rem",
-                                    md: "1.2rem"
-                                },
-                                lineHeight: 1.7
-                            }}
-                        >
-                            Tell us where you want to go,
-                            and Raasta explains which bus
-                            to take and where to get on
-                            and off.
-                        </Typography>
-
-                        <Stack
-                            direction={{
-                                xs: "column",
-                                sm: "row"
-                            }}
-                            spacing={2}
-                            sx={{
-                                justifyContent: "center",
-                                mt: 4
-                            }}
-                        >
-                            <Button
-                                variant="contained"
-                                size="large"
-                                startIcon={
-                                    <LocationCityIcon />
-                                }
-                                onClick={() =>
-                                    setCityDialogOpen(
-                                        true
-                                    )
-                                }
-                                sx={{
-                                    borderRadius: "14px",
-                                    px: 4,
-                                    py: 1.5,
-                                    fontWeight: 800,
-                                    textTransform:
-                                        "none"
-                                }}
-                            >
-                                Select Your City
-                            </Button>
-                        </Stack>
-
-                        {error && (
-                            <Alert
-                                severity="error"
-                                sx={{
-                                    mt: 3,
-                                    maxWidth: 600,
-                                    mx: "auto",
-                                    borderRadius:
-                                        "12px"
-                                }}
-                            >
-                                {error}
-                            </Alert>
-                        )}
-
-                        <Box
-                            sx={{
-                                display: "grid",
-                                gridTemplateColumns: {
-                                    xs: "1fr",
-                                    sm: "repeat(3, 1fr)"
-                                },
-                                gap: 2,
-                                mt: 5,
-                                maxWidth: 850,
-                                mx: "auto"
-                            }}
-                        >
-                            <FeatureCard
-                                icon={
-                                    <DirectionsBusIcon />
-                                }
-                                title="Find Your Bus"
-                                description="Choose your starting point and destination to find suitable bus routes."
-                            />
-
-                            <FeatureCard
-                                icon={
-                                    <RouteIcon />
-                                }
-                                title="Understand the Route"
-                                description="See the stops and journey path instead of only getting a bus number."
-                            />
-
-                            <FeatureCard
-                                icon={
-                                    <LocationCityIcon />
-                                }
-                                title="Multiple Cities"
-                                description="The platform is designed to support public transport information for different cities."
-                            />
-                        </Box>
-                    </Box>
-                </Container>
-
-                {/* =================================================
-                   CITY DIALOG
-                ================================================= */}
-
-                <Dialog
-                    open={cityDialogOpen}
-                    onClose={() =>
-                        setCityDialogOpen(false)
-                    }
-                    fullWidth
-                    maxWidth="sm"
-                    slotProps={{
-                        paper: {
-                            sx: {
-                                borderRadius: "24px",
-                                p: 1
-                            }
-                        }
-                    }}
-                >
-                    <DialogTitle
-                        sx={{
-                            fontWeight: 900
-                        }}
-                    >
-                        Select Your City
-                    </DialogTitle>
-
-                    <DialogContent>
-                        <Typography
-                            color="text.secondary"
-                            sx={{ mb: 3 }}
-                        >
-                            Select a city to see its
-                            available bus routes.
-                        </Typography>
-
-                        <Stack spacing={1.5}>
-                            {cities.length === 0 ? (
-                                <Alert severity="info">
-                                    No cities are
-                                    available yet.
-                                </Alert>
-                            ) : (
-                                cities.map((city) => (
-                                    <Button
-                                        key={city._id}
-                                        variant="outlined"
-                                        fullWidth
-                                        onClick={() =>
-                                            handleCitySelect(
-                                                city
-                                            )
-                                        }
-                                        sx={{
-                                            justifyContent:
-                                                "space-between",
-                                            textTransform:
-                                                "none",
-                                            borderRadius:
-                                                "14px",
-                                            px: 2,
-                                            py: 1.5
-                                        }}
-                                    >
-                                        <Box
-                                            sx={{
-                                                textAlign:
-                                                    "left"
-                                            }}
-                                        >
-                                            <Typography
-                                                sx={{
-                                                    fontWeight: 800
-                                                }}
-                                            >
-                                                {
-                                                    city.name
-                                                }
-                                            </Typography>
-
-                                            <Typography
-                                                variant="body2"
-                                                color="text.secondary"
-                                            >
-                                                {city.province ||
-                                                    city.country ||
-                                                    "Pakistan"}
-                                            </Typography>
-                                        </Box>
-
-                                        <ArrowForwardIcon />
-                                    </Button>
-                                ))
-                            )}
-                        </Stack>
-                    </DialogContent>
-
-                    <DialogActions sx={{ p: 2 }}>
-                        <Button
-                            onClick={() =>
-                                setCityDialogOpen(
-                                    false
-                                )
-                            }
-                        >
-                            Cancel
-                        </Button>
-                    </DialogActions>
-                </Dialog>
-            </Box>
-        );
-    }
-
-    /* =====================================================
-       ROUTE FINDER PAGE
-    ===================================================== */
-
-    return (
-        <Box
-            sx={{
-                minHeight:
-                    "calc(100dvh - 76px)",
-                bgcolor: "#f8fafc",
-                py: {
-                    xs: 3,
-                    md: 5
-                }
-            }}
-        >
-            <Container maxWidth="md">
-                <Stack spacing={3}>
-                    {/* HEADER */}
-
-                    <Stack
-                        direction="row"
-                        sx={{
-                            justifyContent:
-                                "space-between",
-                            alignItems: "center"
-                        }}
-                    >
-                        <Button
-                            startIcon={
-                                <ArrowBackIcon />
-                            }
-                            onClick={
-                                handleBackHome
-                            }
-                            sx={{
-                                textTransform:
-                                    "none",
-                                fontWeight: 700
-                            }}
-                        >
-                            Change City
-                        </Button>
-
-                        <Chip
-                            icon={
-                                <LocationCityIcon />
-                            }
-                            label={
-                                selectedCity.name
-                            }
-                            color="primary"
-                            variant="outlined"
-                        />
-                    </Stack>
-
-                    <Box>
-                        <Typography
-                            variant="h4"
-                            sx={{
-                                fontWeight: 900,
-                                color: "#0f172a"
-                            }}
-                        >
-                            Where do you want to go?
-                        </Typography>
-
-                        <Typography
-                            color="text.secondary"
-                            sx={{
-                                mt: 1,
-                                lineHeight: 1.7
-                            }}
-                        >
-                            Select your starting point
-                            and destination. Raasta
-                            will find the available
-                            bus journey.
-                        </Typography>
-                    </Box>
-
-                    {/* ROUTE FORM */}
-
-                    <Card
-                        elevation={0}
-                        sx={{
-                            border:
-                                "1px solid #e2e8f0",
-                            borderRadius: "22px"
-                        }}
-                    >
-                        <CardContent
-                            sx={{
-                                p: {
-                                    xs: 2,
-                                    sm: 3
-                                }
-                            }}
-                        >
-                            <Stack spacing={2}>
-                                <FormControl fullWidth>
-                                    <InputLabel>
-                                        Starting Point
-                                    </InputLabel>
-
-                                    <Select
-                                        value={fromStop}
-                                        label="Starting Point"
-                                        onChange={(event) =>
-                                            setFromStop(
-                                                event
-                                                    .target
-                                                    .value
-                                            )
-                                        }
-                                        renderValue={(
-                                            value
-                                        ) => {
-                                            const stop =
-                                                cityStops.find(
-                                                    (
-                                                        item
-                                                    ) =>
-                                                        item._id ===
-                                                        value
-                                                );
-
-                                            return stop ? (
-                                                <StopLabel
-                                                    stop={
-                                                        stop
-                                                    }
-                                                />
-                                            ) : (
-                                                "Select starting point"
-                                            );
-                                        }}
-                                        sx={{
-                                            borderRadius:
-                                                "14px"
-                                        }}
-                                    >
-                                        {cityStops.map(
-                                            (stop) => (
-                                                <MenuItem
-                                                    key={
-                                                        stop._id
-                                                    }
-                                                    value={
-                                                        stop._id
-                                                    }
-                                                >
-                                                    <StopLabel
-                                                        stop={
-                                                            stop
-                                                        }
-                                                    />
-                                                </MenuItem>
-                                            )
-                                        )}
-                                    </Select>
-                                </FormControl>
-
-                                <Box
-                                    sx={{
-                                        display: "flex",
-                                        justifyContent:
-                                            "center"
-                                    }}
-                                >
-                                    <IconButton
-                                        onClick={
-                                            handleSwap
-                                        }
-                                        disabled={
-                                            !fromStop &&
-                                            !toStop
-                                        }
-                                        sx={{
-                                            border:
-                                                "1px solid #cbd5e1",
-                                            bgcolor:
-                                                "#fff",
-                                            "&:hover":
-                                                {
-                                                    bgcolor:
-                                                        "#f8fafc"
-                                                }
-                                        }}
-                                    >
-                                        <SwapVertIcon />
-                                    </IconButton>
-                                </Box>
-
-                                <FormControl fullWidth>
-                                    <InputLabel>
-                                        Destination
-                                    </InputLabel>
-
-                                    <Select
-                                        value={toStop}
-                                        label="Destination"
-                                        onChange={(event) =>
-                                            setToStop(
-                                                event
-                                                    .target
-                                                    .value
-                                            )
-                                        }
-                                        renderValue={(
-                                            value
-                                        ) => {
-                                            const stop =
-                                                cityStops.find(
-                                                    (
-                                                        item
-                                                    ) =>
-                                                        item._id ===
-                                                        value
-                                                );
-
-                                            return stop ? (
-                                                <StopLabel
-                                                    stop={
-                                                        stop
-                                                    }
-                                                />
-                                            ) : (
-                                                "Select destination"
-                                            );
-                                        }}
-                                        sx={{
-                                            borderRadius:
-                                                "14px"
-                                        }}
-                                    >
-                                        {cityStops.map(
-                                            (stop) => (
-                                                <MenuItem
-                                                    key={
-                                                        stop._id
-                                                    }
-                                                    value={
-                                                        stop._id
-                                                    }
-                                                >
-                                                    <StopLabel
-                                                        stop={
-                                                            stop
-                                                        }
-                                                    />
-                                                </MenuItem>
-                                            )
-                                        )}
-                                    </Select>
-                                </FormControl>
-
-                                {error && (
-                                    <Alert
-                                        severity="error"
-                                        sx={{
-                                            borderRadius:
-                                                "12px"
-                                        }}
-                                    >
-                                        {error}
-                                    </Alert>
-                                )}
-
-                                <Button
-                                    variant="contained"
-                                    size="large"
-                                    fullWidth
-                                    disabled={loading}
-                                    onClick={
-                                        handleFindRoute
-                                    }
-                                    startIcon={
-                                        loading ? (
-                                            <CircularProgress
-                                                size={20}
-                                                color="inherit"
-                                            />
-                                        ) : (
-                                            <RouteIcon />
-                                        )
-                                    }
-                                    sx={{
-                                        borderRadius:
-                                            "14px",
-                                        py: 1.5,
-                                        fontWeight: 800,
-                                        textTransform:
-                                            "none"
-                                    }}
-                                >
-                                    {loading
-                                        ? "Finding Route..."
-                                        : "Find My Route"}
-                                </Button>
-                            </Stack>
-                        </CardContent>
-                    </Card>
-
-                    {/* RESULTS */}
-
-                    {results && (
-                        <Box>
-                            <Stack
-                                direction="row"
-                                sx={{
-                                    justifyContent:
-                                        "space-between",
-                                    alignItems: "center",
-                                    mb: 2
-                                }}
-                            >
-                                <Box>
-                                    <Typography
-                                        variant="h5"
-                                        sx={{
-                                            fontWeight: 900
-                                        }}
-                                    >
-                                        Your Route
-                                    </Typography>
-
-                                    <Typography
-                                        color="text.secondary"
-                                    >
-                                        {results.count ||
-                                            0}{" "}
-                                        route
-                                        {results.count ===
-                                        1
-                                            ? ""
-                                            : "s"}{" "}
-                                        found
-                                    </Typography>
-                                </Box>
-
-                                <IconButton
-                                    onClick={
-                                        handleFindRoute
-                                    }
-                                    disabled={loading}
-                                    title="Search again"
-                                >
-                                    <AutorenewIcon />
-                                </IconButton>
-                            </Stack>
-
-                            <RouteResults
-                                results={results}
-                            />
-                        </Box>
-                    )}
-                </Stack>
-            </Container>
-        </Box>
     );
 }
