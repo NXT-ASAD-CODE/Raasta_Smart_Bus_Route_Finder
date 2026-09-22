@@ -2199,439 +2199,142 @@ function RouteResults({ results }) {
 ========================================================= */
 
 function DirectRouteCard({ route }) {
-  const routeStops = route.stops || [];
-
-  const firstStop =
-    routeStops.length > 0
-      ? routeStops[0]?.stop ||
-      routeStops[0]
-      : null;
-
-  const lastStop =
-    routeStops.length > 0
-      ? routeStops[
-        routeStops.length - 1
-      ]?.stop ||
-      routeStops[
-      routeStops.length - 1
-      ]
-      : null;
-
-  return (
-    <Card
-      elevation={0}
-      sx={{
-        borderRadius: "22px",
-        border: "1px solid #dbe5f0",
-        backgroundColor: "#ffffff",
-        overflow: "hidden",
-        transition: "all 0.2s ease",
-        "&:hover": {
-          borderColor: "#90caf9",
-          boxShadow:
-            "0 10px 30px rgba(15, 23, 42, 0.08)"
-        }
-      }}
-    >
-      {/* Top route header */}
-
-      <Box
-        sx={{
-          px: {
-            xs: 2.5,
-            sm: 3
-          },
-          pt: {
-            xs: 2.5,
-            sm: 3
-          },
-          pb: 2
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent:
-              "space-between",
-            alignItems: {
-              xs: "flex-start",
-              sm: "center"
-            },
-            gap: 2,
-            flexDirection: {
-              xs: "column",
-              sm: "row"
-            }
-          }}
-        >
-          {/* Bus information */}
-
-          <Box
+    return (
+        <Card
+            elevation={0}
             sx={{
-              display: "flex",
-              alignItems:
-                "center",
-              gap: 1.5
+                borderRadius: "20px",
+                border: "1px solid #dbe5f0",
+                backgroundColor: "#ffffff",
+                overflow: "hidden"
             }}
-          >
-            <Box
-              sx={{
-                width: 48,
-                height: 48,
-                borderRadius:
-                  "14px",
-                display: "flex",
-                alignItems:
-                  "center",
-                justifyContent:
-                  "center",
-                backgroundColor:
-                  "#e3f2fd",
-                color: "#1976d2",
-                flexShrink: 0
-              }}
-            >
-              <DirectionsBusIcon
-                sx={{
-                  fontSize: 27
-                }}
-              />
-            </Box>
+        >
+            {/* Bus Header */}
 
-            <Box>
-              <Box
+            <Box
                 sx={{
-                  display:
-                    "flex",
-                  alignItems:
-                    "center",
-                  gap: 1,
-                  flexWrap:
-                    "wrap"
+                    px: { xs: 2.5, sm: 3 },
+                    py: 2,
+                    background:
+                        "linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%)",
+                    borderBottom: "1px solid #e2e8f0",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    gap: 2,
+                    flexWrap: "wrap"
                 }}
-              >
-                <Typography
-                  sx={{
-                    fontWeight:
-                      900,
-                    color:
-                      "#0f172a",
-                    fontSize:
-                      "1.1rem"
-                  }}
+            >
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1.5
+                    }}
                 >
-                  Bus{" "}
-                  {
-                    route.routeNumber
-                  }
-                </Typography>
+                    <Box
+                        sx={{
+                            width: 48,
+                            height: 48,
+                            borderRadius: "14px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            backgroundColor: "#e3f2fd",
+                            color: "#1976d2"
+                        }}
+                    >
+                        <DirectionsBusIcon />
+                    </Box>
+
+                    <Box>
+                        <Typography
+                            sx={{
+                                fontSize: "0.78rem",
+                                fontWeight: 700,
+                                color: "#64748b",
+                                textTransform: "uppercase",
+                                letterSpacing: "0.6px"
+                            }}
+                        >
+                            Bus Route
+                        </Typography>
+
+                        <Typography
+                            sx={{
+                                fontWeight: 900,
+                                fontSize: "1.2rem",
+                                color: "#0f172a"
+                            }}
+                        >
+                            {route.routeName}
+                        </Typography>
+                    </Box>
+                </Box>
 
                 <Chip
-                  label="DIRECT ROUTE"
-                  size="small"
-                  sx={{
-                    height: 24,
-                    backgroundColor:
-                      "#dcfce7",
-                    color:
-                      "#15803d",
-                    fontWeight:
-                      800,
-                    fontSize:
-                      "0.68rem"
-                  }}
+                    label={`Bus ${route.routeNumber}`}
+                    sx={{
+                        backgroundColor: "#1976d2",
+                        color: "#ffffff",
+                        fontWeight: 800,
+                        borderRadius: "10px"
+                    }}
                 />
-              </Box>
-
-              <Typography
-                sx={{
-                  color:
-                    "#64748b",
-                  fontSize:
-                    "0.9rem",
-                  mt: 0.3
-                }}
-              >
-                {
-                  route.routeName
-                }
-              </Typography>
             </Box>
-          </Box>
 
-          {/* Stop count */}
+            {/* Route Information */}
 
-          <Box
-            sx={{
-              px: 1.5,
-              py: 0.8,
-              borderRadius:
-                "10px",
-              backgroundColor:
-                "#f8fafc",
-              border:
-                "1px solid #e2e8f0"
-            }}
-          >
-            <Typography
-              sx={{
-                fontSize:
-                  "0.75rem",
-                color:
-                  "#64748b",
-                fontWeight:
-                  600,
-                textAlign:
-                  "center"
-              }}
-            >
-              STOPS
-            </Typography>
-
-            <Typography
-              sx={{
-                fontSize:
-                  "1rem",
-                color:
-                  "#0f172a",
-                fontWeight:
-                  800,
-                textAlign:
-                  "center"
-              }}
-            >
-              {route.stopCount}
-            </Typography>
-          </Box>
-        </Box>
-      </Box>
-
-      <Divider />
-
-      {/* Journey summary */}
-
-      <Box
-        sx={{
-          px: {
-            xs: 2.5,
-            sm: 3
-          },
-          py: 2.5,
-          backgroundColor:
-            "#f8fbff"
-        }}
-      >
-        <Typography
-          sx={{
-            fontSize: "0.75rem",
-            fontWeight: 800,
-            color: "#64748b",
-            letterSpacing:
-              "0.5px",
-            mb: 1.5
-          }}
-        >
-          ROUTE OVERVIEW
-        </Typography>
-
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns:
-              "auto 1fr auto",
-            alignItems:
-              "center",
-            gap: 1.5
-          }}
-        >
-          <Box
-            sx={{
-              width: 13,
-              height: 13,
-              borderRadius:
-                "50%",
-              backgroundColor:
-                "#1976d2",
-              boxShadow:
-                "0 0 0 5px rgba(25,118,210,0.12)"
-            }}
-          />
-
-          <Box
-            sx={{
-              height: 2,
-              backgroundColor:
-                "#bfdbfe"
-            }}
-          />
-
-          <Box
-            sx={{
-              width: 13,
-              height: 13,
-              borderRadius:
-                "50%",
-              backgroundColor:
-                "#1565c0",
-              boxShadow:
-                "0 0 0 5px rgba(21,101,192,0.12)"
-            }}
-          />
-        </Box>
-
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns:
-              "1fr 1fr",
-            gap: 3,
-            mt: 1.5
-          }}
-        >
-          <Box>
-            <Typography
-              sx={{
-                fontSize:
-                  "0.7rem",
-                color:
-                  "#1976d2",
-                fontWeight:
-                  800,
-                mb: 0.3
-              }}
-            >
-              STARTING POINT
-            </Typography>
-
-            <Typography
-              sx={{
-                fontWeight:
-                  800,
-                color:
-                  "#0f172a",
-                fontSize:
-                  "0.95rem"
-              }}
-            >
-              {firstStop?.name ||
-                "Starting point"}
-            </Typography>
-
-            {firstStop?.nameUrdu && (
-              <Typography
-                lang="ur"
-                dir="rtl"
+            <CardContent
                 sx={{
-                  fontSize:
-                    "0.9rem",
-                  fontWeight:
-                    700,
-                  color:
-                    "#1976d2",
-                  mt: 0.2
+                    p: {
+                        xs: 2.5,
+                        sm: 3
+                    },
+                    "&:last-child": {
+                        pb: {
+                            xs: 2.5,
+                            sm: 3
+                        }
+                    }
                 }}
-              >
-                {
-                  firstStop.nameUrdu
-                }
-              </Typography>
-            )}
-          </Box>
-
-          <Box
-            sx={{
-              textAlign:
-                "right"
-            }}
-          >
-            <Typography
-              sx={{
-                fontSize:
-                  "0.7rem",
-                color:
-                  "#1565c0",
-                fontWeight:
-                  800,
-                mb: 0.3
-              }}
             >
-              DESTINATION
-            </Typography>
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        mb: 2
+                    }}
+                >
+                    <Typography
+                        sx={{
+                            fontWeight: 800,
+                            color: "#0f172a"
+                        }}
+                    >
+                        Your Journey
+                    </Typography>
 
-            <Typography
-              sx={{
-                fontWeight:
-                  800,
-                color:
-                  "#0f172a",
-                fontSize:
-                  "0.95rem"
-              }}
-            >
-              {lastStop?.name ||
-                "Destination"}
-            </Typography>
+                    <Chip
+                        label={`${route.stopCount} stops`}
+                        size="small"
+                        sx={{
+                            backgroundColor: "#f1f5f9",
+                            color: "#475569",
+                            fontWeight: 700
+                        }}
+                    />
+                </Box>
 
-            {lastStop?.nameUrdu && (
-              <Typography
-                lang="ur"
-                dir="rtl"
-                sx={{
-                  fontSize:
-                    "0.9rem",
-                  fontWeight:
-                    700,
-                  color:
-                    "#1976d2",
-                  mt: 0.2
-                }}
-              >
-                {
-                  lastStop.nameUrdu
-                }
-              </Typography>
-            )}
-          </Box>
-        </Box>
-      </Box>
+                <Divider sx={{ mb: 2.5 }} />
 
-      <Divider />
-
-      {/* Complete journey */}
-
-      <CardContent
-        sx={{
-          p: {
-            xs: 2.5,
-            sm: 3
-          },
-          "&:last-child": {
-            pb: {
-              xs: 2.5,
-              sm: 3
-            }
-          }
-        }}
-      >
-        <Typography
-          sx={{
-            fontSize: "0.75rem",
-            fontWeight: 800,
-            color: "#64748b",
-            letterSpacing:
-              "0.5px",
-            mb: 2
-          }}
-        >
-          COMPLETE JOURNEY
-        </Typography>
-
-        <JourneyTimeline
-          stops={routeStops}
-        />
-      </CardContent>
-    </Card>
-  );
+                <JourneyTimeline
+                    stops={route.stops || []}
+                />
+            </CardContent>
+        </Card>
+    );
 }
 
 /* =========================================================
