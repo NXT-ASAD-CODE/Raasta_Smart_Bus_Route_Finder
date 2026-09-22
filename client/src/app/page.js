@@ -2142,6 +2142,15 @@ function RouteResults({ results }) {
     }
   );
 
+  const routeSummary =
+    results.type === "direct"
+      ? `${results.count} ${
+          results.count === 1 ? "route" : "routes"
+        } found · Direct routes`
+      : `${results.count} ${
+          results.count === 1 ? "route" : "routes"
+        } found · 1 bus change`;
+
   const SortControl = () => (
     <Box
       sx={{
@@ -2204,6 +2213,17 @@ function RouteResults({ results }) {
   if (results.type === "direct") {
     return (
       <Box>
+        <Typography
+          sx={{
+            color: "#64748b",
+            fontSize: "0.9rem",
+            fontWeight: 600,
+            mb: 1.5
+          }}
+        >
+          {routeSummary}
+        </Typography>
+
         <Box
           sx={{
             display: "flex",
@@ -2267,6 +2287,17 @@ function RouteResults({ results }) {
   if (results.type === "one-transfer") {
     return (
       <Box>
+        <Typography
+          sx={{
+            color: "#64748b",
+            fontSize: "0.9rem",
+            fontWeight: 600,
+            mb: 1.5
+          }}
+        >
+          {routeSummary}
+        </Typography>
+
         <Box
           sx={{
             display: "flex",
