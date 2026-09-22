@@ -43,6 +43,11 @@ const routeSchema = new mongoose.Schema(
                 sequence: {
                     type: Number,
                     required: true
+                },
+                
+                travelTime: {
+                    type: Number,
+                    default: 0
                 }
             }
         ],

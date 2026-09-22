@@ -76,8 +76,44 @@ const getJourneyStops = (
 
     return route.stops
         .slice(fromIndex, toIndex + 1)
-        .map((item) => item.stop)
+        .map((item) => {
+            if (!item.stop) {
+                return null;
+            }
+
+            return {
+                ...item.stop,
+                travelTime:
+                    item.travelTime || 0
+            };
+        })
         .filter(Boolean);
+};
+
+/*
+|--------------------------------------------------------------------------
+| Helper: Calculate journey travel time
+|--------------------------------------------------------------------------
+|
+| travelTime represents the time from the previous stop
+| to the current stop.
+|
+| Therefore, the first stop of a journey is not counted.
+|
+*/
+
+const getJourneyTime = (journeyStops) => {
+    if (!journeyStops || journeyStops.length < 2) {
+        return 0;
+    }
+
+    return journeyStops
+        .slice(1)
+        .reduce(
+            (total, stop) =>
+                total + (stop.travelTime || 0),
+            0
+        );
 };
 
 /*
@@ -137,6 +173,9 @@ const searchDirectRoutes = async (
             continue;
         }
 
+        const travelTime =
+            getJourneyTime(journeyStops);
+
         /*
         |--------------------------------------------------------------------------
         | Response structure matches frontend
@@ -156,7 +195,9 @@ const searchDirectRoutes = async (
 
             stops: journeyStops,
 
-            stopCount: journeyStops.length
+            stopCount: journeyStops.length,
+
+            travelTime
         });
     }
 
@@ -294,6 +335,26 @@ const searchOneTransferRoutes = async (
 
                 /*
                 |--------------------------------------------------------------------------
+                | Calculate travel time for each bus
+                |--------------------------------------------------------------------------
+                */
+
+                const firstTravelTime =
+                    getJourneyTime(
+                        firstJourneyStops
+                    );
+
+                const secondTravelTime =
+                    getJourneyTime(
+                        secondJourneyStops
+                    );
+
+                const totalTravelTime =
+                    firstTravelTime +
+                    secondTravelTime;
+
+                /*
+                |--------------------------------------------------------------------------
                 | Unique journey key
                 |--------------------------------------------------------------------------
                 */
@@ -320,14 +381,11 @@ const searchOneTransferRoutes = async (
                 | Create result
                 |--------------------------------------------------------------------------
                 |
-                | IMPORTANT:
-                |
                 | The frontend expects:
                 |
                 | route.journey[0]
                 | route.journey[1]
                 |
-                |--------------------------------------------------------------------------
                 */
 
                 results.push({
@@ -337,35 +395,49 @@ const searchOneTransferRoutes = async (
 
                     journey: [
                         {
-                            routeId: firstRoute._id,
+                            routeId:
+                                firstRoute._id,
+
                             routeNumber:
                                 firstRoute.routeNumber,
+
                             routeName:
                                 firstRoute.name,
 
                             startPoint:
                                 firstRoute.startPoint,
+
                             endPoint:
                                 firstRoute.endPoint,
 
                             stops:
-                                firstJourneyStops
+                                firstJourneyStops,
+
+                            travelTime:
+                                firstTravelTime
                         },
 
                         {
-                            routeId: secondRoute._id,
+                            routeId:
+                                secondRoute._id,
+
                             routeNumber:
                                 secondRoute.routeNumber,
+
                             routeName:
                                 secondRoute.name,
 
                             startPoint:
                                 secondRoute.startPoint,
+
                             endPoint:
                                 secondRoute.endPoint,
 
                             stops:
-                                secondJourneyStops
+                                secondJourneyStops,
+
+                            travelTime:
+                                secondTravelTime
                         }
                     ],
 
@@ -378,7 +450,10 @@ const searchOneTransferRoutes = async (
                     totalStops:
                         firstJourneyStops.length +
                         secondJourneyStops.length -
-                        1
+                        1,
+
+                    travelTime:
+                        totalTravelTime
                 });
             }
         }
