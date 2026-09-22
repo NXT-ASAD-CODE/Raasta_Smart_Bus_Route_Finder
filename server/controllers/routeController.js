@@ -66,7 +66,8 @@ const createRoute = async (req, res, next) => {
         ) {
             return res.status(400).json({
                 success: false,
-                message: "City, name, route number, start point, end point and stops are required"
+                message:
+                    "City, name, route number, start point, end point and stops are required"
             });
         }
 
@@ -100,8 +101,78 @@ const createRoute = async (req, res, next) => {
 };
 
 
+// Update travel times for a route
+const updateRouteTravelTimes = async (
+    req,
+    res,
+    next
+) => {
+    try {
+        const { routeId } = req.params;
+        const { stops } = req.body;
+
+        if (!stops || !Array.isArray(stops)) {
+            return res.status(400).json({
+                success: false,
+                message:
+                    "stops array is required"
+            });
+        }
+
+        const route = await Route.findById(
+            routeId
+        );
+
+        if (!route) {
+            return res.status(404).json({
+                success: false,
+                message: "Route not found"
+            });
+        }
+
+        for (const updateStop of stops) {
+            const routeStop = route.stops.find(
+                (item) =>
+                    item.stop.toString() ===
+                    updateStop.stop.toString()
+            );
+
+            if (!routeStop) {
+                continue;
+            }
+
+            routeStop.travelTime =
+                updateStop.travelTime || 0;
+        }
+
+        await route.save();
+
+        const populatedRoute =
+            await Route.findById(routeId)
+                .populate(
+                    "city",
+                    "name slug"
+                )
+                .populate(
+                    "stops.stop",
+                    "name nameUrdu location"
+                );
+
+        res.status(200).json({
+            success: true,
+            message:
+                "Route travel times updated successfully",
+            data: populatedRoute
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+
 module.exports = {
     getRoutes,
     getRouteById,
-    createRoute
+    createRoute,
+    updateRouteTravelTimes
 };
