@@ -2100,9 +2100,106 @@ function FeatureCard({ icon, title, text }) {
 ========================================================= */
 
 function RouteResults({ results }) {
+  const [sortBy, setSortBy] = useState("default");
+
   if (!results || results.count === 0) {
     return <NoRouteCard />;
   }
+
+  const getStopCount = (route) => {
+    if (typeof route.stopCount === "number") {
+      return route.stopCount;
+    }
+
+    if (route.journey) {
+      return route.journey.reduce(
+        (total, leg) =>
+          total + (leg.stops?.length || 0),
+        0
+      );
+    }
+
+    return route.stops?.length || 0;
+  };
+
+  const sortedRoutes = [...results.data].sort(
+    (a, b) => {
+      if (sortBy === "fewest") {
+        return (
+          getStopCount(a) -
+          getStopCount(b)
+        );
+      }
+
+      if (sortBy === "most") {
+        return (
+          getStopCount(b) -
+          getStopCount(a)
+        );
+      }
+
+      return 0;
+    }
+  );
+
+  const SortControl = () => (
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        gap: 1,
+        flexWrap: "wrap"
+      }}
+    >
+      <Typography
+        sx={{
+          color: "#64748b",
+          fontSize: "0.85rem",
+          fontWeight: 700
+        }}
+      >
+        Sort by
+      </Typography>
+
+      <Select
+        size="small"
+        value={sortBy}
+        onChange={(event) =>
+          setSortBy(event.target.value)
+        }
+        sx={{
+          minWidth: 150,
+          height: 38,
+          borderRadius: "10px",
+          backgroundColor: "#ffffff",
+          fontSize: "0.85rem",
+          fontWeight: 700,
+          color: "#334155",
+          "& .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#dbe5f0"
+          },
+          "&:hover .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#90caf9"
+          },
+          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#1976d2"
+          }
+        }}
+      >
+        <MenuItem value="default">
+          Default
+        </MenuItem>
+
+        <MenuItem value="fewest">
+          Fewest Stops
+        </MenuItem>
+
+        <MenuItem value="most">
+          Most Stops
+        </MenuItem>
+      </Select>
+    </Box>
+  );
 
   if (results.type === "direct") {
     return (
@@ -2110,30 +2207,48 @@ function RouteResults({ results }) {
         <Box
           sx={{
             display: "flex",
-            alignItems: "center",
-            gap: 1,
-            mb: 2
+            alignItems: {
+              xs: "flex-start",
+              sm: "center"
+            },
+            justifyContent: "space-between",
+            gap: 2,
+            mb: 2,
+            flexDirection: {
+              xs: "column",
+              sm: "row"
+            }
           }}
         >
-          <CheckCircleIcon
+          <Box
             sx={{
-              color: "#16a34a"
-            }}
-          />
-
-          <Typography
-            sx={{
-              fontWeight: 800,
-              fontSize: "1.3rem",
-              color: "#0f172a"
+              display: "flex",
+              alignItems: "center",
+              gap: 1
             }}
           >
-            Direct Route Found
-          </Typography>
+            <CheckCircleIcon
+              sx={{
+                color: "#16a34a"
+              }}
+            />
+
+            <Typography
+              sx={{
+                fontWeight: 800,
+                fontSize: "1.3rem",
+                color: "#0f172a"
+              }}
+            >
+              Direct Route Found
+            </Typography>
+          </Box>
+
+          <SortControl />
         </Box>
 
         <Stack spacing={2}>
-          {results.data.map(
+          {sortedRoutes.map(
             (route, index) => (
               <DirectRouteCard
                 key={
@@ -2155,30 +2270,48 @@ function RouteResults({ results }) {
         <Box
           sx={{
             display: "flex",
-            alignItems: "center",
-            gap: 1,
-            mb: 2
+            alignItems: {
+              xs: "flex-start",
+              sm: "center"
+            },
+            justifyContent: "space-between",
+            gap: 2,
+            mb: 2,
+            flexDirection: {
+              xs: "column",
+              sm: "row"
+            }
           }}
         >
-          <TransferWithinAStationIcon
+          <Box
             sx={{
-              color: "#f59e0b"
-            }}
-          />
-
-          <Typography
-            sx={{
-              fontWeight: 800,
-              fontSize: "1.3rem",
-              color: "#0f172a"
+              display: "flex",
+              alignItems: "center",
+              gap: 1
             }}
           >
-            1 Bus Change Required
-          </Typography>
+            <TransferWithinAStationIcon
+              sx={{
+                color: "#f59e0b"
+              }}
+            />
+
+            <Typography
+              sx={{
+                fontWeight: 800,
+                fontSize: "1.3rem",
+                color: "#0f172a"
+              }}
+            >
+              1 Bus Change Required
+            </Typography>
+          </Box>
+
+          <SortControl />
         </Box>
 
         <Stack spacing={2}>
-          {results.data.map(
+          {sortedRoutes.map(
             (route, index) => (
               <TransferRouteCard
                 key={index}
