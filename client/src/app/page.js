@@ -2884,8 +2884,6 @@ function TransferRouteCard({ route }) {
             mb: 1.5
           }}
         >
-          {/* Start Dot */}
-
           <Box
             sx={{
               width: 20,
@@ -2897,8 +2895,6 @@ function TransferRouteCard({ route }) {
             }}
           />
 
-          {/* Line */}
-
           <Box
             sx={{
               height: 3,
@@ -2907,8 +2903,6 @@ function TransferRouteCard({ route }) {
                 "linear-gradient(90deg, #1976d2, #1565c0)"
             }}
           />
-
-          {/* Destination Dot */}
 
           <Box
             sx={{
@@ -2922,7 +2916,7 @@ function TransferRouteCard({ route }) {
           />
         </Box>
 
-        {/* Route Names */}
+        {/* Start and Destination */}
 
         <Box
           sx={{
@@ -2936,13 +2930,15 @@ function TransferRouteCard({ route }) {
 
           <Box
             sx={{
-              textAlign: "left",
-              minWidth: 0
+              textAlign: "left"
             }}
           >
             <Typography
               sx={{
-                fontSize: { xs: "0.8rem", sm: "0.95rem" },
+                fontSize: {
+                  xs: "0.8rem",
+                  sm: "0.95rem"
+                },
                 fontWeight: 800,
                 color: "#1976d2",
                 letterSpacing: "0.5px",
@@ -2954,49 +2950,70 @@ function TransferRouteCard({ route }) {
 
             <Typography
               sx={{
-                fontSize: { xs: "1.3rem", sm: "1.5rem" },
+                fontSize: {
+                  xs: "1.3rem",
+                  sm: "1.5rem"
+                },
                 fontWeight: 900,
                 color: "#0f172a",
                 lineHeight: 1.2
               }}
             >
-              {route.startStop?.name}
+              {(() => {
+                const firstStop =
+                  journey[0]?.stops?.[0];
+
+                const stop =
+                  firstStop?.stop ||
+                  firstStop;
+
+                return stop?.name || "";
+              })()}
             </Typography>
 
-            {route.startStop?.nameUrdu && (
-              <Typography
-                sx={{
-                  fontSize: {
-                    xs: "1.15rem",
-                    sm: "1.3rem"
-                  },
-                  fontWeight: 800,
-                  color: "#1976d2",
-                  lineHeight: 1.6,
-                  direction: "rtl",
+            {(() => {
+              const firstStop =
+                journey[0]?.stops?.[0];
 
-                  /* Keep Urdu under NIPA */
-                  textAlign: "left",
-                  width: "fit-content",
-                  marginTop: "4px"
-                }}
-              >
-                {route.startStop.nameUrdu}
-              </Typography>
-            )}
+              const stop =
+                firstStop?.stop ||
+                firstStop;
+
+              return stop?.nameUrdu ? (
+                <Typography
+                  sx={{
+                    fontSize: {
+                      xs: "1.15rem",
+                      sm: "1.3rem"
+                    },
+                    fontWeight: 800,
+                    color: "#1976d2",
+                    lineHeight: 1.6,
+                    direction: "rtl",
+                    textAlign: "left",
+                    width: "fit-content",
+                    mt: 0.3
+                  }}
+                >
+                  {stop.nameUrdu}
+                </Typography>
+              ) : null;
+            })()}
           </Box>
 
           {/* DESTINATION */}
 
           <Box
             sx={{
-              textAlign: "right",
-              minWidth: 0
+              textAlign: "right"
             }}
           >
             <Typography
               sx={{
-                fontSize: { xs: "0.8rem", sm: "0.95rem" },
+                fontSize: {
+                  xs: "0.8rem",
+                  sm: "0.95rem"
+                },
                 fontWeight: 800,
                 color: "#1976d2",
                 letterSpacing: "0.5px",
@@ -3008,56 +3025,65 @@ function TransferRouteCard({ route }) {
 
             <Typography
               sx={{
-                fontSize: { xs: "1.3rem", sm: "1.5rem" },
+                fontSize: {
+                  xs: "1.3rem",
+                  sm: "1.5rem"
+                },
                 fontWeight: 900,
                 color: "#0f172a",
                 lineHeight: 1.2
               }}
             >
-              {route.endStop?.name}
+              {(() => {
+                const lastJourney =
+                  journey[journey.length - 1];
+
+                const lastStop =
+                  lastJourney?.stops?.[
+                  lastJourney.stops.length - 1
+                  ];
+
+                const stop =
+                  lastStop?.stop ||
+                  lastStop;
+
+                return stop?.name || "";
+              })()}
             </Typography>
 
-            {route.endStop?.nameUrdu && (
-              <Typography
-                sx={{
-                  fontSize: {
-                    xs: "1.15rem",
-                    sm: "1.3rem"
-                  },
-                  fontWeight: 800,
-                  color: "#1976d2",
-                  lineHeight: 1.6,
-                  direction: "rtl",
+            {(() => {
+              const lastJourney =
+                journey[journey.length - 1];
 
-                  /* IMPORTANT */
-                  textAlign: "right",
+              const lastStop =
+                lastJourney?.stops?.[
+                lastJourney.stops.length - 1
+                ];
 
-                  display: "block",
-                  width: "100%"
-                }}
-              >
-                {route.endStop.nameUrdu}
-              </Typography>
-            )}{route.endStop?.nameUrdu && (
-              <Typography
-                sx={{
-                  fontSize: {
-                    xs: "1.15rem",
-                    sm: "1.3rem"
-                  },
-                  fontWeight: 800,
-                  color: "#1976d2",
-                  lineHeight: 1.6,
-                  direction: "rtl",
+              const stop =
+                lastStop?.stop ||
+                lastStop;
 
-                  textAlign: "right",
-                  width: "100%",
-                  marginTop: "4px"
-                }}
-              >
-                {route.endStop.nameUrdu}
-              </Typography>
-            )}
+              return stop?.nameUrdu ? (
+                <Typography
+                  sx={{
+                    fontSize: {
+                      xs: "1.15rem",
+                      sm: "1.3rem"
+                    },
+                    fontWeight: 800,
+                    color: "#1976d2",
+                    lineHeight: 1.6,
+                    direction: "rtl",
+                    textAlign: "right",
+                    width: "100%",
+                    mt: 0.3
+                  }}
+                >
+                  {stop.nameUrdu}
+                </Typography>
+              ) : null;
+            })()}
           </Box>
         </Box>
       </Box>
