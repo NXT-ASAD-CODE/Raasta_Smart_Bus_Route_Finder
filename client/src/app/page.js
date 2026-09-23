@@ -2462,6 +2462,13 @@ function RouteResults({ results }) {
 ========================================================= */
 
 function DirectRouteCard({ route }) {
+  const totalTravelTime =
+    typeof route.totalTravelTime === "number"
+      ? route.totalTravelTime
+      : typeof route.travelTime === "number"
+        ? route.travelTime
+        : 0;
+
   return (
     <Card
       elevation={0}
@@ -2566,8 +2573,16 @@ function DirectRouteCard({ route }) {
           sx={{
             display: "flex",
             justifyContent: "space-between",
-            alignItems: "center",
-            mb: 2
+            alignItems: {
+              xs: "flex-start",
+              sm: "center"
+            },
+            gap: 2,
+            mb: 2,
+            flexDirection: {
+              xs: "column",
+              sm: "row"
+            }
           }}
         >
           <Typography
@@ -2583,11 +2598,12 @@ function DirectRouteCard({ route }) {
             sx={{
               display: "flex",
               alignItems: "center",
-              gap: 1
+              gap: 1,
+              flexWrap: "wrap"
             }}
           >
             <Chip
-              label={`${route.stopCount} stops`}
+              label={`${route.stopCount ?? route.stops?.length ?? 0} stops`}
               size="small"
               sx={{
                 backgroundColor: "#f1f5f9",
@@ -2605,10 +2621,7 @@ function DirectRouteCard({ route }) {
                   }}
                 />
               }
-              label={`${route.totalTravelTime ??
-                route.travelTime ??
-                0
-                } min`}
+              label={`${totalTravelTime} min`}
               size="small"
               sx={{
                 backgroundColor: "#f0fdf4",
@@ -2640,8 +2653,20 @@ function TransferRouteCard({ route }) {
 
   /*
   |--------------------------------------------------------------------------
-  | Calculate total journey time
+  | Calculate travel time for one bus leg
   |--------------------------------------------------------------------------
+  |
+  | Example:
+  |
+  | NIPA          travelTime: 15
+  | Hasan Square  travelTime: 10
+  | Civic Centre  travelTime: 0
+  |
+  | NIPA -> Hasan Square = 15
+  | Hasan Square -> Civic Centre = 10
+  |
+  | Total = 25 minutes
+  |
   */
   const getLegTravelTime = (leg) => {
     const stops = leg?.stops || [];
@@ -2652,16 +2677,35 @@ function TransferRouteCard({ route }) {
 
     return stops
       .slice(0, -1)
-      .reduce(
-        (total, stop) =>
-          total + Number(stop?.travelTime || 0),
-        0
-      );
+      .reduce((total, item) => {
+        const stop = getStop(item);
+
+        return total + Number(stop?.travelTime || 0);
+      }, 0);
   };
 
+  /*
+  |--------------------------------------------------------------------------
+  | Calculate total journey time
+  |--------------------------------------------------------------------------
+  |
+  | Example:
+  |
+  | First bus:
+  | NIPA -> Hasan Square -> Civic Centre
+  | 15 + 10 = 25
+  |
+  | Second bus:
+  | Civic Centre -> Bahadurabad
+  | 15
+  |
+  | Total = 25 + 15 = 40 minutes
+  |
+  */
   const totalTravelTime = journey.reduce(
-    (total, leg) =>
-      total + getLegTravelTime(leg),
+    (total, leg) => {
+      return total + getLegTravelTime(leg);
+    },
     0
   );
 
@@ -2670,7 +2714,9 @@ function TransferRouteCard({ route }) {
   | Get first and last stops
   |--------------------------------------------------------------------------
   */
+
   const firstLeg = journey[0];
+
   const lastLeg =
     journey[journey.length - 1];
 
@@ -2688,10 +2734,10 @@ function TransferRouteCard({ route }) {
   const lastStop =
     lastLegStops.length > 0
       ? getStop(
-        lastLegStops[
-        lastLegStops.length - 1
-        ]
-      )
+          lastLegStops[
+            lastLegStops.length - 1
+          ]
+        )
       : null;
 
   return (
@@ -2703,6 +2749,7 @@ function TransferRouteCard({ route }) {
         backgroundColor: "#ffffff",
         overflow: "hidden",
         transition: "all 0.2s ease",
+
         "&:hover": {
           borderColor: "#90caf9",
           boxShadow:
@@ -2710,7 +2757,10 @@ function TransferRouteCard({ route }) {
         }
       }}
     >
-      {/* Header */}
+
+      {/* =========================================================
+          HEADER
+      ========================================================= */}
 
       <Box
         sx={{
@@ -2740,6 +2790,9 @@ function TransferRouteCard({ route }) {
             }
           }}
         >
+
+          {/* LEFT HEADER */}
+
           <Box
             sx={{
               display: "flex",
@@ -2747,6 +2800,7 @@ function TransferRouteCard({ route }) {
               gap: 1.5
             }}
           >
+
             <Box
               sx={{
                 width: 48,
@@ -2768,6 +2822,7 @@ function TransferRouteCard({ route }) {
             </Box>
 
             <Box>
+
               <Box
                 sx={{
                   display: "flex",
@@ -2776,6 +2831,7 @@ function TransferRouteCard({ route }) {
                   flexWrap: "wrap"
                 }}
               >
+
                 <Typography
                   sx={{
                     fontWeight: 900,
@@ -2797,6 +2853,7 @@ function TransferRouteCard({ route }) {
                     fontSize: "0.68rem"
                   }}
                 />
+
               </Box>
 
               <Typography
@@ -2809,10 +2866,14 @@ function TransferRouteCard({ route }) {
                 Two buses are required
                 for this journey.
               </Typography>
+
             </Box>
+
           </Box>
 
-          {/* Total time */}
+          {/* =====================================================
+              TOTAL TIME
+          ===================================================== */}
 
           <Box
             sx={{
@@ -2826,6 +2887,7 @@ function TransferRouteCard({ route }) {
               border: "1px solid #bfdbfe"
             }}
           >
+
             <AccessTimeIcon
               sx={{
                 color: "#1976d2",
@@ -2834,6 +2896,7 @@ function TransferRouteCard({ route }) {
             />
 
             <Box>
+
               <Typography
                 sx={{
                   fontSize: "0.68rem",
@@ -2855,24 +2918,36 @@ function TransferRouteCard({ route }) {
               >
                 {totalTravelTime} min
               </Typography>
+
             </Box>
+
           </Box>
+
         </Box>
       </Box>
 
       <Divider />
 
-      {/* JOURNEY OVERVIEW */}
+      {/* =========================================================
+          JOURNEY OVERVIEW
+      ========================================================= */}
 
       <Box
         sx={{
-          px: { xs: 2, sm: 4 },
-          py: { xs: 3, sm: 4 },
+          px: {
+            xs: 2,
+            sm: 4
+          },
+          py: {
+            xs: 3,
+            sm: 4
+          },
           backgroundColor: "#f8fbff",
           borderTop: "1px solid #e2e8f0",
           borderBottom: "1px solid #e2e8f0"
         }}
       >
+
         <Typography
           sx={{
             fontSize: {
@@ -2898,6 +2973,7 @@ function TransferRouteCard({ route }) {
             mb: 1.5
           }}
         >
+
           <Box
             sx={{
               width: 20,
@@ -2928,6 +3004,7 @@ function TransferRouteCard({ route }) {
               flexShrink: 0
             }}
           />
+
         </Box>
 
         {/* Start and Destination */}
@@ -2940,6 +3017,7 @@ function TransferRouteCard({ route }) {
             width: "100%"
           }}
         >
+
           {/* STARTING POINT */}
 
           <Box
@@ -2947,6 +3025,7 @@ function TransferRouteCard({ route }) {
               textAlign: "left"
             }}
           >
+
             <Typography
               sx={{
                 fontSize: {
@@ -2995,6 +3074,7 @@ function TransferRouteCard({ route }) {
                 {firstStop.nameUrdu}
               </Typography>
             )}
+
           </Box>
 
           {/* DESTINATION */}
@@ -3004,6 +3084,7 @@ function TransferRouteCard({ route }) {
               textAlign: "right"
             }}
           >
+
             <Typography
               sx={{
                 fontSize: {
@@ -3052,13 +3133,18 @@ function TransferRouteCard({ route }) {
                 {lastStop.nameUrdu}
               </Typography>
             )}
+
           </Box>
+
         </Box>
+
       </Box>
 
       <Divider />
 
-      {/* BUS JOURNEYS */}
+      {/* =========================================================
+          BUS JOURNEYS
+      ========================================================= */}
 
       <CardContent
         sx={{
@@ -3066,6 +3152,7 @@ function TransferRouteCard({ route }) {
             xs: 2.5,
             sm: 3
           },
+
           "&:last-child": {
             pb: {
               xs: 2.5,
@@ -3074,6 +3161,7 @@ function TransferRouteCard({ route }) {
           }
         }}
       >
+
         <Typography
           sx={{
             fontSize: "0.75rem",
@@ -3088,11 +3176,18 @@ function TransferRouteCard({ route }) {
 
         {journey.map(
           (leg, index) => {
+
             const isLastLeg =
               index === journey.length - 1;
 
             const nextLeg =
               journey[index + 1];
+
+            /*
+            |------------------------------------------------------
+            | Calculate this bus's travel time
+            |------------------------------------------------------
+            */
 
             const legTravelTime =
               getLegTravelTime(leg);
@@ -3101,7 +3196,10 @@ function TransferRouteCard({ route }) {
               <Box
                 key={index}
               >
-                {/* Bus header */}
+
+                {/* =================================================
+                    BUS HEADER
+                ================================================= */}
 
                 <Box
                   sx={{
@@ -3112,6 +3210,7 @@ function TransferRouteCard({ route }) {
                     flexWrap: "wrap"
                   }}
                 >
+
                   <Box
                     sx={{
                       width: 40,
@@ -3129,14 +3228,14 @@ function TransferRouteCard({ route }) {
                   </Box>
 
                   <Box>
+
                     <Typography
                       sx={{
                         fontWeight: 800,
                         color: "#0f172a"
                       }}
                     >
-                      Bus{" "}
-                      {leg.routeNumber}
+                      Bus {leg.routeNumber}
                     </Typography>
 
                     <Typography
@@ -3147,9 +3246,10 @@ function TransferRouteCard({ route }) {
                     >
                       {leg.routeName}
                     </Typography>
+
                   </Box>
 
-                  {/* Leg travel time */}
+                  {/* LEG TRAVEL TIME */}
 
                   <Box
                     sx={{
@@ -3167,6 +3267,7 @@ function TransferRouteCard({ route }) {
                       border: "1px solid #bbf7d0"
                     }}
                   >
+
                     <AccessTimeIcon
                       sx={{
                         fontSize: 17,
@@ -3183,17 +3284,26 @@ function TransferRouteCard({ route }) {
                     >
                       {legTravelTime} min
                     </Typography>
+
                   </Box>
+
                 </Box>
+
+                {/* =================================================
+                    TIMELINE
+                ================================================= */}
 
                 <JourneyTimeline
                   stops={leg.stops || []}
                 />
 
-                {/* Transfer instruction */}
+                {/* =================================================
+                    TRANSFER INSTRUCTION
+                ================================================= */}
 
                 {!isLastLeg && (
                   <>
+
                     <Box
                       sx={{
                         my: 3,
@@ -3209,6 +3319,7 @@ function TransferRouteCard({ route }) {
                         gap: 1.5
                       }}
                     >
+
                       <Box
                         sx={{
                           width: 44,
@@ -3230,6 +3341,7 @@ function TransferRouteCard({ route }) {
                       </Box>
 
                       <Box>
+
                         <Typography
                           sx={{
                             fontWeight: 800,
@@ -3260,8 +3372,8 @@ function TransferRouteCard({ route }) {
                             mt: 0.7
                           }}
                         >
-                          Get off here and
-                          take the next bus.
+                          Get off here and take
+                          the next bus.
                         </Typography>
 
                         {nextLeg && (
@@ -3273,6 +3385,7 @@ function TransferRouteCard({ route }) {
                               mt: 1
                             }}
                           >
+
                             <DirectionsBusIcon
                               sx={{
                                 fontSize: 18,
@@ -3290,9 +3403,12 @@ function TransferRouteCard({ route }) {
                               Next: Bus{" "}
                               {nextLeg.routeNumber}
                             </Typography>
+
                           </Box>
                         )}
+
                       </Box>
+
                     </Box>
 
                     <Divider
@@ -3300,14 +3416,18 @@ function TransferRouteCard({ route }) {
                         mb: 3
                       }}
                     />
+
                   </>
                 )}
+
               </Box>
             );
           }
         )}
 
-        {/* Total journey time */}
+        {/* =========================================================
+            TOTAL JOURNEY TIME
+        ========================================================= */}
 
         <Box
           sx={{
@@ -3323,6 +3443,7 @@ function TransferRouteCard({ route }) {
             flexWrap: "wrap"
           }}
         >
+
           <Box
             sx={{
               display: "flex",
@@ -3330,6 +3451,7 @@ function TransferRouteCard({ route }) {
               gap: 1
             }}
           >
+
             <AccessTimeIcon
               sx={{
                 color: "#1976d2"
@@ -3344,6 +3466,7 @@ function TransferRouteCard({ route }) {
             >
               Total journey time
             </Typography>
+
           </Box>
 
           <Typography
@@ -3355,8 +3478,11 @@ function TransferRouteCard({ route }) {
           >
             {totalTravelTime} minutes
           </Typography>
+
         </Box>
+
       </CardContent>
+
     </Card>
   );
 }
