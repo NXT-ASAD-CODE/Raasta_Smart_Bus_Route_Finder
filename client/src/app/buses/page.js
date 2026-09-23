@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+
 import {
     Box,
     Container,
@@ -47,12 +49,18 @@ const buses = [
 ];
 
 export default function BusesPage() {
+    const router = useRouter();
+
     const [selectedCity, setSelectedCity] =
         useState("karachi");
 
     const filteredBuses = buses.filter(
         (bus) => bus.city === selectedCity
     );
+
+    const handleBusClick = (bus) => {
+        router.push(`/buses/${bus.id}`);
+    };
 
     return (
         <Box
@@ -109,7 +117,7 @@ export default function BusesPage() {
                         </Typography>
                     </Box>
 
-                    {/* City selector */}
+                    {/* City Selector */}
 
                     <FormControl
                         size="small"
@@ -158,6 +166,9 @@ export default function BusesPage() {
                             key={bus.id}
                         >
                             <Card
+                                onClick={() =>
+                                    handleBusClick(bus)
+                                }
                                 sx={{
                                     borderRadius: "20px",
                                     overflow: "hidden",
@@ -166,6 +177,7 @@ export default function BusesPage() {
                                         "1px solid #dbe5f0",
                                     transition:
                                         "all 0.2s ease",
+
                                     "&:hover": {
                                         transform:
                                             "translateY(-5px)",
@@ -183,7 +195,9 @@ export default function BusesPage() {
                                 />
 
                                 <CardContent
-                                    sx={{ p: 2.5 }}
+                                    sx={{
+                                        p: 2.5
+                                    }}
                                 >
 
                                     <Box
@@ -196,7 +210,8 @@ export default function BusesPage() {
                                     >
                                         <DirectionsBusIcon
                                             sx={{
-                                                color: "#1976d2"
+                                                color:
+                                                    "#1976d2"
                                             }}
                                         />
 
@@ -209,7 +224,6 @@ export default function BusesPage() {
                                         >
                                             {bus.number}
                                         </Typography>
-
                                     </Box>
 
                                     <Typography
@@ -229,7 +243,8 @@ export default function BusesPage() {
                                             mt: 2,
                                             backgroundColor:
                                                 "#e3f2fd",
-                                            color: "#1565c0",
+                                            color:
+                                                "#1565c0",
                                             fontWeight: 700
                                         }}
                                     />
