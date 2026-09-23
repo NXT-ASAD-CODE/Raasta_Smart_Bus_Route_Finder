@@ -105,13 +105,21 @@ const getJourneyTime = (stops) => {
         return 0;
     }
 
-    return stops
-        .slice(1)
-        .reduce(
-            (total, stop) =>
-                total + (Number(stop.travelTime) || 0),
-            0
-        );
+    return stops.reduce(
+        (total, stop, index) => {
+            // The travelTime belongs to the
+            // segment AFTER this stop.
+            if (index === stops.length - 1) {
+                return total;
+            }
+
+            return (
+                total +
+                (Number(stop.travelTime) || 0)
+            );
+        },
+        0
+    );
 };
 
 /*
