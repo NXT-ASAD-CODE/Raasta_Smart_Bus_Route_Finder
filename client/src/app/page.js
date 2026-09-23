@@ -2106,6 +2106,11 @@ function RouteResults({ results }) {
     return <NoRouteCard />;
   }
 
+  /*
+  |--------------------------------------------------------------------------
+  | Get stop count
+  |--------------------------------------------------------------------------
+  */
   const getStopCount = (route) => {
     if (typeof route.stopCount === "number") {
       return route.stopCount;
@@ -2122,6 +2127,44 @@ function RouteResults({ results }) {
     return route.stops?.length || 0;
   };
 
+
+  /*
+  |--------------------------------------------------------------------------
+  | Get total travel time
+  |--------------------------------------------------------------------------
+  */
+  const getTravelTime = (route) => {
+    /*
+    | Direct route
+    */
+    if (typeof route.totalTravelTime === "number") {
+      return route.totalTravelTime;
+    }
+
+    if (typeof route.travelTime === "number") {
+      return route.travelTime;
+    }
+
+    /*
+    | One-transfer route
+    */
+    if (route.journey) {
+      return route.journey.reduce(
+        (total, leg) =>
+          total + Number(leg.travelTime || 0),
+        0
+      );
+    }
+
+    return 0;
+  };
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | Sort routes
+  |--------------------------------------------------------------------------
+  */
   const sortedRoutes = [...results.data].sort(
     (a, b) => {
       if (sortBy === "fewest") {
@@ -2138,19 +2181,49 @@ function RouteResults({ results }) {
         );
       }
 
+      if (sortBy === "fastest") {
+        return (
+          getTravelTime(a) -
+          getTravelTime(b)
+        );
+      }
+
+      if (sortBy === "slowest") {
+        return (
+          getTravelTime(b) -
+          getTravelTime(a)
+        );
+      }
+
       return 0;
     }
   );
 
+
+  /*
+  |--------------------------------------------------------------------------
+  | Route summary
+  |--------------------------------------------------------------------------
+  */
   const routeSummary =
     results.type === "direct"
       ? `${results.count} ${
-          results.count === 1 ? "route" : "routes"
+          results.count === 1
+            ? "route"
+            : "routes"
         } found · Direct routes`
       : `${results.count} ${
-          results.count === 1 ? "route" : "routes"
+          results.count === 1
+            ? "route"
+            : "routes"
         } found · 1 bus change`;
 
+
+  /*
+  |--------------------------------------------------------------------------
+  | Sort Control
+  |--------------------------------------------------------------------------
+  */
   const SortControl = () => (
     <Box
       sx={{
@@ -2177,19 +2250,22 @@ function RouteResults({ results }) {
           setSortBy(event.target.value)
         }
         sx={{
-          minWidth: 150,
+          minWidth: 170,
           height: 38,
           borderRadius: "10px",
           backgroundColor: "#ffffff",
           fontSize: "0.85rem",
           fontWeight: 700,
           color: "#334155",
+
           "& .MuiOutlinedInput-notchedOutline": {
             borderColor: "#dbe5f0"
           },
+
           "&:hover .MuiOutlinedInput-notchedOutline": {
             borderColor: "#90caf9"
           },
+
           "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
             borderColor: "#1976d2"
           }
@@ -2197,6 +2273,14 @@ function RouteResults({ results }) {
       >
         <MenuItem value="default">
           Default
+        </MenuItem>
+
+        <MenuItem value="fastest">
+          Fastest Journey
+        </MenuItem>
+
+        <MenuItem value="slowest">
+          Longest Journey
         </MenuItem>
 
         <MenuItem value="fewest">
@@ -2210,6 +2294,12 @@ function RouteResults({ results }) {
     </Box>
   );
 
+
+  /*
+  |--------------------------------------------------------------------------
+  | Direct Routes
+  |--------------------------------------------------------------------------
+  */
   if (results.type === "direct") {
     return (
       <Box>
@@ -2284,6 +2374,12 @@ function RouteResults({ results }) {
     );
   }
 
+
+  /*
+  |--------------------------------------------------------------------------
+  | One Transfer Routes
+  |--------------------------------------------------------------------------
+  */
   if (results.type === "one-transfer") {
     return (
       <Box>
@@ -2345,7 +2441,10 @@ function RouteResults({ results }) {
           {sortedRoutes.map(
             (route, index) => (
               <TransferRouteCard
-                key={index}
+                key={
+                  route.journeyKey ||
+                  index
+                }
                 route={route}
               />
             )
@@ -2354,6 +2453,7 @@ function RouteResults({ results }) {
       </Box>
     );
   }
+
 
   return <NoRouteCard />;
 }
