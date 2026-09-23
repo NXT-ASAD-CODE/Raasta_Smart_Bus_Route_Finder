@@ -12,137 +12,137 @@ import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 
 const busData = {
     "11c": {
-        number: "11C",
-        name: "11C Bus",
-        city: "Karachi",
+    number: "11C",
+    name: "11C Bus",
+    city: "Karachi",
 
-        upRoute: {
-            firstStop: "Saadi Town / Safoora Goth",
-            lastStop: "Azam Basti",
+    upRoute: {
+        firstStop: "Saadi Town / Safoora Goth",
+        lastStop: "Azam Basti",
 
-            stops: [
-                { en: "Saadi Town / Safoora Goth", ur: "سعدی ٹاؤن / صفورہ گوٹھ" },
-                { en: "Mosamiyat / Samama", ur: "موسمیات / ثمامہ" },
-                { en: "N.I.P.A. Chowrangi", ur: "نیپا چورنگی" },
-                { en: "Urdu College / Civic Centre", ur: "اردو کالج / سوک سینٹر" },
-                { en: "Sabzi Mandi (Old)", ur: "سبزی منڈی (پرانی)" },
-                { en: "New Town / Islamia College", ur: "نیو ٹاؤن / اسلامیہ کالج" },
-                { en: "Guru Mandir / Numaish Chowrangi", ur: "گرو مندر / نمائش چورنگی" },
-                { en: "7th Day Hospital", ur: "سیونتھ ڈے ہسپتال" },
-                { en: "Saddar (Empress Market area)", ur: "صدر (ایمپریس مارکیٹ ایریا)" },
-                { en: "Jinnah Postgraduate Medical Centre (JPMC)", ur: "جناح پوسٹ گریجویٹ میڈیکل سینٹر (جے پی ایم سی)" },
-                { en: "Kala Pul", ur: "کالا پل" },
-                { en: "Corporation / Parsi Colony", ur: "کارپوریشن / پارسی کالونی" },
-                { en: "Azam Basti", ur: "اعظم بستی" }
-            ],
+        stops: [
+            "Saadi Town / Safoora Goth",
+            "Mosamiyat / Samama",
+            "N.I.P.A. Chowrangi",
+            "Urdu College / Civic Centre",
+            "Sabzi Mandi (Old)",
+            "New Town / Islamia College",
+            "Guru Mandir / Numaish Chowrangi",
+            "7th Day Hospital",
+            "Saddar (Empress Market area)",
+            "Jinnah Postgraduate Medical Centre (JPMC)",
+            "Kala Pul",
+            "Corporation / Parsi Colony",
+            "Azam Basti"
+        ],
 
-            roads: [
-                "University Road",
-                "Gulshan-e-Iqbal",
-                "National Stadium flyover",
-                "Jail Chowrangi",
-                "M.A. Jinnah Road",
-                "Rafiqui Shaheed Road"
-            ]
-        },
-
-        downRoute: {
-            firstStop: "Azam Basti",
-            lastStop: "Saadi Town / Safoora Goth",
-
-            stops: [
-                { en: "Azam Basti", ur: "اعظم بستی" },
-                { en: "Corporation / Parsi Colony", ur: "کارپوریشن / پارسی کالونی" },
-                { en: "Kala Pul", ur: "کالا پل" },
-                { en: "Jinnah Hospital (JPMC)", ur: "جناح ہسپتال (جے پی ایم سی)" },
-                { en: "Saddar", ur: "صدر" },
-                { en: "7th Day Hospital", ur: "سیونتھ ڈے ہسپتال" },
-                { en: "Numaish Chowrangi / Guru Mandir", ur: "نمائش چورنگی / گرو مندر" },
-                { en: "Islamia College / New Town", ur: "اسلامیہ کالج / نیو ٹاؤن" },
-                { en: "Jail Chowrangi / Sabzi Mandi (Old)", ur: "جیل چورنگی / سبزی منڈی (پرانی)" },
-                { en: "Civic Centre / Urdu College", ur: "سوک سینٹر / اردو کالج" },
-                { en: "N.I.P.A. Chowrangi", ur: "نیپا چورنگی" },
-                { en: "Safari Park / Karachi University", ur: "سفاری پارک / کراچی یونیورسٹی" },
-                { en: "Samama / Mosamiyat", ur: "ثمامہ / موسمیات" },
-                { en: "Safoora Goth / Saadi Town", ur: "صفورہ گوٹھ / سعدی ٹاؤن" }
-            ],
-
-            roads: [
-                "Rafiqui Shaheed Road",
-                "M.A. Jinnah Road",
-                "Jail Road",
-                "University Road"
-            ]
-        }
+        roads: [
+            "University Road",
+            "Gulshan-e-Iqbal",
+            "National Stadium flyover",
+            "Jail Chowrangi",
+            "M.A. Jinnah Road",
+            "Rafiqui Shaheed Road"
+        ]
     },
 
-    "9c": {
-        number: "9C",
-        name: "9C Bus",
-        city: "Karachi",
+    downRoute: {
+        firstStop: "Azam Basti",
+        lastStop: "Saadi Town / Safoora Goth",
 
-        upRoute: {
-            firstStop: "Model Colony Mor",
-            lastStop: "Shireen Jinnah Colony",
+        stops: [
+            "Azam Basti",
+            "Corporation / Parsi Colony",
+            "Kala Pul",
+            "Jinnah Hospital (JPMC)",
+            "Saddar",
+            "7th Day Hospital",
+            "Numaish Chowrangi / Guru Mandir",
+            "Islamia College / New Town",
+            "Jail Chowrangi / Sabzi Mandi (Old)",
+            "Civic Centre / Urdu College",
+            "N.I.P.A. Chowrangi",
+            "Safari Park / Karachi University",
+            "Samama / Mosamiyat",
+            "Safoora Goth / Saadi Town"
+        ],
 
-            stops: [
-                { en: "Model Colony Mor", ur: "ماڈل کالونی موڑ" },
-                { en: "Malir Halt", ur: "ملیر ہالٹ" },
-                { en: "Drigh Road Station", ur: "ڈرگ روڈ اسٹیشن" },
-                { en: "FTC Building", ur: "ایف ٹی سی بلڈنگ" },
-                { en: "Jinnah Postgraduate Medical Centre (JPMC)", ur: "جناح پوسٹ گریجویٹ میڈیکل سینٹر (جے پی ایم سی)" },
-                { en: "Cantt Station", ur: "چھاؤنی اسٹیشن" },
-                { en: "Delhi Colony", ur: "دہلی کالونی" },
-                { en: "Punjab Chowrangi", ur: "پنجاب چورنگی" },
-                { en: "Gizri Road", ur: "گزری روڈ" },
-                { en: "Teen Talwar & Do Talwar", ur: "تین تلوار اور دو تلوار" },
-                { en: "Abdullah Shah Ghazi Shrine", ur: "عبداللہ شاہ غازی کا مزار" },
-                { en: "Shireen Jinnah Colony", ur: "شیریں جناح کالونی" }
-            ],
-
-            roads: [
-                "Jinnah Avenue",
-                "Shahrah-e-Faisal",
-                "Baloch Colony Flyover",
-                "Korangi Road",
-                "Rafiqui Shaheed Road",
-                "Sarwar Shaheed Road",
-                "Khayaban-e-Jami",
-                "Sunset Boulevard",
-                "Shahrah-e-Iran",
-                "Khayaban-e-Saadi"
-            ]
-        },
-
-        downRoute: {
-            firstStop: "Shireen Jinnah Colony",
-            lastStop: "Model Colony Mor",
-
-            stops: [
-                { en: "Shireen Jinnah Colony", ur: "شیریں جناح کالونی" },
-                { en: "Abdullah Shah Ghazi Shrine", ur: "عبداللہ شاہ غازی کا مزار" },
-                { en: "Do Talwar & Teen Talwar", ur: "دو تلوار اور تین تلوار" },
-                { en: "Punjab Chowrangi", ur: "پنجاب چورنگی" },
-                { en: "Delhi Colony", ur: "دہلی کالونی" },
-                { en: "Cantt Station", ur: "چھاؤنی اسٹیشن" },
-                { en: "Jinnah Hospital (JPMC)", ur: "جناح ہسپتال (جے پی ایم سی)" },
-                { en: "Nursery / Karsaz / Drigh Road", ur: "نرسری / کارساز / ڈرگ روڈ" },
-                { en: "Malir Halt", ur: "ملیر ہالٹ" },
-                { en: "Jinnah Avenue", ur: "جناح ایونیو" },
-                { en: "Model Colony Mor", ur: "ماڈل کالونی موڑ" }
-            ],
-
-            roads: [
-                "Marine Promenade",
-                "Shahrah-e-Iran",
-                "Gizri Road",
-                "Khayaban-e-Jami",
-                "Rafiqui Shaheed Road",
-                "Shahrah-e-Faisal",
-                "FTC Building Area"
-            ]
-        }
+        roads: [
+            "Rafiqui Shaheed Road",
+            "M.A. Jinnah Road",
+            "Jail Road",
+            "University Road"
+        ]
     }
+},
+
+   "9c": {
+    number: "9C",
+    name: "9C Bus",
+    city: "Karachi",
+
+    upRoute: {
+        firstStop: "Model Colony Mor",
+        lastStop: "Shireen Jinnah Colony",
+
+        stops: [
+            "Model Colony Mor",
+            "Malir Halt",
+            "Drigh Road Station",
+            "FTC Building",
+            "Jinnah Postgraduate Medical Centre (JPMC)",
+            "Cantt Station",
+            "Delhi Colony",
+            "Punjab Chowrangi",
+            "Gizri Road",
+            "Teen Talwar & Do Talwar",
+            "Abdullah Shah Ghazi Shrine",
+            "Shireen Jinnah Colony"
+        ],
+
+        roads: [
+            "Jinnah Avenue",
+            "Shahrah-e-Faisal",
+            "Baloch Colony Flyover",
+            "Korangi Road",
+            "Rafiqui Shaheed Road",
+            "Sarwar Shaheed Road",
+            "Khayaban-e-Jami",
+            "Sunset Boulevard",
+            "Shahrah-e-Iran",
+            "Khayaban-e-Saadi"
+        ]
+    },
+
+    downRoute: {
+        firstStop: "Shireen Jinnah Colony",
+        lastStop: "Model Colony Mor",
+
+        stops: [
+            "Shireen Jinnah Colony",
+            "Abdullah Shah Ghazi Shrine",
+            "Do Talwar & Teen Talwar",
+            "Punjab Chowrangi",
+            "Delhi Colony",
+            "Cantt Station",
+            "Jinnah Hospital (JPMC)",
+            "Nursery / Karsaz / Drigh Road",
+            "Malir Halt",
+            "Jinnah Avenue",
+            "Model Colony Mor"
+        ],
+
+        roads: [
+            "Marine Promenade",
+            "Shahrah-e-Iran",
+            "Gizri Road",
+            "Khayaban-e-Jami",
+            "Rafiqui Shaheed Road",
+            "Shahrah-e-Faisal",
+            "FTC Building Area"
+        ]
+    }
+}
 };
 
 function RouteSection({ title, route }) {
