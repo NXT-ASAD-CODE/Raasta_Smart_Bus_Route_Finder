@@ -50,8 +50,11 @@ const getJourneyStops = (route, fromStop, toStop) => {
 
     return route.stops
         .slice(fromIndex, toIndex + 1)
-        .map((item) => item.stop)
-        .filter(Boolean);
+        .filter((item) => item.stop)
+        .map((item) => ({
+            ...item.stop,
+            travelTime: item.travelTime || 0
+        }));
 };
 
 
