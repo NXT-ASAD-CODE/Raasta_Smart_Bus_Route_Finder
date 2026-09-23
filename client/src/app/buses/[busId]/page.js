@@ -17,69 +17,62 @@ const busData = {
     city: "Karachi",
 
     upRoute: {
-        firstStop: "Azam Basti",
-        lastStop: "Saadi Town / Gulzar-e-Hijri",
-
-        stops: [
-            "Azam Basti",
-            "Corporation",
-            "Parsi Colony",
-            "Kala Pul",
-            "Jinnah Hospital (JPMC)",
-            "Saddar",
-            "7th Day Hospital",
-            "Numaish",
-            "Guru Mandir",
-            "Islamia College",
-            "Jail Chowrangi",
-            "New Town Police Station",
-            "Purani Sabzi Mandi",
-            "Civic Centre",
-            "Urdu University (Gulshan-e-Iqbal)",
-            "NIPA Chowrangi",
-            "Safari Park",
-            "Karachi University",
-            "Samama Shopping Complex",
-            "Mosamiyat",
-            "Johar Complex",
-            "Safoora Goth",
-            "Saadi Town / Gulzar-e-Hijri"
-        ],
-
-        roads: []
-    },
-
-    downRoute: {
-        firstStop: "Saadi Town / Gulzar-e-Hijri",
+        firstStop: "Saadi Town / Safoora Goth",
         lastStop: "Azam Basti",
 
         stops: [
-            "Saadi Town / Gulzar-e-Hijri",
-            "Safoora Goth",
-            "Johar Complex",
-            "Mosamiyat",
-            "Samama Shopping Complex",
-            "Karachi University",
-            "Safari Park",
-            "NIPA Chowrangi",
-            "Urdu University (Gulshan-e-Iqbal)",
-            "Civic Centre",
-            "Purani Sabzi Mandi",
-            "New Town Police Station",
-            "Jail Chowrangi",
-            "Islamia College",
-            "Guru Mandir",
-            "Numaish",
+            "Saadi Town / Safoora Goth",
+            "Mosamiyat / Samama",
+            "N.I.P.A. Chowrangi",
+            "Urdu College / Civic Centre",
+            "Sabzi Mandi (Old)",
+            "New Town / Islamia College",
+            "Guru Mandir / Numaish Chowrangi",
             "7th Day Hospital",
-            "Saddar",
-            "Jinnah Hospital (JPMC)",
+            "Saddar (Empress Market area)",
+            "Jinnah Postgraduate Medical Centre (JPMC)",
             "Kala Pul",
-            "Parsi Colony",
-            "Corporation",
+            "Corporation / Parsi Colony",
             "Azam Basti"
         ],
 
-        roads: []
+        roads: [
+            "University Road",
+            "Gulshan-e-Iqbal",
+            "National Stadium flyover",
+            "Jail Chowrangi",
+            "M.A. Jinnah Road",
+            "Rafiqui Shaheed Road"
+        ]
+    },
+
+    downRoute: {
+        firstStop: "Azam Basti",
+        lastStop: "Saadi Town / Safoora Goth",
+
+        stops: [
+            "Azam Basti",
+            "Corporation / Parsi Colony",
+            "Kala Pul",
+            "Jinnah Hospital (JPMC)",
+            "Saddar",
+            "7th Day Hospital",
+            "Numaish Chowrangi / Guru Mandir",
+            "Islamia College / New Town",
+            "Jail Chowrangi / Sabzi Mandi (Old)",
+            "Civic Centre / Urdu College",
+            "N.I.P.A. Chowrangi",
+            "Safari Park / Karachi University",
+            "Samama / Mosamiyat",
+            "Safoora Goth / Saadi Town"
+        ],
+
+        roads: [
+            "Rafiqui Shaheed Road",
+            "M.A. Jinnah Road",
+            "Jail Road",
+            "University Road"
+        ]
     }
 },
 
