@@ -18,9 +18,6 @@ const getStopIndex = (route, stopId) => {
 |--------------------------------------------------------------------------
 | Helper: Check whether a route can travel from A to B
 |--------------------------------------------------------------------------
-|
-| A must appear before B in the route.
-|
 */
 
 const canTravelBetween = (
@@ -76,17 +73,10 @@ const getJourneyStops = (
 
     return route.stops
         .slice(fromIndex, toIndex + 1)
-        .map((item) => {
-            if (!item.stop) {
-                return null;
-            }
-
-            return {
-                ...item.stop,
-                travelTime:
-                    item.travelTime || 0
-            };
-        })
+        .map((item) => ({
+            ...item.stop,
+            travelTime: item.travelTime || 0
+        }))
         .filter(Boolean);
 };
 
@@ -95,23 +85,31 @@ const getJourneyStops = (
 | Helper: Calculate journey travel time
 |--------------------------------------------------------------------------
 |
-| travelTime represents the time from the previous stop
-| to the current stop.
+| travelTime means:
 |
-| Therefore, the first stop of a journey is not counted.
+| NIPA -> Hasan Square = 15
+| Hasan Square -> Civic Centre = 10
 |
+| Therefore:
+|
+| NIPA -> Civic Centre = 15 + 10 = 25
+|
+| The first stop is NOT counted because it is
+| the starting point of the journey.
+|
+|--------------------------------------------------------------------------
 */
 
-const getJourneyTime = (journeyStops) => {
-    if (!journeyStops || journeyStops.length < 2) {
+const getJourneyTime = (stops) => {
+    if (!stops || stops.length < 2) {
         return 0;
     }
 
-    return journeyStops
+    return stops
         .slice(1)
         .reduce(
             (total, stop) =>
-                total + (stop.travelTime || 0),
+                total + (Number(stop.travelTime) || 0),
             0
         );
 };
@@ -176,12 +174,6 @@ const searchDirectRoutes = async (
         const travelTime =
             getJourneyTime(journeyStops);
 
-        /*
-        |--------------------------------------------------------------------------
-        | Response structure matches frontend
-        |--------------------------------------------------------------------------
-        */
-
         results.push({
             routeId: route._id,
             routeNumber: route.routeNumber,
@@ -195,7 +187,8 @@ const searchDirectRoutes = async (
 
             stops: journeyStops,
 
-            stopCount: journeyStops.length,
+            stopCount:
+                journeyStops.length,
 
             travelTime
         });
@@ -283,9 +276,6 @@ const searchOneTransferRoutes = async (
             |--------------------------------------------------------------------------
             | Find second route
             |--------------------------------------------------------------------------
-            |
-            | transfer stop -> destination
-            |
             */
 
             for (const secondRoute of routes) {
@@ -380,12 +370,6 @@ const searchOneTransferRoutes = async (
                 |--------------------------------------------------------------------------
                 | Create result
                 |--------------------------------------------------------------------------
-                |
-                | The frontend expects:
-                |
-                | route.journey[0]
-                | route.journey[1]
-                |
                 */
 
                 results.push({
@@ -452,8 +436,7 @@ const searchOneTransferRoutes = async (
                         secondJourneyStops.length -
                         1,
 
-                    travelTime:
-                        totalTravelTime
+                    totalTravelTime
                 });
             }
         }

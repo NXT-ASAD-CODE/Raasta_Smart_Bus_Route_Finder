@@ -28,8 +28,8 @@ const navigationItems = [
         href: "/"
     },
     {
-        label: "Find Route",
-        href: "/"
+        label: "Find Buses",
+        href: "/buses"
     },
     {
         label: "Cities",

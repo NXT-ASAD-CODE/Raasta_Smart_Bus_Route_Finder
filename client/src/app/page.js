@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
 import {
   Alert,
@@ -2578,15 +2579,44 @@ function DirectRouteCard({ route }) {
             Your Journey
           </Typography>
 
-          <Chip
-            label={`${route.stopCount} stops`}
-            size="small"
+          <Box
             sx={{
-              backgroundColor: "#f1f5f9",
-              color: "#475569",
-              fontWeight: 700
+              display: "flex",
+              alignItems: "center",
+              gap: 1
             }}
-          />
+          >
+            <Chip
+              label={`${route.stopCount} stops`}
+              size="small"
+              sx={{
+                backgroundColor: "#f1f5f9",
+                color: "#475569",
+                fontWeight: 700
+              }}
+            />
+
+            <Chip
+              icon={
+                <AccessTimeIcon
+                  sx={{
+                    fontSize: "16px !important",
+                    color: "#16a34a !important"
+                  }}
+                />
+              }
+              label={`${route.totalTravelTime ??
+                route.travelTime ??
+                0
+                } min`}
+              size="small"
+              sx={{
+                backgroundColor: "#f0fdf4",
+                color: "#15803d",
+                fontWeight: 700
+              }}
+            />
+          </Box>
         </Box>
 
         <Divider sx={{ mb: 2.5 }} />
