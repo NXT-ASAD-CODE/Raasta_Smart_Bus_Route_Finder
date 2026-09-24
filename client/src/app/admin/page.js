@@ -56,9 +56,7 @@ export default function AdminLoginPage() {
             mobile
         });
 
-        // Temporary navigation for testing only.
-        // We will replace this after backend authentication.
-        router.push("/admin/dashboard");
+        
     };
 
     return (
