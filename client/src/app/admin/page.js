@@ -189,16 +189,18 @@ export default function AdminLoginPage() {
                                 sx={{
                                     mb: 2
                                 }}
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <EmailIcon
-                                                sx={{
-                                                    color: "#64748b"
-                                                }}
-                                            />
-                                        </InputAdornment>
-                                    )
+                                slotProps={{
+                                    input: {
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <EmailIcon
+                                                    sx={{
+                                                        color: "#64748b"
+                                                    }}
+                                                />
+                                            </InputAdornment>
+                                        )
+                                    }
                                 }}
                             />
 
@@ -217,16 +219,18 @@ export default function AdminLoginPage() {
                                 sx={{
                                     mb: 2
                                 }}
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <LockIcon
-                                                sx={{
-                                                    color: "#64748b"
-                                                }}
-                                            />
-                                        </InputAdornment>
-                                    )
+                                slotProps={{
+                                    input: {
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <EmailIcon
+                                                    sx={{
+                                                        color: "#64748b"
+                                                    }}
+                                                />
+                                            </InputAdornment>
+                                        )
+                                    }
                                 }}
                             />
 
@@ -244,16 +248,18 @@ export default function AdminLoginPage() {
                                     mb: 3
                                 }}
                                 placeholder="03XXXXXXXXX"
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <PhoneIcon
-                                                sx={{
-                                                    color: "#64748b"
-                                                }}
-                                            />
-                                        </InputAdornment>
-                                    )
+                                slotProps={{
+                                    input: {
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <EmailIcon
+                                                    sx={{
+                                                        color: "#64748b"
+                                                    }}
+                                                />
+                                            </InputAdornment>
+                                        )
+                                    }
                                 }}
                             />
 
