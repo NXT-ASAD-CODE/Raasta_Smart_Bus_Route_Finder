@@ -7,6 +7,9 @@ const cityRoutes = require("./routes/cityRoutes");
 const stopRoutes = require("./routes/stopRoutes");
 const routeRoutes = require("./routes/routeRoutes");
 const searchRoutes = require("./routes/searchRoutes");
+const adminRoutes = require("./routes/adminRoutes");
+
+
 
 const app = express();
 
@@ -20,6 +23,7 @@ app.use("/api/cities", cityRoutes);
 app.use("/api/stops", stopRoutes);
 app.use("/api/routes", routeRoutes);
 app.use("/api/search", searchRoutes);
+app.use("/api/admin", adminRoutes);
 
 app.get("/", (req, res) => {
     res.json({
