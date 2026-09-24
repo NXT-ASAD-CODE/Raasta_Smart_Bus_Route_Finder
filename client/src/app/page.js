@@ -336,364 +336,793 @@ export default function Home() {
       />
 
       {!selectedCity ? (
+  <Box
+    sx={{
+      minHeight: {
+        xs: "calc(100dvh - 68px)",
+        md: "calc(100dvh - 76px)"
+      },
+      position: "relative",
+      overflow: "hidden",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      px: { xs: 2, sm: 3, md: 4 },
+
+      /* Animated background */
+      background:
+        "radial-gradient(circle at 50% 30%, rgba(33,150,243,0.10), transparent 32%), linear-gradient(135deg, #f8fbff 0%, #eef6ff 48%, #ffffff 100%)",
+
+      "@keyframes fadeUp": {
+        "0%": {
+          opacity: 0,
+          transform: "translateY(35px)"
+        },
+        "100%": {
+          opacity: 1,
+          transform: "translateY(0)"
+        }
+      },
+
+      "@keyframes fadeDown": {
+        "0%": {
+          opacity: 0,
+          transform: "translateY(-25px)"
+        },
+        "100%": {
+          opacity: 1,
+          transform: "translateY(0)"
+        }
+      },
+
+      "@keyframes float": {
+        "0%, 100%": {
+          transform: "translateY(0) scale(1)"
+        },
+        "50%": {
+          transform: "translateY(-18px) scale(1.03)"
+        }
+      },
+
+      "@keyframes floatSlow": {
+        "0%, 100%": {
+          transform: "translate(0, 0)"
+        },
+        "50%": {
+          transform: "translate(20px, -20px)"
+        }
+      },
+
+      "@keyframes busMove": {
+        "0%": {
+          transform: "translateX(-12px)"
+        },
+        "50%": {
+          transform: "translateX(12px)"
+        },
+        "100%": {
+          transform: "translateX(-12px)"
+        }
+      },
+
+      "@keyframes pulse": {
+        "0%, 100%": {
+          boxShadow: "0 0 0 0 rgba(25,118,210,0.28)"
+        },
+        "50%": {
+          boxShadow: "0 0 0 12px rgba(25,118,210,0)"
+        }
+      },
+
+      "@keyframes shine": {
+        "0%": {
+          left: "-120%"
+        },
+        "50%, 100%": {
+          left: "120%"
+        }
+      }
+    }}
+  >
+    {/* =====================================================
+        FLOATING BACKGROUND DECORATIONS
+    ====================================================== */}
+
+    <Box
+      sx={{
+        position: "absolute",
+        width: { xs: 220, md: 430 },
+        height: { xs: 220, md: 430 },
+        borderRadius: "50%",
+        background:
+          "radial-gradient(circle, rgba(25,118,210,0.13), rgba(25,118,210,0.02) 65%, transparent 70%)",
+        top: { xs: -100, md: -180 },
+        right: { xs: -100, md: -120 },
+        animation: "floatSlow 8s ease-in-out infinite",
+        pointerEvents: "none"
+      }}
+    />
+
+    <Box
+      sx={{
+        position: "absolute",
+        width: { xs: 180, md: 330 },
+        height: { xs: 180, md: 330 },
+        borderRadius: "50%",
+        background:
+          "radial-gradient(circle, rgba(33,150,243,0.09), rgba(33,150,243,0.02) 65%, transparent 70%)",
+        bottom: { xs: -90, md: -140 },
+        left: { xs: -80, md: -100 },
+        animation: "float 7s ease-in-out infinite",
+        pointerEvents: "none"
+      }}
+    />
+
+    {/* Small floating circles */}
+
+    <Box
+      sx={{
+        position: "absolute",
+        width: 14,
+        height: 14,
+        borderRadius: "50%",
+        backgroundColor: "#90caf9",
+        opacity: 0.65,
+        top: "24%",
+        left: "13%",
+        animation: "float 4s ease-in-out infinite",
+        pointerEvents: "none"
+      }}
+    />
+
+    <Box
+      sx={{
+        position: "absolute",
+        width: 9,
+        height: 9,
+        borderRadius: "50%",
+        backgroundColor: "#1976d2",
+        opacity: 0.45,
+        top: "36%",
+        right: "15%",
+        animation: "floatSlow 5s ease-in-out infinite",
+        pointerEvents: "none"
+      }}
+    />
+
+    <Box
+      sx={{
+        position: "absolute",
+        width: 7,
+        height: 7,
+        borderRadius: "50%",
+        backgroundColor: "#64b5f6",
+        opacity: 0.55,
+        bottom: "25%",
+        left: "18%",
+        animation: "float 6s ease-in-out infinite",
+        pointerEvents: "none"
+      }}
+    />
+
+    {/* =====================================================
+        MAIN CONTENT
+    ====================================================== */}
+
+    <Box
+      sx={{
+        width: "100%",
+        maxWidth: 1180,
+        mx: "auto",
+        textAlign: "center",
+        position: "relative",
+        zIndex: 2,
+        marginTop:"50px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+
+        transform: {
+          xs: "translateY(-8px)",
+          md: "translateY(-15px)"
+        }
+      }}
+    >
+
+      {/* =====================================================
+          BADGE
+      ====================================================== */}
+
+      <Chip
+        icon={
+          <DirectionsBusIcon
+            sx={{
+              color: "#1976d2 !important",
+            }}
+          />
+        }
+        label="SMART PUBLIC TRANSPORT"
+        sx={{
+          animation: "fadeDown 0.7s ease-out",
+
+          mb: { xs: 2, sm: 2.5 },
+
+          px: { xs: 1, sm: 1.5 },
+          py: 2,
+
+          height: "auto",
+          borderRadius: "50px",
+
+          background:
+            "linear-gradient(135deg, #e3f2fd, #d8ecff)",
+
+          border:
+            "1px solid rgba(25,118,210,0.08)",
+
+          color: "#1565c0",
+
+          fontWeight: 800,
+
+          letterSpacing: {
+            xs: "0.6px",
+            sm: "1.2px"
+          },
+
+          fontSize: {
+            xs: "0.68rem",
+            sm: "0.82rem",
+            md: "0.88rem"
+          },
+
+          boxShadow:
+            "0 8px 25px rgba(25,118,210,0.08)"
+        }}
+      />
+
+      {/* =====================================================
+          MAIN TITLE
+      ====================================================== */}
+
+      <Typography
+        component="h1"
+        sx={{
+          animation:
+            "fadeUp 0.8s ease-out 0.1s both",
+
+          fontWeight: 950,
+
+          fontSize: {
+            xs: "clamp(4rem, 18vw, 5.2rem)",
+            sm: "clamp(5rem, 12vw, 7rem)",
+            md: "clamp(6rem, 9vw, 8rem)"
+          },
+
+          lineHeight: 0.85,
+
+          letterSpacing: {
+            xs: "-4px",
+            sm: "-5px",
+            md: "-7px"
+          },
+
+          color: "#111827",
+
+          mb: {
+            xs: 1.5,
+            sm: 2
+          },
+
+          /* subtle text depth */
+          textShadow:
+            "0 10px 35px rgba(15,23,42,0.08)"
+        }}
+      >
+        Raasta
+      </Typography>
+
+      {/* =====================================================
+          BLUE TAGLINE
+      ====================================================== */}
+
+      <Typography
+        component="h2"
+        sx={{
+          animation:
+            "fadeUp 0.8s ease-out 0.25s both",
+
+          fontSize: {
+            xs: "1.35rem",
+            sm: "2rem",
+            md: "2.65rem"
+          },
+
+          fontWeight: 850,
+
+          lineHeight: 1.15,
+
+          color: "#1976d2",
+
+          mb: {
+            xs: 1.5,
+            sm: 1.8
+          }
+        }}
+      >
+        Your Journey Starts Here.
+      </Typography>
+
+      {/* =====================================================
+          DESCRIPTION
+      ====================================================== */}
+
+      <Typography
+        sx={{
+          animation:
+            "fadeUp 0.8s ease-out 0.4s both",
+
+          maxWidth: {
+            xs: 360,
+            sm: 680,
+            md: 850
+          },
+
+          mx: "auto",
+
+          color: "#64748b",
+
+          fontSize: {
+            xs: "0.9rem",
+            sm: "1rem",
+            md: "1.08rem"
+          },
+
+          lineHeight: 1.7,
+
+          mb: {
+            xs: 2.5,
+            sm: 3
+          }
+        }}
+      >
+        Tell us where you are and where you want to go.
+        Raasta helps you discover the right bus route
+        and makes your journey easier.
+      </Typography>
+
+      {/* =====================================================
+          ANIMATED ROUTE
+      ====================================================== */}
+
+      <Box
+        sx={{
+          animation:
+            "fadeUp 0.8s ease-out 0.55s both",
+
+          width: {
+            xs: "92%",
+            sm: "80%",
+            md: 900
+          },
+
+          maxWidth: 900,
+
+          mx: "auto",
+
+          mb: {
+            xs: 2.5,
+            sm: 3
+          },
+
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+
+        {/* START DOT */}
+
         <Box
           sx={{
+            width: {
+              xs: 13,
+              sm: 17
+            },
+
             height: {
-              xs: "calc(100dvh - 68px)",
-              md: "calc(100dvh - 76px)"
+              xs: 13,
+              sm: 17
             },
-            minHeight: {
-              xs: "560px",
-              md: "650px"
-            },
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+
+            flexShrink: 0,
+
+            borderRadius: "50%",
+
+            backgroundColor: "#1976d2",
+
+            boxShadow:
+              "0 0 0 7px rgba(25,118,210,0.12)",
+
+            animation:
+              "pulse 2.2s ease-in-out infinite"
+          }}
+        />
+
+        {/* LEFT LINE */}
+
+        <Box
+          sx={{
+            height: 4,
+            flex: 1,
+
+            background:
+              "linear-gradient(90deg, #1976d2, #90caf9)",
+
+            borderRadius: 10,
+
             position: "relative",
-            px: {
-              xs: 2,
-              sm: 3,
-              md: 4
-            },
             overflow: "hidden"
           }}
         >
-          {/* Background circle */}
+          <Box
+            sx={{
+              position: "absolute",
+              top: 0,
+              left: "-30%",
+              width: "30%",
+              height: "100%",
+
+              background:
+                "linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent)",
+
+              animation:
+                "shine 2.5s linear infinite"
+            }}
+          />
+        </Box>
+
+        {/* BUS */}
+
+        <Box
+          sx={{
+            position: "relative",
+            mx: {
+              xs: 1,
+              sm: 1.8,
+              md: 2.2
+            },
+
+            display: "flex",
+            alignItems: "center",
+
+            animation:
+              "busMove 2.8s ease-in-out infinite"
+          }}
+        >
+          {/* Glow behind bus */}
 
           <Box
             sx={{
               position: "absolute",
-              width: {
-                xs: 220,
-                md: 360
-              },
-              height: {
-                xs: 220,
-                md: 360
-              },
+              width: 75,
+              height: 75,
               borderRadius: "50%",
-              backgroundColor:
-                "rgba(25, 118, 210, 0.06)",
-              top: {
-                xs: -100,
-                md: -150
-              },
-              right: {
-                xs: -100,
-                md: -80
-              },
-              pointerEvents: "none"
+
+              background:
+                "radial-gradient(circle, rgba(25,118,210,0.16), transparent 70%)",
+
+              filter: "blur(4px)"
             }}
           />
 
-          {/* Main content */}
+          <DirectionsBusIcon
+            sx={{
+              position: "relative",
 
+              fontSize: {
+                xs: 43,
+                sm: 52,
+                md: 60
+              },
+
+              color: "#1976d2",
+
+              filter:
+                "drop-shadow(0 8px 10px rgba(25,118,210,0.22))"
+            }}
+          />
+        </Box>
+
+        {/* RIGHT LINE */}
+
+        <Box
+          sx={{
+            height: 4,
+            flex: 1,
+
+            background:
+              "linear-gradient(90deg, #90caf9, #1976d2)",
+
+            borderRadius: 10,
+
+            position: "relative",
+            overflow: "hidden"
+          }}
+        >
           <Box
             sx={{
-              width: "100%",
-              maxWidth: 1200,
-              mx: "auto",
-              textAlign: "center",
-              position: "relative",
-              zIndex: 1,
+              position: "absolute",
+              top: 0,
+              left: "-30%",
+              width: "30%",
+              height: "100%",
 
+              background:
+                "linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent)",
+
+              animation:
+                "shine 2.5s linear infinite 0.8s"
+            }}
+          />
+        </Box>
+
+        {/* DESTINATION DOT */}
+
+        <Box
+          sx={{
+            width: {
+              xs: 13,
+              sm: 17
+            },
+
+            height: {
+              xs: 13,
+              sm: 17
+            },
+
+            flexShrink: 0,
+
+            borderRadius: "50%",
+
+            backgroundColor: "#1565c0",
+
+            boxShadow:
+              "0 0 0 7px rgba(21,101,192,0.12)",
+
+            animation:
+              "pulse 2.2s ease-in-out infinite 1s"
+          }}
+        />
+      </Box>
+
+      {/* =====================================================
+          MAIN CTA
+      ====================================================== */}
+
+      <Button
+        variant="contained"
+
+        onClick={() =>
+          setCityDialogOpen(true)
+        }
+
+        startIcon={
+          <LocationOnIcon
+            sx={{
+              fontSize: "1.35rem !important"
+            }}
+          />
+        }
+
+        disableElevation
+
+        sx={{
+          animation:
+            "fadeUp 0.8s ease-out 0.7s both",
+
+          position: "relative",
+          overflow: "hidden",
+
+          width: {
+            xs: "100%",
+            sm: "auto"
+          },
+
+          maxWidth: {
+            xs: 390,
+            sm: "none"
+          },
+
+          minWidth: {
+            sm: 390,
+            md: 500
+          },
+
+          px: {
+            xs: 2.5,
+            sm: 4,
+            md: 5
+          },
+
+          py: {
+            xs: 1.35,
+            sm: 1.5,
+            md: 1.65
+          },
+
+          borderRadius: "50px",
+
+          textTransform: "none",
+
+          fontSize: {
+            xs: "0.92rem",
+            sm: "1rem",
+            md: "1.08rem"
+          },
+
+          fontWeight: 800,
+
+          color: "#ffffff",
+
+          background:
+            "linear-gradient(135deg, #1976d2, #1565c0)",
+
+          boxShadow:
+            "0 12px 30px rgba(25,118,210,0.28)",
+
+          transition:
+            "all 0.3s cubic-bezier(0.4,0,0.2,1)",
+
+          "&::before": {
+            content: '""',
+
+            position: "absolute",
+
+            top: 0,
+            left: "-120%",
+
+            width: "80%",
+            height: "100%",
+
+            background:
+              "linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent)",
+
+            transform:
+              "skewX(-20deg)"
+          },
+
+          "&:hover": {
+            background:
+              "linear-gradient(135deg, #1e88e5, #1565c0)",
+
+            transform:
+              "translateY(-4px) scale(1.015)",
+
+            boxShadow:
+              "0 18px 40px rgba(25,118,210,0.35)"
+          },
+
+          "&:hover::before": {
+            animation:
+              "shine 0.9s ease-in-out"
+          },
+
+          "&:active": {
+            transform:
+              "translateY(-1px) scale(0.99)"
+          }
+        }}
+      >
+        Select Your City to Check the Route
+      </Button>
+
+      {/* =====================================================
+          MINI TRUST / FEATURE ROW
+      ====================================================== */}
+
+      <Box
+        sx={{
+          animation:
+            "fadeUp 0.8s ease-out 0.9s both",
+
+          display: "flex",
+
+          alignItems: "center",
+          justifyContent: "center",
+
+          flexWrap: "wrap",
+
+          gap: {
+            xs: 1,
+            sm: 2
+          },
+
+          mt: {
+            xs: 2.5,
+            sm: 3
+          }
+        }}
+      >
+
+        {[
+          {
+            icon: "🚌",
+            text: "Simple Routes"
+          },
+          {
+            icon: "📍",
+            text: "Multiple Cities"
+          },
+          {
+            icon: "⚡",
+            text: "Quick Search"
+          }
+        ].map((item) => (
+          <Box
+            key={item.text}
+            sx={{
               display: "flex",
-              flexDirection: "column",
               alignItems: "center",
+              gap: 0.7,
 
-              transform: {
-                xs: "none",
-                sm: "translateY(-5px)",
-                md: "translateY(-8px)"
+              px: {
+                xs: 1.2,
+                sm: 1.5
+              },
+
+              py: 0.7,
+
+              borderRadius: "30px",
+
+              backgroundColor:
+                "rgba(255,255,255,0.72)",
+
+              border:
+                "1px solid rgba(25,118,210,0.08)",
+
+              color: "#64748b",
+
+              fontSize: {
+                xs: "0.72rem",
+                sm: "0.78rem"
+              },
+
+              fontWeight: 700,
+
+              backdropFilter: "blur(8px)",
+
+              transition: "all 0.25s ease",
+
+              "&:hover": {
+                transform:
+                  "translateY(-3px)",
+
+                backgroundColor:
+                  "#ffffff",
+
+                color: "#1976d2",
+
+                boxShadow:
+                  "0 8px 20px rgba(25,118,210,0.10)"
               }
             }}
           >
-            {/* Badge */}
-
-            <Chip
-              icon={
-                <DirectionsBusIcon
-                  sx={{
-                    color:
-                      "#1976d2 !important"
-                  }}
-                />
-              }
-              label="SMART PUBLIC TRANSPORT"
-              sx={{
-                mb: {
-                  xs: 2,
-                  sm: 2.2,
-                  md: 2.5
-                },
-                px: {
-                  xs: 0.5,
-                  sm: 1
-                },
-                py: {
-                  xs: 1.8,
-                  sm: 2
-                },
-                height: "auto",
-                marginTop: "-50px",
-                borderRadius: "50px",
-                backgroundColor: "#e3f2fd",
-                color: "#1565c0",
-                fontWeight: 700,
-                letterSpacing: {
-                  xs: "0.5px",
-                  sm: "1px"
-                },
-                fontSize: {
-                  xs: "0.72rem",
-                  sm: "0.82rem",
-                  md: "0.88rem"
-                }
-              }}
-            />
-
-            {/* Raasta */}
-
-            <Typography
-              component="h1"
-              sx={{
-                fontWeight: 900,
-                fontSize: {
-                  xs: "clamp(3.8rem, 15vw, 5rem)",
-                  sm: "clamp(4.5rem, 10vw, 6.5rem)",
-                  md: "clamp(5rem, 8vw, 7rem)"
-                },
-                lineHeight: 0.9,
-                letterSpacing: {
-                  xs: "-3px",
-                  sm: "-4px",
-                  md: "-6px"
-                },
-                color: "#111827",
-                mb: {
-                  xs: 1.5,
-                  sm: 1.5,
-                  md: 1.8
-                }
-              }}
-            >
-              Raasta
-            </Typography>
-
-            {/* Subtitle */}
-
-            <Typography
-              component="h2"
-              sx={{
-                fontSize: {
-                  xs: "1.35rem",
-                  sm: "1.9rem",
-                  md: "2.5rem"
-                },
-                fontWeight: 800,
-                lineHeight: 1.15,
-                color: "#1976d2",
-                mb: {
-                  xs: 1.5,
-                  sm: 1.5,
-                  md: 1.8
-                }
-              }}
-            >
-              Your Journey Starts Here.
-            </Typography>
-
-            {/* Description */}
-
-            <Typography
-              sx={{
-                maxWidth: {
-                  xs: 350,
-                  sm: 650,
-                  md: 850
-                },
-                mx: "auto",
-                color: "#64748b",
-                fontSize: {
-                  xs: "0.9rem",
-                  sm: "1rem",
-                  md: "1.08rem"
-                },
-                lineHeight: 1.65,
-                mb: {
-                  xs: 2,
-                  sm: 2.3,
-                  md: 2.5
-                }
-              }}
-            >
-              Tell us where you are and where you want to
-              go. Raasta helps you understand which bus
-              route to take and how to reach your
-              destination.
-            </Typography>
-
-            {/* Route visual */}
-
             <Box
+              component="span"
               sx={{
-                width: {
-                  xs: "88%",
-                  sm: "75%",
-                  md: 850
-                },
-                maxWidth: 850,
-                mx: "auto",
-                mb: {
-                  xs: 2,
-                  sm: 2.3,
-                  md: 2.5
-                },
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center"
+                fontSize: "0.9rem"
               }}
             >
-              {/* Starting point */}
-
-              <Box
-                sx={{
-                  width: {
-                    xs: 14,
-                    sm: 17
-                  },
-                  height: {
-                    xs: 14,
-                    sm: 17
-                  },
-                  flexShrink: 0,
-                  borderRadius: "50%",
-                  backgroundColor: "#1976d2",
-                  boxShadow:
-                    "0 0 0 7px rgba(25,118,210,0.12)"
-                }}
-              />
-
-              {/* Line */}
-
-              <Box
-                sx={{
-                  height: 3,
-                  flex: 1,
-                  background:
-                    "linear-gradient(90deg, #1976d2, #90caf9)"
-                }}
-              />
-
-              {/* Bus */}
-
-              <DirectionsBusIcon
-                sx={{
-                  flexShrink: 0,
-                  fontSize: {
-                    xs: 42,
-                    sm: 48,
-                    md: 54
-                  },
-                  color: "#1976d2",
-                  mx: {
-                    xs: 1,
-                    sm: 1.5,
-                    md: 2
-                  }
-                }}
-              />
-
-              {/* Line */}
-
-              <Box
-                sx={{
-                  height: 3,
-                  flex: 1,
-                  background:
-                    "linear-gradient(90deg, #90caf9, #1976d2)"
-                }}
-              />
-
-              {/* Destination */}
-
-              <Box
-                sx={{
-                  width: {
-                    xs: 14,
-                    sm: 17
-                  },
-                  height: {
-                    xs: 14,
-                    sm: 17
-                  },
-                  flexShrink: 0,
-                  borderRadius: "50%",
-                  backgroundColor: "#1565c0",
-                  boxShadow:
-                    "0 0 0 7px rgba(21,101,192,0.12)"
-                }}
-              />
+              {item.icon}
             </Box>
 
-            {/* MAIN BUTTON */}
-
-            <Button
-              variant="contained"
-              onClick={() =>
-                setCityDialogOpen(true)
-              }
-              startIcon={
-                <LocationOnIcon />
-              }
-              disableElevation
-              sx={{
-                width: {
-                  xs: "100%",
-                  sm: "auto"
-                },
-                maxWidth: {
-                  xs: 400,
-                  sm: "none"
-                },
-                minWidth: {
-                  sm: 380,
-                  md: 470
-                },
-                px: {
-                  xs: 2,
-                  sm: 4,
-                  md: 5
-                },
-                py: {
-                  xs: 1.25,
-                  sm: 1.4,
-                  md: 1.5
-                },
-                borderRadius: "50px",
-                textTransform: "none",
-                fontSize: {
-                  xs: "0.9rem",
-                  sm: "1rem",
-                  md: "1.05rem"
-                },
-                fontWeight: 700,
-                whiteSpace: "nowrap",
-                backgroundColor: "#1976d2",
-                boxShadow:
-                  "0 8px 25px rgba(25,118,210,0.28)",
-                "&:hover": {
-                  backgroundColor: "#1565c0",
-                  boxShadow:
-                    "0 10px 30px rgba(25,118,210,0.4)"
-                }
-              }}
-            >
-              Select Your City to Check the Route
-            </Button>
+            {item.text}
           </Box>
-        </Box>
-      ) : (
+        ))}
+      </Box>
+
+    </Box>
+  </Box>
+) : (
         /* =====================================================
            ROUTE FINDER
         ====================================================== */
