@@ -10,6 +10,13 @@ const adminLogin = async (req, res, next) => {
             password,
             mobile
         } = req.body;
+        const verifyAdmin = async (req, res) => {
+            return res.status(200).json({
+                success: true,
+                message: "Admin is authenticated",
+                admin: req.admin
+            });
+        };
 
         if (!email || !password || !mobile) {
             return res.status(400).json({
@@ -77,5 +84,6 @@ const adminLogin = async (req, res, next) => {
 };
 
 module.exports = {
-    adminLogin
+    adminLogin,
+    verifyAdmin
 };
