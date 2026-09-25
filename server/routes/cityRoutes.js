@@ -6,10 +6,15 @@ const {
     createCity
 } = require("../controllers/cityController");
 
+const adminAuth = require("../middleware/adminAuth");
+
 const router = express.Router();
 
 router.get("/", getCities);
+
 router.get("/:cityId", getCityById);
-router.post("/", createCity);
+
+// Admin only
+router.post("/", adminAuth, createCity);
 
 module.exports = router;
