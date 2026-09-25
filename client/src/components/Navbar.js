@@ -341,9 +341,13 @@ export default function Navbar() {
                                     primary={
                                         item.label
                                     }
-                                    primaryTypographyProps={{
-                                        fontWeight: 600,
-                                        color: "#334155"
+                                    slotProps={{
+                                        primary: {
+                                            sx: {
+                                                fontWeight: 600,
+                                                color: "#334155"
+                                            }
+                                        }
                                     }}
                                 />
                             </ListItemButton>

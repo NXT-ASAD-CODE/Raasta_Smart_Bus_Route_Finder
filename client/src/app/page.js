@@ -342,21 +342,27 @@ export default function Home() {
         xs: "calc(100dvh - 68px)",
         md: "calc(100dvh - 76px)"
       },
+
       position: "relative",
       overflow: "hidden",
+
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
+
       px: { xs: 2, sm: 3, md: 4 },
 
-      /* Animated background */
       background:
-        "radial-gradient(circle at 50% 30%, rgba(33,150,243,0.10), transparent 32%), linear-gradient(135deg, #f8fbff 0%, #eef6ff 48%, #ffffff 100%)",
+        "radial-gradient(circle at 50% 40%, rgba(33,150,243,0.12), transparent 35%), linear-gradient(135deg,#f8fbff 0%,#eef6ff 48%,#ffffff 100%)",
+
+      /* =====================================================
+         ANIMATIONS
+      ====================================================== */
 
       "@keyframes fadeUp": {
         "0%": {
           opacity: 0,
-          transform: "translateY(35px)"
+          transform: "translateY(45px)"
         },
         "100%": {
           opacity: 1,
@@ -367,7 +373,7 @@ export default function Home() {
       "@keyframes fadeDown": {
         "0%": {
           opacity: 0,
-          transform: "translateY(-25px)"
+          transform: "translateY(-35px)"
         },
         "100%": {
           opacity: 1,
@@ -375,42 +381,122 @@ export default function Home() {
         }
       },
 
-      "@keyframes float": {
-        "0%, 100%": {
-          transform: "translateY(0) scale(1)"
-        },
-        "50%": {
-          transform: "translateY(-18px) scale(1.03)"
-        }
-      },
-
-      "@keyframes floatSlow": {
-        "0%, 100%": {
-          transform: "translate(0, 0)"
-        },
-        "50%": {
-          transform: "translate(20px, -20px)"
-        }
-      },
-
-      "@keyframes busMove": {
+      "@keyframes scaleIn": {
         "0%": {
-          transform: "translateX(-12px)"
-        },
-        "50%": {
-          transform: "translateX(12px)"
+          opacity: 0,
+          transform: "scale(0.75)"
         },
         "100%": {
-          transform: "translateX(-12px)"
+          opacity: 1,
+          transform: "scale(1)"
+        }
+      },
+
+      "@keyframes float": {
+        "0%,100%": {
+          transform: "translateY(0)"
+        },
+        "50%": {
+          transform: "translateY(-20px)"
+        }
+      },
+
+      "@keyframes floatReverse": {
+        "0%,100%": {
+          transform: "translateY(0)"
+        },
+        "50%": {
+          transform: "translateY(20px)"
+        }
+      },
+
+      "@keyframes floatSide": {
+        "0%,100%": {
+          transform: "translate(0,0)"
+        },
+        "50%": {
+          transform: "translate(25px,-20px)"
+        }
+      },
+
+      "@keyframes rotateSlow": {
+        "from": {
+          transform: "rotate(0deg)"
+        },
+        "to": {
+          transform: "rotate(360deg)"
         }
       },
 
       "@keyframes pulse": {
-        "0%, 100%": {
-          boxShadow: "0 0 0 0 rgba(25,118,210,0.28)"
+        "0%": {
+          transform: "scale(1)",
+          boxShadow:
+            "0 0 0 0 rgba(25,118,210,0.35)"
+        },
+        "70%": {
+          transform: "scale(1.15)",
+          boxShadow:
+            "0 0 0 15px rgba(25,118,210,0)"
+        },
+        "100%": {
+          transform: "scale(1)",
+          boxShadow:
+            "0 0 0 0 rgba(25,118,210,0)"
+        }
+      },
+
+      "@keyframes busTravel": {
+        "0%": {
+          transform:
+            "translateX(-18px) translateY(0) rotate(-1deg)"
+        },
+        "25%": {
+          transform:
+            "translateX(-5px) translateY(-5px) rotate(0deg)"
         },
         "50%": {
-          boxShadow: "0 0 0 12px rgba(25,118,210,0)"
+          transform:
+            "translateX(18px) translateY(0) rotate(1deg)"
+        },
+        "75%": {
+          transform:
+            "translateX(5px) translateY(-5px) rotate(0deg)"
+        },
+        "100%": {
+          transform:
+            "translateX(-18px) translateY(0) rotate(-1deg)"
+        }
+      },
+
+      "@keyframes lineGlow": {
+        "0%": {
+          backgroundPosition: "-300px 0"
+        },
+        "100%": {
+          backgroundPosition: "700px 0"
+        }
+      },
+
+      "@keyframes ripple": {
+        "0%": {
+          transform: "scale(0.7)",
+          opacity: 0.8
+        },
+        "100%": {
+          transform: "scale(1.7)",
+          opacity: 0
+        }
+      },
+
+      "@keyframes sparkle": {
+        "0%,100%": {
+          opacity: 0.2,
+          transform: "scale(0.6)"
+        },
+        "50%": {
+          opacity: 1,
+          transform: "scale(1.3)"
         }
       },
 
@@ -418,89 +504,235 @@ export default function Home() {
         "0%": {
           left: "-120%"
         },
-        "50%, 100%": {
+        "50%,100%": {
           left: "120%"
+        }
+      },
+
+      "@keyframes buttonPulse": {
+        "0%,100%": {
+          boxShadow:
+            "0 12px 30px rgba(25,118,210,0.25)"
+        },
+        "50%": {
+          boxShadow:
+            "0 18px 45px rgba(25,118,210,0.42)"
+        }
+      },
+
+      "@keyframes orbit": {
+        "from": {
+          transform: "rotate(0deg) translateX(45px) rotate(0deg)"
+        },
+        "to": {
+          transform:
+            "rotate(360deg) translateX(45px) rotate(-360deg)"
         }
       }
     }}
   >
+
     {/* =====================================================
-        FLOATING BACKGROUND DECORATIONS
+        LARGE FLOATING GRADIENT
     ====================================================== */}
 
     <Box
       sx={{
         position: "absolute",
-        width: { xs: 220, md: 430 },
-        height: { xs: 220, md: 430 },
+
+        width: {
+          xs: 280,
+          md: 500
+        },
+
+        height: {
+          xs: 280,
+          md: 500
+        },
+
         borderRadius: "50%",
+
         background:
-          "radial-gradient(circle, rgba(25,118,210,0.13), rgba(25,118,210,0.02) 65%, transparent 70%)",
-        top: { xs: -100, md: -180 },
-        right: { xs: -100, md: -120 },
-        animation: "floatSlow 8s ease-in-out infinite",
+          "radial-gradient(circle,rgba(33,150,243,0.13),rgba(33,150,243,0.025) 60%,transparent 72%)",
+
+        top: {
+          xs: -130,
+          md: -210
+        },
+
+        right: {
+          xs: -130,
+          md: -160
+        },
+
+        animation:
+          "floatSide 9s ease-in-out infinite",
+
         pointerEvents: "none"
       }}
     />
 
+    {/* =====================================================
+        SECOND FLOATING GRADIENT
+    ====================================================== */}
+
     <Box
       sx={{
         position: "absolute",
-        width: { xs: 180, md: 330 },
-        height: { xs: 180, md: 330 },
+
+        width: {
+          xs: 240,
+          md: 400
+        },
+
+        height: {
+          xs: 240,
+          md: 400
+        },
+
         borderRadius: "50%",
+
         background:
-          "radial-gradient(circle, rgba(33,150,243,0.09), rgba(33,150,243,0.02) 65%, transparent 70%)",
-        bottom: { xs: -90, md: -140 },
-        left: { xs: -80, md: -100 },
-        animation: "float 7s ease-in-out infinite",
+          "radial-gradient(circle,rgba(25,118,210,0.10),transparent 70%)",
+
+        bottom: {
+          xs: -130,
+          md: -170
+        },
+
+        left: {
+          xs: -110,
+          md: -150
+        },
+
+        animation:
+          "floatReverse 8s ease-in-out infinite",
+
         pointerEvents: "none"
       }}
     />
 
-    {/* Small floating circles */}
+    {/* =====================================================
+        FLOATING PARTICLES
+    ====================================================== */}
 
-    <Box
-      sx={{
-        position: "absolute",
-        width: 14,
-        height: 14,
-        borderRadius: "50%",
-        backgroundColor: "#90caf9",
-        opacity: 0.65,
-        top: "24%",
-        left: "13%",
-        animation: "float 4s ease-in-out infinite",
-        pointerEvents: "none"
-      }}
-    />
-
-    <Box
-      sx={{
-        position: "absolute",
-        width: 9,
-        height: 9,
-        borderRadius: "50%",
-        backgroundColor: "#1976d2",
-        opacity: 0.45,
-        top: "36%",
-        right: "15%",
-        animation: "floatSlow 5s ease-in-out infinite",
-        pointerEvents: "none"
-      }}
-    />
-
-    <Box
-      sx={{
-        position: "absolute",
-        width: 7,
-        height: 7,
-        borderRadius: "50%",
-        backgroundColor: "#64b5f6",
-        opacity: 0.55,
-        bottom: "25%",
+    {[
+      {
+        top: "20%",
+        left: "12%",
+        size: 12,
+        delay: "0s"
+      },
+      {
+        top: "32%",
         left: "18%",
-        animation: "float 6s ease-in-out infinite",
+        size: 7,
+        delay: "1s"
+      },
+      {
+        top: "24%",
+        right: "13%",
+        size: 9,
+        delay: "1.8s"
+      },
+      {
+        top: "48%",
+        right: "9%",
+        size: 6,
+        delay: "2.5s"
+      },
+      {
+        bottom: "25%",
+        left: "14%",
+        size: 8,
+        delay: "0.7s"
+      },
+      {
+        bottom: "20%",
+        right: "17%",
+        size: 12,
+        delay: "1.5s"
+      },
+      {
+        top: "62%",
+        left: "7%",
+        size: 5,
+        delay: "3s"
+      }
+    ].map((particle, index) => (
+      <Box
+        key={index}
+        sx={{
+          position: "absolute",
+
+          width: particle.size,
+          height: particle.size,
+
+          borderRadius: "50%",
+
+          background:
+            "linear-gradient(135deg,#1976d2,#90caf9)",
+
+          opacity: 0.55,
+
+          top: particle.top,
+          left: particle.left,
+          right: particle.right,
+          bottom: particle.bottom,
+
+          animation: `sparkle 2.8s ease-in-out infinite ${particle.delay}`,
+
+          pointerEvents: "none"
+        }}
+      />
+    ))}
+
+    {/* =====================================================
+        FLOATING BUS ICON
+    ====================================================== */}
+
+    <DirectionsBusIcon
+      sx={{
+        position: "absolute",
+
+        top: "18%",
+        left: "7%",
+
+        fontSize: {
+          xs: 26,
+          md: 34
+        },
+
+        color: "#90caf9",
+
+        opacity: 0.3,
+
+        animation:
+          "float 5s ease-in-out infinite",
+
+        pointerEvents: "none"
+      }}
+    />
+
+    <DirectionsBusIcon
+      sx={{
+        position: "absolute",
+
+        bottom: "18%",
+        right: "7%",
+
+        fontSize: {
+          xs: 25,
+          md: 32
+        },
+
+        color: "#1976d2",
+
+        opacity: 0.18,
+
+        animation:
+          "floatReverse 6s ease-in-out infinite",
+
         pointerEvents: "none"
       }}
     />
@@ -512,19 +744,22 @@ export default function Home() {
     <Box
       sx={{
         width: "100%",
-        maxWidth: 1180,
+        maxWidth: 1200,
+        marginTop:"20px",
         mx: "auto",
+
         textAlign: "center",
+
         position: "relative",
-        zIndex: 2,
-        marginTop:"50px",
+        zIndex: 5,
+
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
 
         transform: {
           xs: "translateY(-8px)",
-          md: "translateY(-15px)"
+          md: "translateY(-14px)"
         }
       }}
     >
@@ -537,24 +772,30 @@ export default function Home() {
         icon={
           <DirectionsBusIcon
             sx={{
-              color: "#1976d2 !important",
+              color:
+                "#1976d2 !important"
             }}
           />
         }
         label="SMART PUBLIC TRANSPORT"
         sx={{
-          animation: "fadeDown 0.7s ease-out",
+          animation:
+            "fadeDown 0.8s ease-out both",
 
-          mb: { xs: 2, sm: 2.5 },
+          mb: {
+            xs: 2,
+            sm: 2.5
+          },
 
-          px: { xs: 1, sm: 1.5 },
+          px: 1.5,
           py: 2,
 
           height: "auto",
+
           borderRadius: "50px",
 
           background:
-            "linear-gradient(135deg, #e3f2fd, #d8ecff)",
+            "linear-gradient(135deg,#e3f2fd,#d7ebff)",
 
           border:
             "1px solid rgba(25,118,210,0.08)",
@@ -564,8 +805,8 @@ export default function Home() {
           fontWeight: 800,
 
           letterSpacing: {
-            xs: "0.6px",
-            sm: "1.2px"
+            xs: "0.5px",
+            sm: "1px"
           },
 
           fontSize: {
@@ -580,21 +821,21 @@ export default function Home() {
       />
 
       {/* =====================================================
-          MAIN TITLE
+          RAasta TITLE
       ====================================================== */}
 
       <Typography
         component="h1"
         sx={{
           animation:
-            "fadeUp 0.8s ease-out 0.1s both",
+            "scaleIn 0.9s cubic-bezier(.17,.67,.35,1.2) 0.15s both",
 
           fontWeight: 950,
 
           fontSize: {
-            xs: "clamp(4rem, 18vw, 5.2rem)",
-            sm: "clamp(5rem, 12vw, 7rem)",
-            md: "clamp(6rem, 9vw, 8rem)"
+            xs: "clamp(4rem,18vw,5.2rem)",
+            sm: "clamp(5rem,12vw,7rem)",
+            md: "clamp(6rem,9vw,8rem)"
           },
 
           lineHeight: 0.85,
@@ -607,28 +848,24 @@ export default function Home() {
 
           color: "#111827",
 
-          mb: {
-            xs: 1.5,
-            sm: 2
-          },
+          mb: 2,
 
-          /* subtle text depth */
           textShadow:
-            "0 10px 35px rgba(15,23,42,0.08)"
+            "0 12px 40px rgba(15,23,42,0.09)"
         }}
       >
         Raasta
       </Typography>
 
       {/* =====================================================
-          BLUE TAGLINE
+          TAGLINE
       ====================================================== */}
 
       <Typography
         component="h2"
         sx={{
           animation:
-            "fadeUp 0.8s ease-out 0.25s both",
+            "fadeUp 0.8s ease-out 0.35s both",
 
           fontSize: {
             xs: "1.35rem",
@@ -642,10 +879,7 @@ export default function Home() {
 
           color: "#1976d2",
 
-          mb: {
-            xs: 1.5,
-            sm: 1.8
-          }
+          mb: 1.7
         }}
       >
         Your Journey Starts Here.
@@ -658,7 +892,7 @@ export default function Home() {
       <Typography
         sx={{
           animation:
-            "fadeUp 0.8s ease-out 0.4s both",
+            "fadeUp 0.8s ease-out 0.5s both",
 
           maxWidth: {
             xs: 360,
@@ -690,13 +924,13 @@ export default function Home() {
       </Typography>
 
       {/* =====================================================
-          ANIMATED ROUTE
+          ROUTE ANIMATION
       ====================================================== */}
 
       <Box
         sx={{
           animation:
-            "fadeUp 0.8s ease-out 0.55s both",
+            "fadeUp 0.9s ease-out 0.65s both",
 
           width: {
             xs: "92%",
@@ -714,12 +948,11 @@ export default function Home() {
           },
 
           display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
+          alignItems: "center"
         }}
       >
 
-        {/* START DOT */}
+        {/* START */}
 
         <Box
           sx={{
@@ -737,135 +970,168 @@ export default function Home() {
 
             borderRadius: "50%",
 
-            backgroundColor: "#1976d2",
-
-            boxShadow:
-              "0 0 0 7px rgba(25,118,210,0.12)",
+            backgroundColor:
+              "#1976d2",
 
             animation:
               "pulse 2.2s ease-in-out infinite"
           }}
         />
 
-        {/* LEFT LINE */}
+        {/* LINE */}
 
         <Box
           sx={{
             height: 4,
-            flex: 1,
 
-            background:
-              "linear-gradient(90deg, #1976d2, #90caf9)",
+            flex: 1,
 
             borderRadius: 10,
 
-            position: "relative",
-            overflow: "hidden"
+            background:
+              "linear-gradient(90deg,#1976d2,#90caf9,#1976d2)",
+
+            backgroundSize:
+              "300px 100%",
+
+            animation:
+              "lineGlow 2.5s linear infinite"
           }}
-        >
-          <Box
-            sx={{
-              position: "absolute",
-              top: 0,
-              left: "-30%",
-              width: "30%",
-              height: "100%",
+        />
 
-              background:
-                "linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent)",
-
-              animation:
-                "shine 2.5s linear infinite"
-            }}
-          />
-        </Box>
-
-        {/* BUS */}
+        {/* =================================================
+            BUS + RIPPLES
+        ================================================= */}
 
         <Box
           sx={{
             position: "relative",
-            mx: {
-              xs: 1,
-              sm: 1.8,
-              md: 2.2
+
+            width: {
+              xs: 65,
+              sm: 80,
+              md: 95
+            },
+
+            height: {
+              xs: 65,
+              sm: 80,
+              md: 95
             },
 
             display: "flex",
             alignItems: "center",
-
-            animation:
-              "busMove 2.8s ease-in-out infinite"
+            justifyContent: "center"
           }}
         >
-          {/* Glow behind bus */}
+
+          {/* Ripple 1 */}
 
           <Box
             sx={{
               position: "absolute",
-              width: 75,
-              height: 75,
+
+              width: 45,
+              height: 45,
+
               borderRadius: "50%",
 
-              background:
-                "radial-gradient(circle, rgba(25,118,210,0.16), transparent 70%)",
+              border:
+                "2px solid rgba(25,118,210,0.18)",
 
-              filter: "blur(4px)"
+              animation:
+                "ripple 2.5s ease-out infinite"
             }}
           />
 
-          <DirectionsBusIcon
+          {/* Ripple 2 */}
+
+          <Box
+            sx={{
+              position: "absolute",
+
+              width: 45,
+              height: 45,
+
+              borderRadius: "50%",
+
+              border:
+                "2px solid rgba(25,118,210,0.13)",
+
+              animation:
+                "ripple 2.5s ease-out infinite 1.2s"
+            }}
+          />
+
+          {/* Rotating ring */}
+
+          <Box
+            sx={{
+              position: "absolute",
+
+              width: 72,
+              height: 72,
+
+              borderRadius: "50%",
+
+              border:
+                "1px dashed rgba(25,118,210,0.18)",
+
+              animation:
+                "rotateSlow 12s linear infinite"
+            }}
+          />
+
+          {/* BUS */}
+
+          <Box
             sx={{
               position: "relative",
+              zIndex: 5,
 
-              fontSize: {
-                xs: 43,
-                sm: 52,
-                md: 60
-              },
-
-              color: "#1976d2",
-
-              filter:
-                "drop-shadow(0 8px 10px rgba(25,118,210,0.22))"
+              animation:
+                "busTravel 3s ease-in-out infinite"
             }}
-          />
+          >
+            <DirectionsBusIcon
+              sx={{
+                fontSize: {
+                  xs: 42,
+                  sm: 52,
+                  md: 60
+                },
+
+                color: "#1976d2",
+
+                filter:
+                  "drop-shadow(0 8px 12px rgba(25,118,210,0.28))"
+              }}
+            />
+          </Box>
         </Box>
 
-        {/* RIGHT LINE */}
+        {/* LINE */}
 
         <Box
           sx={{
             height: 4,
-            flex: 1,
 
-            background:
-              "linear-gradient(90deg, #90caf9, #1976d2)",
+            flex: 1,
 
             borderRadius: 10,
 
-            position: "relative",
-            overflow: "hidden"
+            background:
+              "linear-gradient(90deg,#90caf9,#1976d2,#90caf9)",
+
+            backgroundSize:
+              "300px 100%",
+
+            animation:
+              "lineGlow 2.5s linear infinite reverse"
           }}
-        >
-          <Box
-            sx={{
-              position: "absolute",
-              top: 0,
-              left: "-30%",
-              width: "30%",
-              height: "100%",
+        />
 
-              background:
-                "linear-gradient(90deg, transparent, rgba(255,255,255,0.9), transparent)",
-
-              animation:
-                "shine 2.5s linear infinite 0.8s"
-            }}
-          />
-        </Box>
-
-        {/* DESTINATION DOT */}
+        {/* DESTINATION */}
 
         <Box
           sx={{
@@ -883,10 +1149,8 @@ export default function Home() {
 
             borderRadius: "50%",
 
-            backgroundColor: "#1565c0",
-
-            boxShadow:
-              "0 0 0 7px rgba(21,101,192,0.12)",
+            backgroundColor:
+              "#1565c0",
 
             animation:
               "pulse 2.2s ease-in-out infinite 1s"
@@ -895,7 +1159,7 @@ export default function Home() {
       </Box>
 
       {/* =====================================================
-          MAIN CTA
+          CTA BUTTON
       ====================================================== */}
 
       <Button
@@ -908,7 +1172,8 @@ export default function Home() {
         startIcon={
           <LocationOnIcon
             sx={{
-              fontSize: "1.35rem !important"
+              fontSize:
+                "1.35rem !important"
             }}
           />
         }
@@ -917,9 +1182,10 @@ export default function Home() {
 
         sx={{
           animation:
-            "fadeUp 0.8s ease-out 0.7s both",
+            "fadeUp 0.8s ease-out 0.8s both, buttonPulse 3s ease-in-out 2s infinite",
 
           position: "relative",
+
           overflow: "hidden",
 
           width: {
@@ -928,7 +1194,7 @@ export default function Home() {
           },
 
           maxWidth: {
-            xs: 390,
+            xs: 400,
             sm: "none"
           },
 
@@ -961,16 +1227,11 @@ export default function Home() {
 
           fontWeight: 800,
 
-          color: "#ffffff",
-
           background:
-            "linear-gradient(135deg, #1976d2, #1565c0)",
-
-          boxShadow:
-            "0 12px 30px rgba(25,118,210,0.28)",
+            "linear-gradient(135deg,#1976d2,#1565c0)",
 
           transition:
-            "all 0.3s cubic-bezier(0.4,0,0.2,1)",
+            "all .3s cubic-bezier(.4,0,.2,1)",
 
           "&::before": {
             content: '""',
@@ -984,31 +1245,26 @@ export default function Home() {
             height: "100%",
 
             background:
-              "linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent)",
+              "linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent)",
 
             transform:
               "skewX(-20deg)"
           },
 
           "&:hover": {
-            background:
-              "linear-gradient(135deg, #1e88e5, #1565c0)",
-
             transform:
-              "translateY(-4px) scale(1.015)",
+              "translateY(-5px) scale(1.025)",
+
+            background:
+              "linear-gradient(135deg,#1e88e5,#1565c0)",
 
             boxShadow:
-              "0 18px 40px rgba(25,118,210,0.35)"
+              "0 20px 45px rgba(25,118,210,.38)"
           },
 
           "&:hover::before": {
             animation:
-              "shine 0.9s ease-in-out"
-          },
-
-          "&:active": {
-            transform:
-              "translateY(-1px) scale(0.99)"
+              "shine .9s ease-in-out"
           }
         }}
       >
@@ -1016,24 +1272,24 @@ export default function Home() {
       </Button>
 
       {/* =====================================================
-          MINI TRUST / FEATURE ROW
+          FEATURE PILLS
       ====================================================== */}
 
       <Box
         sx={{
           animation:
-            "fadeUp 0.8s ease-out 0.9s both",
+            "fadeUp 0.8s ease-out 1s both",
 
           display: "flex",
 
-          alignItems: "center",
           justifyContent: "center",
+          alignItems: "center",
 
           flexWrap: "wrap",
 
           gap: {
             xs: 1,
-            sm: 2
+            sm: 1.5
           },
 
           mt: {
@@ -1044,24 +1300,17 @@ export default function Home() {
       >
 
         {[
-          {
-            icon: "🚌",
-            text: "Simple Routes"
-          },
-          {
-            icon: "📍",
-            text: "Multiple Cities"
-          },
-          {
-            icon: "⚡",
-            text: "Quick Search"
-          }
-        ].map((item) => (
+          ["🚌", "Simple Routes"],
+          ["📍", "Multiple Cities"],
+          ["⚡", "Quick Search"]
+        ].map(([icon, text]) => (
           <Box
-            key={item.text}
+            key={text}
             sx={{
               display: "flex",
+
               alignItems: "center",
+
               gap: 0.7,
 
               px: {
@@ -1073,49 +1322,45 @@ export default function Home() {
 
               borderRadius: "30px",
 
-              backgroundColor:
-                "rgba(255,255,255,0.72)",
+              background:
+                "rgba(255,255,255,.72)",
 
               border:
-                "1px solid rgba(25,118,210,0.08)",
+                "1px solid rgba(25,118,210,.08)",
 
               color: "#64748b",
 
               fontSize: {
-                xs: "0.72rem",
-                sm: "0.78rem"
+                xs: ".7rem",
+                sm: ".78rem"
               },
 
               fontWeight: 700,
 
-              backdropFilter: "blur(8px)",
+              backdropFilter:
+                "blur(10px)",
 
-              transition: "all 0.25s ease",
+              transition:
+                "all .3s ease",
 
               "&:hover": {
                 transform:
-                  "translateY(-3px)",
+                  "translateY(-4px)",
 
-                backgroundColor:
+                background:
                   "#ffffff",
 
-                color: "#1976d2",
+                color:
+                  "#1976d2",
 
                 boxShadow:
-                  "0 8px 20px rgba(25,118,210,0.10)"
+                  "0 10px 25px rgba(25,118,210,.12)"
               }
             }}
           >
-            <Box
-              component="span"
-              sx={{
-                fontSize: "0.9rem"
-              }}
-            >
-              {item.icon}
-            </Box>
+            <span>{icon}</span>
 
-            {item.text}
+            {text}
           </Box>
         ))}
       </Box>
