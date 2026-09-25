@@ -3,6 +3,12 @@ const jwt = require("jsonwebtoken");
 
 const Admin = require("../models/admin");
 
+/*
+|--------------------------------------------------------------------------
+| Admin Login
+|--------------------------------------------------------------------------
+*/
+
 const adminLogin = async (req, res, next) => {
     try {
         const {
@@ -10,14 +16,8 @@ const adminLogin = async (req, res, next) => {
             password,
             mobile
         } = req.body;
-        const verifyAdmin = async (req, res) => {
-            return res.status(200).json({
-                success: true,
-                message: "Admin is authenticated",
-                admin: req.admin
-            });
-        };
 
+        // Check required fields
         if (!email || !password || !mobile) {
             return res.status(400).json({
                 success: false,
@@ -26,10 +26,12 @@ const adminLogin = async (req, res, next) => {
             });
         }
 
+        // Find admin by email
         const admin = await Admin.findOne({
             email: email.toLowerCase().trim()
         });
 
+        // Admin does not exist
         if (!admin) {
             return res.status(401).json({
                 success: false,
@@ -37,11 +39,11 @@ const adminLogin = async (req, res, next) => {
             });
         }
 
-        const passwordMatched =
-            await bcrypt.compare(
-                password,
-                admin.password
-            );
+        // Check password
+        const passwordMatched = await bcrypt.compare(
+            password,
+            admin.password
+        );
 
         if (!passwordMatched) {
             return res.status(401).json({
@@ -50,6 +52,7 @@ const adminLogin = async (req, res, next) => {
             });
         }
 
+        // Check mobile number
         if (mobile.trim() !== admin.mobile) {
             return res.status(401).json({
                 success: false,
@@ -57,6 +60,7 @@ const adminLogin = async (req, res, next) => {
             });
         }
 
+        // Create JWT
         const token = jwt.sign(
             {
                 adminId: admin._id
@@ -67,9 +71,11 @@ const adminLogin = async (req, res, next) => {
             }
         );
 
+        // Store token in HTTP-only cookie
         res.cookie("adminToken", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
+            secure:
+                process.env.NODE_ENV === "production",
             sameSite: "lax",
             maxAge: 24 * 60 * 60 * 1000
         });
@@ -78,10 +84,31 @@ const adminLogin = async (req, res, next) => {
             success: true,
             message: "Admin login successful"
         });
+
     } catch (error) {
         next(error);
     }
 };
+
+
+/*
+|--------------------------------------------------------------------------
+| Verify Admin
+|--------------------------------------------------------------------------
+|
+| This route is reached only after adminAuth middleware
+| successfully verifies the admin token.
+|
+*/
+
+const verifyAdmin = async (req, res) => {
+    return res.status(200).json({
+        success: true,
+        message: "Admin is authenticated",
+        admin: req.admin
+    });
+};
+
 
 module.exports = {
     adminLogin,

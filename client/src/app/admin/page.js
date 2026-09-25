@@ -12,7 +12,8 @@ import {
     TextField,
     Button,
     InputAdornment,
-    Alert
+    Alert,
+    CircularProgress
 } from "@mui/material";
 
 import EmailIcon from "@mui/icons-material/Email";
@@ -28,6 +29,7 @@ export default function AdminLoginPage() {
     const [mobile, setMobile] = useState("");
 
     const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const handleLogin = async (event) => {
         event.preventDefault();
@@ -41,22 +43,53 @@ export default function AdminLoginPage() {
             return;
         }
 
-        /*
-         * Backend authentication will be connected here.
-         *
-         * The backend will check:
-         * 1. Email
-         * 2. Password
-         * 3. Mobile number stored in the database
-         */
+        setLoading(true);
 
-        console.log({
-            email,
-            password,
-            mobile
-        });
+        try {
+            const response = await fetch(
+                "http://localhost:5000/api/admin/login",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    credentials: "include",
+                    body: JSON.stringify({
+                        email,
+                        password,
+                        mobile
+                    })
+                }
+            );
 
-        
+            const data = await response.json();
+
+            console.log("Admin login response:", data);
+
+            if (!response.ok || !data.success) {
+                setError(
+                    data.message ||
+                    "Invalid email, password or mobile number."
+                );
+
+                return;
+            }
+
+            // Login successful
+            router.push("/admin/dashboard");
+
+        } catch (error) {
+            console.error(
+                "Admin login error:",
+                error
+            );
+
+            setError(
+                "Unable to connect to the server. Please make sure the backend is running."
+            );
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -158,6 +191,8 @@ export default function AdminLoginPage() {
                             Sign in to manage the Raasta system.
                         </Typography>
 
+                        {/* Error */}
+
                         {error && (
                             <Alert
                                 severity="error"
@@ -169,6 +204,8 @@ export default function AdminLoginPage() {
                                 {error}
                             </Alert>
                         )}
+
+                        {/* Login Form */}
 
                         <Box
                             component="form"
@@ -187,6 +224,7 @@ export default function AdminLoginPage() {
                                 sx={{
                                     mb: 2
                                 }}
+                                disabled={loading}
                                 slotProps={{
                                     input: {
                                         startAdornment: (
@@ -210,18 +248,17 @@ export default function AdminLoginPage() {
                                 type="password"
                                 value={password}
                                 onChange={(event) =>
-                                    setPassword(
-                                        event.target.value
-                                    )
+                                    setPassword(event.target.value)
                                 }
                                 sx={{
                                     mb: 2
                                 }}
+                                disabled={loading}
                                 slotProps={{
                                     input: {
                                         startAdornment: (
                                             <InputAdornment position="start">
-                                                <EmailIcon
+                                                <LockIcon
                                                     sx={{
                                                         color: "#64748b"
                                                     }}
@@ -242,15 +279,16 @@ export default function AdminLoginPage() {
                                 onChange={(event) =>
                                     setMobile(event.target.value)
                                 }
+                                placeholder="03XXXXXXXXX"
                                 sx={{
                                     mb: 3
                                 }}
-                                placeholder="03XXXXXXXXX"
+                                disabled={loading}
                                 slotProps={{
                                     input: {
                                         startAdornment: (
                                             <InputAdornment position="start">
-                                                <EmailIcon
+                                                <PhoneIcon
                                                     sx={{
                                                         color: "#64748b"
                                                     }}
@@ -261,13 +299,14 @@ export default function AdminLoginPage() {
                                 }}
                             />
 
-                            {/* Login button */}
+                            {/* Login Button */}
 
                             <Button
                                 type="submit"
                                 fullWidth
                                 variant="contained"
                                 disableElevation
+                                disabled={loading}
                                 sx={{
                                     py: 1.4,
                                     borderRadius: "12px",
@@ -275,13 +314,21 @@ export default function AdminLoginPage() {
                                     fontSize: "1rem",
                                     fontWeight: 800,
                                     backgroundColor: "#1976d2",
-
                                     "&:hover": {
                                         backgroundColor: "#1565c0"
                                     }
                                 }}
                             >
-                                Login to Admin
+                                {loading ? (
+                                    <CircularProgress
+                                        size={24}
+                                        sx={{
+                                            color: "#ffffff"
+                                        }}
+                                    />
+                                ) : (
+                                    "Login to Admin"
+                                )}
                             </Button>
                         </Box>
                     </CardContent>

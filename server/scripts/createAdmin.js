@@ -13,9 +13,9 @@ const createAdmin = async () => {
 
         const email = process.env.ADMIN_EMAIL;
         const password = process.env.ADMIN_PASSWORD;
-        const mobileNumber = process.env.ADMIN_MOBILE;
+        const mobile = process.env.ADMIN_MOBILE;
 
-        if (!email || !password || !mobileNumber) {
+        if (!email || !password || !mobile) {
             throw new Error(
                 "ADMIN_EMAIL, ADMIN_PASSWORD and ADMIN_MOBILE are required"
             );
@@ -38,11 +38,16 @@ const createAdmin = async () => {
         const admin = await Admin.create({
             email: email.toLowerCase().trim(),
             password: hashedPassword,
-            mobileNumber: mobileNumber.trim()
+            mobile: mobile.trim()
         });
 
+        console.log("================================");
         console.log("Admin created successfully");
+        console.log("================================");
         console.log("Admin ID:", admin._id);
+        console.log("Admin Email:", admin.email);
+        console.log("Admin Mobile:", admin.mobile);
+        console.log("================================");
 
     } catch (error) {
         console.error("Failed to create admin:");
