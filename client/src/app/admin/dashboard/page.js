@@ -1,5 +1,8 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
 import {
     Box,
     Container,
@@ -7,7 +10,8 @@ import {
     Grid,
     Card,
     CardContent,
-    Button
+    Button,
+    CircularProgress
 } from "@mui/material";
 
 import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
@@ -42,6 +46,77 @@ const dashboardItems = [
 ];
 
 export default function AdminDashboardPage() {
+    const router = useRouter();
+
+    const [checkingAuth, setCheckingAuth] =
+        useState(true);
+
+    useEffect(() => {
+        const verifyAdmin = async () => {
+            try {
+                const response = await fetch(
+                    "http://localhost:5000/api/admin/verify",
+                    {
+                        method: "GET",
+                        credentials: "include"
+                    }
+                );
+
+                if (!response.ok) {
+                    router.replace("/admin");
+                    return;
+                }
+
+                const data = await response.json();
+
+                if (!data.success) {
+                    router.replace("/admin");
+                    return;
+                }
+
+                setCheckingAuth(false);
+
+            } catch (error) {
+                console.error(
+                    "Admin verification failed:",
+                    error
+                );
+
+                router.replace("/admin");
+            }
+        };
+
+        verifyAdmin();
+    }, [router]);
+
+    // Show loading while checking authentication
+    if (checkingAuth) {
+        return (
+            <Box
+                sx={{
+                    minHeight: "100vh",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexDirection: "column",
+                    gap: 2,
+                    backgroundColor: "#f8fafc"
+                }}
+            >
+                <CircularProgress />
+
+                <Typography
+                    sx={{
+                        color: "#64748b",
+                        fontWeight: 600
+                    }}
+                >
+                    Verifying admin access...
+                </Typography>
+            </Box>
+        );
+    }
+
     return (
         <Box
             sx={{

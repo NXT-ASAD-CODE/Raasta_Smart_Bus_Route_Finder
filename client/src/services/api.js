@@ -8,6 +8,9 @@ const apiRequest = async (endpoint, options = {}) => {
         {
             ...options,
 
+            // Important for admin authentication cookie
+            credentials: "include",
+
             headers: {
                 "Content-Type": "application/json",
                 ...options.headers
@@ -44,6 +47,7 @@ const apiRequest = async (endpoint, options = {}) => {
     return data;
 };
 
+
 // =========================
 // Cities
 // =========================
@@ -59,6 +63,7 @@ export const createCity = async (cityData) => {
     });
 };
 
+
 // =========================
 // Stops
 // =========================
@@ -73,6 +78,7 @@ export const createStop = async (stopData) => {
         body: JSON.stringify(stopData)
     });
 };
+
 
 // =========================
 // Route Search
@@ -90,6 +96,8 @@ export const searchRoutes = async (
         })
     });
 };
+
+
 // =========================
 // Routes
 // =========================
@@ -102,5 +110,31 @@ export const createRoute = async (routeData) => {
     return apiRequest("/routes", {
         method: "POST",
         body: JSON.stringify(routeData)
+    });
+};
+
+
+// =========================
+// Admin Authentication
+// =========================
+
+export const adminLogin = async (
+    email,
+    password,
+    mobile
+) => {
+    return apiRequest("/admin/login", {
+        method: "POST",
+        body: JSON.stringify({
+            email,
+            password,
+            mobile
+        })
+    });
+};
+
+export const verifyAdmin = async () => {
+    return apiRequest("/admin/verify", {
+        method: "GET"
     });
 };
