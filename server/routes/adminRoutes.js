@@ -1,11 +1,19 @@
 const express = require("express");
 
 const {
-    adminLogin
+    adminLogin,
+    verifyAdmin
 } = require("../controllers/adminController");
 
-const router = express.Router();
+const adminAuth = require("../middleware/adminAuth");
 
+const router = express.Router();
 router.post("/login", adminLogin);
+
+router.get(
+    "/verify",
+    adminAuth,
+    verifyAdmin
+);
 
 module.exports = router;
