@@ -147,10 +147,38 @@ const deactivateCity = async (req, res, next) => {
         next(error);
     }
 };
+// Reactivate city
+const reactivateCity = async (req, res, next) => {
+    try {
+        const { cityId } = req.params;
+
+        const city = await City.findById(cityId);
+
+        if (!city) {
+            return res.status(404).json({
+                success: false,
+                message: "City not found"
+            });
+        }
+
+        city.isActive = true;
+
+        await city.save();
+
+        res.status(200).json({
+            success: true,
+            message: "City reactivated successfully",
+            data: city
+        });
+    } catch (error) {
+        next(error);
+    }
+};
 module.exports = {
     getCities,
     getCityById,
     createCity,
     updateCity,
-    deactivateCity
+    deactivateCity,
+    reactivateCity
 };
