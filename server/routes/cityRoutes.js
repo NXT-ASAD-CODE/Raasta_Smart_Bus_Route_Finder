@@ -33,5 +33,10 @@ router.patch(
     adminAuth,
     deactivateCity
 );
+router.patch(
+    "/:cityId/reactivate",
+    adminAuth,
+    reactivateCity
+);
 
 module.exports = router;
