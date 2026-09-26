@@ -13,9 +13,21 @@ const adminAuth = require("../middleware/adminAuth");
 
 const router = express.Router();
 
+// =========================
+// Public routes
+// =========================
+
 router.get("/", getStops);
 
-router.get("/:stopId", getStopById);
+router.get(
+    "/:stopId",
+    getStopById
+);
+
+
+// =========================
+// Admin routes
+// =========================
 
 router.post(
     "/",
@@ -34,9 +46,11 @@ router.patch(
     adminAuth,
     deactivateStop
 );
+
 router.patch(
     "/:stopId/reactivate",
     adminAuth,
     reactivateStop
 );
+
 module.exports = router;
