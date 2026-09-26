@@ -22,8 +22,8 @@ const footerLinks = [
                 href: "/"
             },
             {
-                label: "Find Route",
-                href: "/"
+                label: "Find Bus",
+                href: "/buses"
             },
             {
                 label: "Cities",
