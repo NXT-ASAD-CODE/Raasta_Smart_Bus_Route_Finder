@@ -120,9 +120,37 @@ const updateCity = async (req, res, next) => {
         next(error);
     }
 };
+// Deactivate city
+const deactivateCity = async (req, res, next) => {
+    try {
+        const { cityId } = req.params;
+
+        const city = await City.findById(cityId);
+
+        if (!city) {
+            return res.status(404).json({
+                success: false,
+                message: "City not found"
+            });
+        }
+
+        city.isActive = false;
+
+        await city.save();
+
+        res.status(200).json({
+            success: true,
+            message: "City deactivated successfully",
+            data: city
+        });
+    } catch (error) {
+        next(error);
+    }
+};
 module.exports = {
     getCities,
     getCityById,
     createCity,
-    updateCity
+    updateCity,
+    deactivateCity
 };
