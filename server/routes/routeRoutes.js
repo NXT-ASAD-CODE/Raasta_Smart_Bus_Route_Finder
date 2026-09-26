@@ -5,7 +5,8 @@ const {
     getRouteById,
     createRoute,
     updateRoute,
-    updateRouteTravelTimes
+    updateRouteTravelTimes,
+    deactivateRoute
 } = require("../controllers/routeController");
 
 const adminAuth = require("../middleware/adminAuth");
@@ -32,6 +33,12 @@ router.patch(
     "/:routeId/travel-time",
     adminAuth,
     updateRouteTravelTimes
+);
+
+router.patch(
+    "/:routeId/deactivate",
+    adminAuth,
+    deactivateRoute
 );
 
 module.exports = router;
