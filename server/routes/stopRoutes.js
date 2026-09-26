@@ -4,7 +4,8 @@ const {
     getStops,
     getStopById,
     createStop,
-    updateStop
+    updateStop,
+    deactivateStop
 } = require("../controllers/stopController");
 
 const adminAuth = require("../middleware/adminAuth");
@@ -25,6 +26,12 @@ router.patch(
     "/:stopId",
     adminAuth,
     updateStop
+);
+
+router.patch(
+    "/:stopId/deactivate",
+    adminAuth,
+    deactivateStop
 );
 
 module.exports = router;
