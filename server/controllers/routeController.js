@@ -168,11 +168,88 @@ const updateRouteTravelTimes = async (
         next(error);
     }
 };
+// Update route
+const updateRoute = async (req, res, next) => {
+    try {
+        const { routeId } = req.params;
 
+        const {
+            city,
+            name,
+            routeNumber,
+            startPoint,
+            endPoint,
+            stops,
+            isActive
+        } = req.body;
+
+        const route = await Route.findById(routeId);
+
+        if (!route) {
+            return res.status(404).json({
+                success: false,
+                message: "Route not found"
+            });
+        }
+
+        if (city !== undefined) {
+            route.city = city;
+        }
+
+        if (name !== undefined) {
+            route.name = name.trim();
+        }
+
+        if (routeNumber !== undefined) {
+            route.routeNumber = routeNumber.trim();
+        }
+
+        if (startPoint !== undefined) {
+            route.startPoint = startPoint.trim();
+        }
+
+        if (endPoint !== undefined) {
+            route.endPoint = endPoint.trim();
+        }
+
+        if (stops !== undefined) {
+            if (!Array.isArray(stops) || stops.length === 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Stops must be a non-empty array"
+                });
+            }
+
+            route.stops = stops;
+        }
+
+        if (isActive !== undefined) {
+            route.isActive = isActive;
+        }
+
+        await route.save();
+
+        const populatedRoute = await Route.findById(routeId)
+            .populate("city", "name slug")
+            .populate(
+                "stops.stop",
+                "name nameUrdu location"
+            );
+
+        res.status(200).json({
+            success: true,
+            message: "Route updated successfully",
+            data: populatedRoute
+        });
+    } catch (error) {
+        next(error);
+    }
+};
 
 module.exports = {
     getRoutes,
     getRouteById,
     createRoute,
+    updateRoute,
     updateRouteTravelTimes
 };
