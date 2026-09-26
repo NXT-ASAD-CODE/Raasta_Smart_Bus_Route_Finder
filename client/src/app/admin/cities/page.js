@@ -21,7 +21,7 @@ import {
 } from "@mui/material";
 
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import DeleteIcon from "@mui/icons-material/Delete";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
 
 import {
@@ -473,7 +473,7 @@ export default function AdminCitiesPage() {
                                                         "10px"
                                                 }}
                                             >
-                                                <DeleteOutlineIcon />
+                                                <DeleteIcon />
                                             </IconButton>
                                         </Box>
                                     </Box>
