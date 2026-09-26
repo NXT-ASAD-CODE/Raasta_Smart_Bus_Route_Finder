@@ -63,7 +63,30 @@ export const createCity = async (cityData) => {
     });
 };
 
+export const updateCity = async (cityId, cityData) => {
+    return apiRequest(`/cities/${cityId}`, {
+        method: "PATCH",
+        body: JSON.stringify(cityData)
+    });
+};
 
+export const deactivateCity = async (cityId) => {
+    return apiRequest(
+        `/cities/${cityId}/deactivate`,
+        {
+            method: "PATCH"
+        }
+    );
+};
+
+export const reactivateCity = async (cityId) => {
+    return apiRequest(
+        `/cities/${cityId}/reactivate`,
+        {
+            method: "PATCH"
+        }
+    );
+};
 // =========================
 // Stops
 // =========================

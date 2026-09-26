@@ -5,7 +5,8 @@ const {
     getCityById,
     createCity,
     updateCity,
-    deactivateCity
+    deactivateCity,
+    reactivateCity
 } = require("../controllers/cityController");
 
 const adminAuth = require("../middleware/adminAuth");
