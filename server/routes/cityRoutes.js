@@ -3,7 +3,8 @@ const express = require("express");
 const {
     getCities,
     getCityById,
-    createCity
+    createCity,
+    updateCity
 } = require("../controllers/cityController");
 
 const adminAuth = require("../middleware/adminAuth");
@@ -14,7 +15,12 @@ router.get("/", getCities);
 
 router.get("/:cityId", getCityById);
 
-// Admin only
 router.post("/", adminAuth, createCity);
+
+router.patch(
+    "/:cityId",
+    adminAuth,
+    updateCity
+);
 
 module.exports = router;

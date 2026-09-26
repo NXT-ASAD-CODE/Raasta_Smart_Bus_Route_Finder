@@ -65,9 +65,64 @@ const createCity = async (req, res, next) => {
         next(error);
     }
 };
+// Update city
+const updateCity = async (req, res, next) => {
+    try {
+        const { cityId } = req.params;
 
+        const {
+            name,
+            slug,
+            country,
+            province,
+            isActive
+        } = req.body;
+
+        const city = await City.findById(cityId);
+
+        if (!city) {
+            return res.status(404).json({
+                success: false,
+                message: "City not found"
+            });
+        }
+
+        if (name !== undefined) {
+            city.name = name.trim();
+        }
+
+        if (slug !== undefined) {
+            city.slug = slug
+                .toLowerCase()
+                .trim();
+        }
+
+        if (country !== undefined) {
+            city.country = country.trim();
+        }
+
+        if (province !== undefined) {
+            city.province = province.trim();
+        }
+
+        if (isActive !== undefined) {
+            city.isActive = isActive;
+        }
+
+        await city.save();
+
+        res.status(200).json({
+            success: true,
+            message: "City updated successfully",
+            data: city
+        });
+    } catch (error) {
+        next(error);
+    }
+};
 module.exports = {
     getCities,
     getCityById,
-    createCity
+    createCity,
+    updateCity
 };
