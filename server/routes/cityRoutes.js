@@ -13,15 +13,12 @@ const adminAuth = require("../middleware/adminAuth");
 
 const router = express.Router();
 
+// Public routes
 router.get("/", getCities);
-
 router.get("/:cityId", getCityById);
 
-router.post(
-    "/",
-    adminAuth,
-    createCity
-);
+// Admin-only routes
+router.post("/", adminAuth, createCity);
 
 router.patch(
     "/:cityId",
@@ -34,6 +31,7 @@ router.patch(
     adminAuth,
     deactivateCity
 );
+
 router.patch(
     "/:cityId/reactivate",
     adminAuth,
