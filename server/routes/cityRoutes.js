@@ -4,7 +4,8 @@ const {
     getCities,
     getCityById,
     createCity,
-    updateCity
+    updateCity,
+    deactivateCity
 } = require("../controllers/cityController");
 
 const adminAuth = require("../middleware/adminAuth");
@@ -15,12 +16,22 @@ router.get("/", getCities);
 
 router.get("/:cityId", getCityById);
 
-router.post("/", adminAuth, createCity);
+router.post(
+    "/",
+    adminAuth,
+    createCity
+);
 
 router.patch(
     "/:cityId",
     adminAuth,
     updateCity
+);
+
+router.patch(
+    "/:cityId/deactivate",
+    adminAuth,
+    deactivateCity
 );
 
 module.exports = router;
