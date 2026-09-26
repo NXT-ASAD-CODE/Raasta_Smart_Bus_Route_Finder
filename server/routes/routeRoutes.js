@@ -6,7 +6,8 @@ const {
     createRoute,
     updateRoute,
     updateRouteTravelTimes,
-    deactivateRoute
+    deactivateRoute,
+    reactivateRoute
 } = require("../controllers/routeController");
 
 const adminAuth = require("../middleware/adminAuth");
