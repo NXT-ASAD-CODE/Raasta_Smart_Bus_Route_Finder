@@ -279,11 +279,46 @@ const deactivateRoute = async (req, res, next) => {
         next(error);
     }
 };
+// Reactivate route
+const reactivateRoute = async (req, res, next) => {
+    try {
+        const { routeId } = req.params;
+
+        const route = await Route.findById(routeId);
+
+        if (!route) {
+            return res.status(404).json({
+                success: false,
+                message: "Route not found"
+            });
+        }
+
+        route.isActive = true;
+
+        await route.save();
+
+        const populatedRoute = await Route.findById(routeId)
+            .populate("city", "name slug")
+            .populate(
+                "stops.stop",
+                "name nameUrdu location"
+            );
+
+        res.status(200).json({
+            success: true,
+            message: "Route reactivated successfully",
+            data: populatedRoute
+        });
+    } catch (error) {
+        next(error);
+    }
+};
 module.exports = {
     getRoutes,
     getRouteById,
     createRoute,
     updateRoute,
     updateRouteTravelTimes,
-    deactivateRoute
+    deactivateRoute,
+    reactivateRoute
 };
