@@ -4,6 +4,7 @@ const {
     getRoutes,
     getRouteById,
     createRoute,
+    updateRoute,
     updateRouteTravelTimes
 } = require("../controllers/routeController");
 
@@ -15,10 +16,18 @@ router.get("/", getRoutes);
 
 router.get("/:routeId", getRouteById);
 
-// Admin only
-router.post("/", adminAuth, createRoute);
+router.post(
+    "/",
+    adminAuth,
+    createRoute
+);
 
-// Admin only
+router.patch(
+    "/:routeId",
+    adminAuth,
+    updateRoute
+);
+
 router.patch(
     "/:routeId/travel-time",
     adminAuth,
