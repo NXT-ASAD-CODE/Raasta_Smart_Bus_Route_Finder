@@ -78,9 +78,77 @@ const createStop = async (req, res, next) => {
         next(error);
     }
 };
+// Update stop
+const updateStop = async (req, res, next) => {
+    try {
+        const { stopId } = req.params;
 
+        const {
+            city,
+            name,
+            nameUrdu,
+            location,
+            landmarks,
+            isActive
+        } = req.body;
+
+        const stop = await Stop.findById(stopId);
+
+        if (!stop) {
+            return res.status(404).json({
+                success: false,
+                message: "Stop not found"
+            });
+        }
+
+        if (city !== undefined) {
+            stop.city = city;
+        }
+
+        if (name !== undefined) {
+            stop.name = name.trim();
+        }
+
+        if (nameUrdu !== undefined) {
+            stop.nameUrdu = nameUrdu.trim();
+        }
+
+        if (location !== undefined) {
+            if (!location.coordinates) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Location coordinates are required"
+                });
+            }
+
+            stop.location = location;
+        }
+
+        if (landmarks !== undefined) {
+            stop.landmarks = landmarks;
+        }
+
+        if (isActive !== undefined) {
+            stop.isActive = isActive;
+        }
+
+        await stop.save();
+
+        const populatedStop = await Stop.findById(stopId)
+            .populate("city", "name slug");
+
+        res.status(200).json({
+            success: true,
+            message: "Stop updated successfully",
+            data: populatedStop
+        });
+    } catch (error) {
+        next(error);
+    }
+};
 module.exports = {
     getStops,
     getStopById,
-    createStop
+    createStop,
+    updateStop
 };
