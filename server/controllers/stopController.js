@@ -176,10 +176,41 @@ const deactivateStop = async (req, res, next) => {
         next(error);
     }
 };
+// Reactivate stop
+const reactivateStop = async (req, res, next) => {
+    try {
+        const { stopId } = req.params;
+
+        const stop = await Stop.findById(stopId);
+
+        if (!stop) {
+            return res.status(404).json({
+                success: false,
+                message: "Stop not found"
+            });
+        }
+
+        stop.isActive = true;
+
+        await stop.save();
+
+        const populatedStop = await Stop.findById(stopId)
+            .populate("city", "name slug");
+
+        res.status(200).json({
+            success: true,
+            message: "Stop reactivated successfully",
+            data: populatedStop
+        });
+    } catch (error) {
+        next(error);
+    }
+};
 module.exports = {
     getStops,
     getStopById,
     createStop,
     updateStop,
-    deactivateStop
+    deactivateStop,
+    reactivateStop
 };
