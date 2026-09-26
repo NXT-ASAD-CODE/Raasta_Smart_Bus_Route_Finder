@@ -103,6 +103,30 @@ export const createStop = async (stopData) => {
         body: JSON.stringify(stopData)
     });
 };
+export const updateStop = async (stopId, stopData) => {
+    return apiRequest(`/stops/${stopId}`, {
+        method: "PATCH",
+        body: JSON.stringify(stopData)
+    });
+};
+
+export const deactivateStop = async (stopId) => {
+    return apiRequest(
+        `/stops/${stopId}/deactivate`,
+        {
+            method: "PATCH"
+        }
+    );
+};
+
+export const reactivateStop = async (stopId) => {
+    return apiRequest(
+        `/stops/${stopId}/reactivate`,
+        {
+            method: "PATCH"
+        }
+    );
+};
 
 
 // =========================
