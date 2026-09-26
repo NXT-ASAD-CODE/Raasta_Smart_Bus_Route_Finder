@@ -3,7 +3,8 @@ const express = require("express");
 const {
     getStops,
     getStopById,
-    createStop
+    createStop,
+    updateStop
 } = require("../controllers/stopController");
 
 const adminAuth = require("../middleware/adminAuth");
@@ -14,7 +15,16 @@ router.get("/", getStops);
 
 router.get("/:stopId", getStopById);
 
-// Admin only
-router.post("/", adminAuth, createStop);
+router.post(
+    "/",
+    adminAuth,
+    createStop
+);
+
+router.patch(
+    "/:stopId",
+    adminAuth,
+    updateStop
+);
 
 module.exports = router;
