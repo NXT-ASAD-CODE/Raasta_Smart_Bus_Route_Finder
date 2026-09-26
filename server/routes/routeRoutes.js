@@ -40,5 +40,9 @@ router.patch(
     adminAuth,
     deactivateRoute
 );
-
+router.patch(
+    "/:routeId/reactivate",
+    adminAuth,
+    reactivateRoute
+);
 module.exports = router;
