@@ -336,1038 +336,1063 @@ export default function Home() {
       />
 
       {!selectedCity ? (
-  <Box
-    sx={{
-      minHeight: {
-        xs: "calc(100dvh - 68px)",
-        md: "calc(100dvh - 76px)"
-      },
-
-      position: "relative",
-      overflow: "hidden",
-
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-
-      px: { xs: 2, sm: 3, md: 4 },
-
-      background:
-        "radial-gradient(circle at 50% 40%, rgba(33,150,243,0.12), transparent 35%), linear-gradient(135deg,#f8fbff 0%,#eef6ff 48%,#ffffff 100%)",
-
-      /* =====================================================
-         ANIMATIONS
-      ====================================================== */
-
-      "@keyframes fadeUp": {
-        "0%": {
-          opacity: 0,
-          transform: "translateY(45px)"
-        },
-        "100%": {
-          opacity: 1,
-          transform: "translateY(0)"
-        }
-      },
-
-      "@keyframes fadeDown": {
-        "0%": {
-          opacity: 0,
-          transform: "translateY(-35px)"
-        },
-        "100%": {
-          opacity: 1,
-          transform: "translateY(0)"
-        }
-      },
-
-      "@keyframes scaleIn": {
-        "0%": {
-          opacity: 0,
-          transform: "scale(0.75)"
-        },
-        "100%": {
-          opacity: 1,
-          transform: "scale(1)"
-        }
-      },
-
-      "@keyframes float": {
-        "0%,100%": {
-          transform: "translateY(0)"
-        },
-        "50%": {
-          transform: "translateY(-20px)"
-        }
-      },
-
-      "@keyframes floatReverse": {
-        "0%,100%": {
-          transform: "translateY(0)"
-        },
-        "50%": {
-          transform: "translateY(20px)"
-        }
-      },
-
-      "@keyframes floatSide": {
-        "0%,100%": {
-          transform: "translate(0,0)"
-        },
-        "50%": {
-          transform: "translate(25px,-20px)"
-        }
-      },
-
-      "@keyframes rotateSlow": {
-        "from": {
-          transform: "rotate(0deg)"
-        },
-        "to": {
-          transform: "rotate(360deg)"
-        }
-      },
-
-      "@keyframes pulse": {
-        "0%": {
-          transform: "scale(1)",
-          boxShadow:
-            "0 0 0 0 rgba(25,118,210,0.35)"
-        },
-        "70%": {
-          transform: "scale(1.15)",
-          boxShadow:
-            "0 0 0 15px rgba(25,118,210,0)"
-        },
-        "100%": {
-          transform: "scale(1)",
-          boxShadow:
-            "0 0 0 0 rgba(25,118,210,0)"
-        }
-      },
-
-      "@keyframes busTravel": {
-        "0%": {
-          transform:
-            "translateX(-18px) translateY(0) rotate(-1deg)"
-        },
-        "25%": {
-          transform:
-            "translateX(-5px) translateY(-5px) rotate(0deg)"
-        },
-        "50%": {
-          transform:
-            "translateX(18px) translateY(0) rotate(1deg)"
-        },
-        "75%": {
-          transform:
-            "translateX(5px) translateY(-5px) rotate(0deg)"
-        },
-        "100%": {
-          transform:
-            "translateX(-18px) translateY(0) rotate(-1deg)"
-        }
-      },
-
-      "@keyframes lineGlow": {
-        "0%": {
-          backgroundPosition: "-300px 0"
-        },
-        "100%": {
-          backgroundPosition: "700px 0"
-        }
-      },
-
-      "@keyframes ripple": {
-        "0%": {
-          transform: "scale(0.7)",
-          opacity: 0.8
-        },
-        "100%": {
-          transform: "scale(1.7)",
-          opacity: 0
-        }
-      },
-
-      "@keyframes sparkle": {
-        "0%,100%": {
-          opacity: 0.2,
-          transform: "scale(0.6)"
-        },
-        "50%": {
-          opacity: 1,
-          transform: "scale(1.3)"
-        }
-      },
-
-      "@keyframes shine": {
-        "0%": {
-          left: "-120%"
-        },
-        "50%,100%": {
-          left: "120%"
-        }
-      },
-
-      "@keyframes buttonPulse": {
-        "0%,100%": {
-          boxShadow:
-            "0 12px 30px rgba(25,118,210,0.25)"
-        },
-        "50%": {
-          boxShadow:
-            "0 18px 45px rgba(25,118,210,0.42)"
-        }
-      },
-
-      "@keyframes orbit": {
-        "from": {
-          transform: "rotate(0deg) translateX(45px) rotate(0deg)"
-        },
-        "to": {
-          transform:
-            "rotate(360deg) translateX(45px) rotate(-360deg)"
-        }
-      }
-    }}
-  >
-
-    {/* =====================================================
-        LARGE FLOATING GRADIENT
-    ====================================================== */}
-
-    <Box
-      sx={{
-        position: "absolute",
-
-        width: {
-          xs: 280,
-          md: 500
-        },
-
-        height: {
-          xs: 280,
-          md: 500
-        },
-
-        borderRadius: "50%",
-
-        background:
-          "radial-gradient(circle,rgba(33,150,243,0.13),rgba(33,150,243,0.025) 60%,transparent 72%)",
-
-        top: {
-          xs: -130,
-          md: -210
-        },
-
-        right: {
-          xs: -130,
-          md: -160
-        },
-
-        animation:
-          "floatSide 9s ease-in-out infinite",
-
-        pointerEvents: "none"
-      }}
-    />
-
-    {/* =====================================================
-        SECOND FLOATING GRADIENT
-    ====================================================== */}
-
-    <Box
-      sx={{
-        position: "absolute",
-
-        width: {
-          xs: 240,
-          md: 400
-        },
-
-        height: {
-          xs: 240,
-          md: 400
-        },
-
-        borderRadius: "50%",
-
-        background:
-          "radial-gradient(circle,rgba(25,118,210,0.10),transparent 70%)",
-
-        bottom: {
-          xs: -130,
-          md: -170
-        },
-
-        left: {
-          xs: -110,
-          md: -150
-        },
-
-        animation:
-          "floatReverse 8s ease-in-out infinite",
-
-        pointerEvents: "none"
-      }}
-    />
-
-    {/* =====================================================
-        FLOATING PARTICLES
-    ====================================================== */}
-
-    {[
-      {
-        top: "20%",
-        left: "12%",
-        size: 12,
-        delay: "0s"
-      },
-      {
-        top: "32%",
-        left: "18%",
-        size: 7,
-        delay: "1s"
-      },
-      {
-        top: "24%",
-        right: "13%",
-        size: 9,
-        delay: "1.8s"
-      },
-      {
-        top: "48%",
-        right: "9%",
-        size: 6,
-        delay: "2.5s"
-      },
-      {
-        bottom: "25%",
-        left: "14%",
-        size: 8,
-        delay: "0.7s"
-      },
-      {
-        bottom: "20%",
-        right: "17%",
-        size: 12,
-        delay: "1.5s"
-      },
-      {
-        top: "62%",
-        left: "7%",
-        size: 5,
-        delay: "3s"
-      }
-    ].map((particle, index) => (
-      <Box
-        key={index}
-        sx={{
-          position: "absolute",
-
-          width: particle.size,
-          height: particle.size,
-
-          borderRadius: "50%",
-
-          background:
-            "linear-gradient(135deg,#1976d2,#90caf9)",
-
-          opacity: 0.55,
-
-          top: particle.top,
-          left: particle.left,
-          right: particle.right,
-          bottom: particle.bottom,
-
-          animation: `sparkle 2.8s ease-in-out infinite ${particle.delay}`,
-
-          pointerEvents: "none"
-        }}
-      />
-    ))}
-
-    {/* =====================================================
-        FLOATING BUS ICON
-    ====================================================== */}
-
-    <DirectionsBusIcon
-      sx={{
-        position: "absolute",
-
-        top: "18%",
-        left: "7%",
-
-        fontSize: {
-          xs: 26,
-          md: 34
-        },
-
-        color: "#90caf9",
-
-        opacity: 0.3,
-
-        animation:
-          "float 5s ease-in-out infinite",
-
-        pointerEvents: "none"
-      }}
-    />
-
-    <DirectionsBusIcon
-      sx={{
-        position: "absolute",
-
-        bottom: "18%",
-        right: "7%",
-
-        fontSize: {
-          xs: 25,
-          md: 32
-        },
-
-        color: "#1976d2",
-
-        opacity: 0.18,
-
-        animation:
-          "floatReverse 6s ease-in-out infinite",
-
-        pointerEvents: "none"
-      }}
-    />
-
-    {/* =====================================================
-        MAIN CONTENT
-    ====================================================== */}
-
-    <Box
-      sx={{
-        width: "100%",
-        maxWidth: 1200,
-        marginTop:"20px",
-        mx: "auto",
-
-        textAlign: "center",
-
-        position: "relative",
-        zIndex: 5,
-
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-
-        transform: {
-          xs: "translateY(-8px)",
-          md: "translateY(-14px)"
-        }
-      }}
-    >
-
-      {/* =====================================================
-          BADGE
-      ====================================================== */}
-
-      <Chip
-        icon={
-          <DirectionsBusIcon
-            sx={{
-              color:
-                "#1976d2 !important"
-            }}
-          />
-        }
-        label="SMART PUBLIC TRANSPORT"
-        sx={{
-          animation:
-            "fadeDown 0.8s ease-out both",
-
-          mb: {
-            xs: 2,
-            sm: 2.5
-          },
-
-          px: 1.5,
-          py: 2,
-
-          height: "auto",
-
-          borderRadius: "50px",
-
-          background:
-            "linear-gradient(135deg,#e3f2fd,#d7ebff)",
-
-          border:
-            "1px solid rgba(25,118,210,0.08)",
-
-          color: "#1565c0",
-
-          fontWeight: 800,
-
-          letterSpacing: {
-            xs: "0.5px",
-            sm: "1px"
-          },
-
-          fontSize: {
-            xs: "0.68rem",
-            sm: "0.82rem",
-            md: "0.88rem"
-          },
-
-          boxShadow:
-            "0 8px 25px rgba(25,118,210,0.08)"
-        }}
-      />
-
-      {/* =====================================================
-          RAasta TITLE
-      ====================================================== */}
-
-      <Typography
-        component="h1"
-        sx={{
-          animation:
-            "scaleIn 0.9s cubic-bezier(.17,.67,.35,1.2) 0.15s both",
-
-          fontWeight: 950,
-
-          fontSize: {
-            xs: "clamp(4rem,18vw,5.2rem)",
-            sm: "clamp(5rem,12vw,7rem)",
-            md: "clamp(6rem,9vw,8rem)"
-          },
-
-          lineHeight: 0.85,
-
-          letterSpacing: {
-            xs: "-4px",
-            sm: "-5px",
-            md: "-7px"
-          },
-
-          color: "#111827",
-
-          mb: 2,
-
-          textShadow:
-            "0 12px 40px rgba(15,23,42,0.09)"
-        }}
-      >
-        Raasta
-      </Typography>
-
-      {/* =====================================================
-          TAGLINE
-      ====================================================== */}
-
-      <Typography
-        component="h2"
-        sx={{
-          animation:
-            "fadeUp 0.8s ease-out 0.35s both",
-
-          fontSize: {
-            xs: "1.35rem",
-            sm: "2rem",
-            md: "2.65rem"
-          },
-
-          fontWeight: 850,
-
-          lineHeight: 1.15,
-
-          color: "#1976d2",
-
-          mb: 1.7
-        }}
-      >
-        Your Journey Starts Here.
-      </Typography>
-
-      {/* =====================================================
-          DESCRIPTION
-      ====================================================== */}
-
-      <Typography
-        sx={{
-          animation:
-            "fadeUp 0.8s ease-out 0.5s both",
-
-          maxWidth: {
-            xs: 360,
-            sm: 680,
-            md: 850
-          },
-
-          mx: "auto",
-
-          color: "#64748b",
-
-          fontSize: {
-            xs: "0.9rem",
-            sm: "1rem",
-            md: "1.08rem"
-          },
-
-          lineHeight: 1.7,
-
-          mb: {
-            xs: 2.5,
-            sm: 3
-          }
-        }}
-      >
-        Tell us where you are and where you want to go.
-        Raasta helps you discover the right bus route
-        and makes your journey easier.
-      </Typography>
-
-      {/* =====================================================
-          ROUTE ANIMATION
-      ====================================================== */}
-
-      <Box
-        sx={{
-          animation:
-            "fadeUp 0.9s ease-out 0.65s both",
-
-          width: {
-            xs: "92%",
-            sm: "80%",
-            md: 900
-          },
-
-          maxWidth: 900,
-
-          mx: "auto",
-
-          mb: {
-            xs: 2.5,
-            sm: 3
-          },
-
-          display: "flex",
-          alignItems: "center"
-        }}
-      >
-
-        {/* START */}
-
         <Box
           sx={{
-            width: {
-              xs: 13,
-              sm: 17
+            minHeight: {
+              xs: "calc(100dvh - 68px)",
+              md: "calc(100dvh - 76px)"
             },
 
-            height: {
-              xs: 13,
-              sm: 17
-            },
-
-            flexShrink: 0,
-
-            borderRadius: "50%",
-
-            backgroundColor:
-              "#1976d2",
-
-            animation:
-              "pulse 2.2s ease-in-out infinite"
-          }}
-        />
-
-        {/* LINE */}
-
-        <Box
-          sx={{
-            height: 4,
-
-            flex: 1,
-
-            borderRadius: 10,
-
-            background:
-              "linear-gradient(90deg,#1976d2,#90caf9,#1976d2)",
-
-            backgroundSize:
-              "300px 100%",
-
-            animation:
-              "lineGlow 2.5s linear infinite"
-          }}
-        />
-
-        {/* =================================================
-            BUS + RIPPLES
-        ================================================= */}
-
-        <Box
-          sx={{
             position: "relative",
-
-            width: {
-              xs: 65,
-              sm: 80,
-              md: 95
-            },
-
-            height: {
-              xs: 65,
-              sm: 80,
-              md: 95
-            },
+            overflow: "hidden",
 
             display: "flex",
             alignItems: "center",
-            justifyContent: "center"
+            justifyContent: "center",
+
+            px: { xs: 2, sm: 3, md: 4 },
+
+            background:
+              "radial-gradient(circle at 50% 40%, rgba(33,150,243,0.12), transparent 35%), linear-gradient(135deg,#f8fbff 0%,#eef6ff 48%,#ffffff 100%)",
+
+            /* =====================================================
+               ANIMATIONS
+            ====================================================== */
+
+            "@keyframes fadeUp": {
+              "0%": {
+                opacity: 0,
+                transform: "translateY(45px)"
+              },
+              "100%": {
+                opacity: 1,
+                transform: "translateY(0)"
+              }
+            },
+
+            "@keyframes fadeDown": {
+              "0%": {
+                opacity: 0,
+                transform: "translateY(-35px)"
+              },
+              "100%": {
+                opacity: 1,
+                transform: "translateY(0)"
+              }
+            },
+
+            "@keyframes scaleIn": {
+              "0%": {
+                opacity: 0,
+                transform: "scale(0.75)"
+              },
+              "100%": {
+                opacity: 1,
+                transform: "scale(1)"
+              }
+            },
+
+            "@keyframes float": {
+              "0%,100%": {
+                transform: "translateY(0)"
+              },
+              "50%": {
+                transform: "translateY(-20px)"
+              }
+            },
+
+            "@keyframes floatReverse": {
+              "0%,100%": {
+                transform: "translateY(0)"
+              },
+              "50%": {
+                transform: "translateY(20px)"
+              }
+            },
+
+            "@keyframes floatSide": {
+              "0%,100%": {
+                transform: "translate(0,0)"
+              },
+              "50%": {
+                transform: "translate(25px,-20px)"
+              }
+            },
+
+            "@keyframes rotateSlow": {
+              "from": {
+                transform: "rotate(0deg)"
+              },
+              "to": {
+                transform: "rotate(360deg)"
+              }
+            },
+
+            "@keyframes pulse": {
+              "0%": {
+                transform: "scale(1)",
+                boxShadow:
+                  "0 0 0 0 rgba(25,118,210,0.35)"
+              },
+              "70%": {
+                transform: "scale(1.15)",
+                boxShadow:
+                  "0 0 0 15px rgba(25,118,210,0)"
+              },
+              "100%": {
+                transform: "scale(1)",
+                boxShadow:
+                  "0 0 0 0 rgba(25,118,210,0)"
+              }
+            },
+
+            "@keyframes busTravel": {
+              "0%": {
+                transform:
+                  "translateX(-18px) translateY(0) rotate(-1deg)"
+              },
+              "25%": {
+                transform:
+                  "translateX(-5px) translateY(-5px) rotate(0deg)"
+              },
+              "50%": {
+                transform:
+                  "translateX(18px) translateY(0) rotate(1deg)"
+              },
+              "75%": {
+                transform:
+                  "translateX(5px) translateY(-5px) rotate(0deg)"
+              },
+              "100%": {
+                transform:
+                  "translateX(-18px) translateY(0) rotate(-1deg)"
+              }
+            },
+
+            "@keyframes lineGlow": {
+              "0%": {
+                backgroundPosition: "-300px 0"
+              },
+              "100%": {
+                backgroundPosition: "700px 0"
+              }
+            },
+
+            "@keyframes ripple": {
+              "0%": {
+                transform: "scale(0.7)",
+                opacity: 0.8
+              },
+              "100%": {
+                transform: "scale(1.7)",
+                opacity: 0
+              }
+            },
+
+            "@keyframes sparkle": {
+              "0%,100%": {
+                opacity: 0.2,
+                transform: "scale(0.6)"
+              },
+              "50%": {
+                opacity: 1,
+                transform: "scale(1.3)"
+              }
+            },
+
+            "@keyframes shine": {
+              "0%": {
+                left: "-120%"
+              },
+              "50%,100%": {
+                left: "120%"
+              }
+            },
+
+            "@keyframes buttonPulse": {
+              "0%,100%": {
+                boxShadow:
+                  "0 12px 30px rgba(25,118,210,0.25)"
+              },
+              "50%": {
+                boxShadow:
+                  "0 18px 45px rgba(25,118,210,0.42)"
+              }
+            },
+
+            "@keyframes orbit": {
+              "from": {
+                transform: "rotate(0deg) translateX(45px) rotate(0deg)"
+              },
+              "to": {
+                transform:
+                  "rotate(360deg) translateX(45px) rotate(-360deg)"
+              }
+            }
           }}
         >
 
-          {/* Ripple 1 */}
+          {/* =====================================================
+        LARGE FLOATING GRADIENT
+    ====================================================== */}
 
           <Box
             sx={{
               position: "absolute",
 
-              width: 45,
-              height: 45,
+              width: {
+                xs: 280,
+                md: 500
+              },
+
+              height: {
+                xs: 280,
+                md: 500
+              },
 
               borderRadius: "50%",
 
-              border:
-                "2px solid rgba(25,118,210,0.18)",
+              background:
+                "radial-gradient(circle,rgba(33,150,243,0.13),rgba(33,150,243,0.025) 60%,transparent 72%)",
+
+              top: {
+                xs: -130,
+                md: -210
+              },
+
+              right: {
+                xs: -130,
+                md: -160
+              },
 
               animation:
-                "ripple 2.5s ease-out infinite"
+                "floatSide 9s ease-in-out infinite",
+
+              pointerEvents: "none"
             }}
           />
 
-          {/* Ripple 2 */}
+          {/* =====================================================
+        SECOND FLOATING GRADIENT
+    ====================================================== */}
 
           <Box
             sx={{
               position: "absolute",
 
-              width: 45,
-              height: 45,
+              width: {
+                xs: 240,
+                md: 400
+              },
+
+              height: {
+                xs: 240,
+                md: 400
+              },
 
               borderRadius: "50%",
 
-              border:
-                "2px solid rgba(25,118,210,0.13)",
+              background:
+                "radial-gradient(circle,rgba(25,118,210,0.10),transparent 70%)",
+
+              bottom: {
+                xs: -130,
+                md: -170
+              },
+
+              left: {
+                xs: -110,
+                md: -150
+              },
 
               animation:
-                "ripple 2.5s ease-out infinite 1.2s"
+                "floatReverse 8s ease-in-out infinite",
+
+              pointerEvents: "none"
             }}
           />
 
-          {/* Rotating ring */}
+          {/* =====================================================
+        FLOATING PARTICLES
+    ====================================================== */}
 
-          <Box
+          {[
+            {
+              top: "20%",
+              left: "12%",
+              size: 12,
+              delay: "0s"
+            },
+            {
+              top: "32%",
+              left: "18%",
+              size: 7,
+              delay: "1s"
+            },
+            {
+              top: "24%",
+              right: "13%",
+              size: 9,
+              delay: "1.8s"
+            },
+            {
+              top: "48%",
+              right: "9%",
+              size: 6,
+              delay: "2.5s"
+            },
+            {
+              bottom: "25%",
+              left: "14%",
+              size: 8,
+              delay: "0.7s"
+            },
+            {
+              bottom: "20%",
+              right: "17%",
+              size: 12,
+              delay: "1.5s"
+            },
+            {
+              top: "62%",
+              left: "7%",
+              size: 5,
+              delay: "3s"
+            }
+          ].map((particle, index) => (
+            <Box
+              key={index}
+              sx={{
+                position: "absolute",
+
+                width: particle.size,
+                height: particle.size,
+
+                borderRadius: "50%",
+
+                background:
+                  "linear-gradient(135deg,#1976d2,#90caf9)",
+
+                opacity: 0.55,
+
+                top: particle.top,
+                left: particle.left,
+                right: particle.right,
+                bottom: particle.bottom,
+
+                animation: `sparkle 2.8s ease-in-out infinite ${particle.delay}`,
+
+                pointerEvents: "none"
+              }}
+            />
+          ))}
+
+          {/* =====================================================
+        FLOATING BUS ICON
+    ====================================================== */}
+
+          <DirectionsBusIcon
             sx={{
               position: "absolute",
 
-              width: 72,
-              height: 72,
+              top: "18%",
+              left: "7%",
 
-              borderRadius: "50%",
+              fontSize: {
+                xs: 26,
+                md: 34
+              },
 
-              border:
-                "1px dashed rgba(25,118,210,0.18)",
+              color: "#90caf9",
+
+              opacity: 0.3,
 
               animation:
-                "rotateSlow 12s linear infinite"
+                "float 5s ease-in-out infinite",
+
+              pointerEvents: "none"
             }}
           />
 
-          {/* BUS */}
+          <DirectionsBusIcon
+            sx={{
+              position: "absolute",
+
+              bottom: "18%",
+              right: "7%",
+
+              fontSize: {
+                xs: 25,
+                md: 32
+              },
+
+              color: "#1976d2",
+
+              opacity: 0.18,
+
+              animation:
+                "floatReverse 6s ease-in-out infinite",
+
+              pointerEvents: "none"
+            }}
+          />
+
+          {/* =====================================================
+        MAIN CONTENT
+    ====================================================== */}
 
           <Box
             sx={{
+              width: "100%",
+              maxWidth: 1200,
+              marginTop: "20px",
+              mx: "auto",
+
+              textAlign: "center",
+
               position: "relative",
               zIndex: 5,
 
-              animation:
-                "busTravel 3s ease-in-out infinite"
-            }}
-          >
-            <DirectionsBusIcon
-              sx={{
-                fontSize: {
-                  xs: 42,
-                  sm: 52,
-                  md: 60
-                },
-
-                color: "#1976d2",
-
-                filter:
-                  "drop-shadow(0 8px 12px rgba(25,118,210,0.28))"
-              }}
-            />
-          </Box>
-        </Box>
-
-        {/* LINE */}
-
-        <Box
-          sx={{
-            height: 4,
-
-            flex: 1,
-
-            borderRadius: 10,
-
-            background:
-              "linear-gradient(90deg,#90caf9,#1976d2,#90caf9)",
-
-            backgroundSize:
-              "300px 100%",
-
-            animation:
-              "lineGlow 2.5s linear infinite reverse"
-          }}
-        />
-
-        {/* DESTINATION */}
-
-        <Box
-          sx={{
-            width: {
-              xs: 13,
-              sm: 17
-            },
-
-            height: {
-              xs: 13,
-              sm: 17
-            },
-
-            flexShrink: 0,
-
-            borderRadius: "50%",
-
-            backgroundColor:
-              "#1565c0",
-
-            animation:
-              "pulse 2.2s ease-in-out infinite 1s"
-          }}
-        />
-      </Box>
-
-      {/* =====================================================
-          CTA BUTTON
-      ====================================================== */}
-
-      <Button
-        variant="contained"
-
-        onClick={() =>
-          setCityDialogOpen(true)
-        }
-
-        startIcon={
-          <LocationOnIcon
-            sx={{
-              fontSize:
-                "1.35rem !important"
-            }}
-          />
-        }
-
-        disableElevation
-
-        sx={{
-          animation:
-            "fadeUp 0.8s ease-out 0.8s both, buttonPulse 3s ease-in-out 2s infinite",
-
-          position: "relative",
-
-          overflow: "hidden",
-
-          width: {
-            xs: "100%",
-            sm: "auto"
-          },
-
-          maxWidth: {
-            xs: 400,
-            sm: "none"
-          },
-
-          minWidth: {
-            sm: 390,
-            md: 500
-          },
-
-          px: {
-            xs: 2.5,
-            sm: 4,
-            md: 5
-          },
-
-          py: {
-            xs: 1.35,
-            sm: 1.5,
-            md: 1.65
-          },
-
-          borderRadius: "50px",
-
-          textTransform: "none",
-
-          fontSize: {
-            xs: "0.92rem",
-            sm: "1rem",
-            md: "1.08rem"
-          },
-
-          fontWeight: 800,
-
-          background:
-            "linear-gradient(135deg,#1976d2,#1565c0)",
-
-          transition:
-            "all .3s cubic-bezier(.4,0,.2,1)",
-
-          "&::before": {
-            content: '""',
-
-            position: "absolute",
-
-            top: 0,
-            left: "-120%",
-
-            width: "80%",
-            height: "100%",
-
-            background:
-              "linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent)",
-
-            transform:
-              "skewX(-20deg)"
-          },
-
-          "&:hover": {
-            transform:
-              "translateY(-5px) scale(1.025)",
-
-            background:
-              "linear-gradient(135deg,#1e88e5,#1565c0)",
-
-            boxShadow:
-              "0 20px 45px rgba(25,118,210,.38)"
-          },
-
-          "&:hover::before": {
-            animation:
-              "shine .9s ease-in-out"
-          }
-        }}
-      >
-        Select Your City to Check the Route
-      </Button>
-
-      {/* =====================================================
-          FEATURE PILLS
-      ====================================================== */}
-
-      <Box
-        sx={{
-          animation:
-            "fadeUp 0.8s ease-out 1s both",
-
-          display: "flex",
-
-          justifyContent: "center",
-          alignItems: "center",
-
-          flexWrap: "wrap",
-
-          gap: {
-            xs: 1,
-            sm: 1.5
-          },
-
-          mt: {
-            xs: 2.5,
-            sm: 3
-          }
-        }}
-      >
-
-        {[
-          ["🚌", "Simple Routes"],
-          ["📍", "Multiple Cities"],
-          ["⚡", "Quick Search"]
-        ].map(([icon, text]) => (
-          <Box
-            key={text}
-            sx={{
               display: "flex",
-
+              flexDirection: "column",
               alignItems: "center",
 
-              gap: 0.7,
-
-              px: {
-                xs: 1.2,
-                sm: 1.5
-              },
-
-              py: 0.7,
-
-              borderRadius: "30px",
-
-              background:
-                "rgba(255,255,255,.72)",
-
-              border:
-                "1px solid rgba(25,118,210,.08)",
-
-              color: "#64748b",
-
-              fontSize: {
-                xs: ".7rem",
-                sm: ".78rem"
-              },
-
-              fontWeight: 700,
-
-              backdropFilter:
-                "blur(10px)",
-
-              transition:
-                "all .3s ease",
-
-              "&:hover": {
-                transform:
-                  "translateY(-4px)",
-
-                background:
-                  "#ffffff",
-
-                color:
-                  "#1976d2",
-
-                boxShadow:
-                  "0 10px 25px rgba(25,118,210,.12)"
+              transform: {
+                xs: "translateY(-8px)",
+                md: "translateY(-14px)"
               }
             }}
           >
-            <span>{icon}</span>
 
-            {text}
+            {/* =====================================================
+          BADGE
+      ====================================================== */}
+
+            <Chip
+              icon={
+                <DirectionsBusIcon
+                  sx={{
+                    color:
+                      "#1976d2 !important",
+                    animation: "busIconDrive 2.5s ease-in-out 1.2s infinite"
+                  }}
+                />
+              }
+              label="SMART PUBLIC TRANSPORT"
+              sx={{
+                position: "relative",
+                overflow: "hidden",
+
+                animation:
+                  "fadeDown 0.8s ease-out both, badgeGlow 3s ease-in-out 1s infinite",
+
+                mb: {
+                  xs: 2,
+                  sm: 2.5
+                },
+
+                px: 1.5,
+                py: 2,
+
+                height: "auto",
+
+                borderRadius: "50px",
+
+                background:
+                  "linear-gradient(135deg,#e3f2fd,#d7ebff)",
+
+                border:
+                  "1px solid rgba(25,118,210,0.2)",
+
+                color: "#1565c0",
+
+                fontWeight: 800,
+
+                letterSpacing: {
+                  xs: "0.5px",
+                  sm: "1px"
+                },
+
+                fontSize: {
+                  xs: "0.68rem",
+                  sm: "0.82rem",
+                  md: "0.88rem"
+                },
+
+                boxShadow:
+                  "0 8px 25px rgba(25,118,210,0.08)",
+
+                "&::after": {
+                  content: '""',
+                  position: "absolute",
+                  top: 0,
+                  left: "-60%",
+                  width: "35%",
+                  height: "100%",
+                  background:
+                    "linear-gradient(90deg,transparent,rgba(25,118,210,0.35),transparent)",
+                  transform: "skewX(-20deg)",
+                  animation: "badgeShine 3.5s ease-in-out 2s infinite"
+                },
+
+                "&:hover": {
+                  transform: "scale(1.04)",
+                  boxShadow:
+                    "0 10px 28px rgba(25,118,210,0.25)"
+                },
+
+                transition: "transform 0.25s ease, box-shadow 0.25s ease"
+              }}
+            />
+
+            {/* =====================================================
+          RAasta TITLE
+      ====================================================== */}
+
+            <Typography
+              component="h1"
+              sx={{
+                animation:
+                  "scaleIn 0.9s cubic-bezier(.17,.67,.35,1.2) 0.15s both",
+
+                fontWeight: 950,
+
+                fontSize: {
+                  xs: "clamp(4rem,18vw,5.2rem)",
+                  sm: "clamp(5rem,12vw,7rem)",
+                  md: "clamp(6rem,9vw,8rem)"
+                },
+
+                lineHeight: 0.85,
+
+                letterSpacing: {
+                  xs: "-4px",
+                  sm: "-5px",
+                  md: "-7px"
+                },
+
+                color: "#111827",
+
+                mb: 2,
+
+                textShadow:
+                  "0 12px 40px rgba(15,23,42,0.09)"
+              }}
+            >
+              Raasta
+            </Typography>
+
+            {/* =====================================================
+          TAGLINE
+      ====================================================== */}
+
+            <Typography
+              component="h2"
+              sx={{
+                animation:
+                  "fadeUp 0.8s ease-out 0.35s both",
+
+                fontSize: {
+                  xs: "1.35rem",
+                  sm: "2rem",
+                  md: "2.65rem"
+                },
+
+                fontWeight: 850,
+
+                lineHeight: 1.15,
+
+                color: "#1976d2",
+
+                mb: 1.7
+              }}
+            >
+              Your Journey Starts Here.
+            </Typography>
+
+            {/* =====================================================
+          DESCRIPTION
+      ====================================================== */}
+
+            <Typography
+              sx={{
+                animation:
+                  "fadeUp 0.8s ease-out 0.5s both",
+
+                maxWidth: {
+                  xs: 360,
+                  sm: 680,
+                  md: 850
+                },
+
+                mx: "auto",
+
+                color: "#64748b",
+
+                fontSize: {
+                  xs: "0.9rem",
+                  sm: "1rem",
+                  md: "1.08rem"
+                },
+
+                lineHeight: 1.7,
+
+                mb: {
+                  xs: 2.5,
+                  sm: 3
+                }
+              }}
+            >
+              Tell us where you are and where you want to go.
+              Raasta helps you discover the right bus route
+              and makes your journey easier.
+            </Typography>
+
+            {/* =====================================================
+          ROUTE ANIMATION
+      ====================================================== */}
+
+            <Box
+              sx={{
+                animation:
+                  "fadeUp 0.9s ease-out 0.65s both",
+
+                width: {
+                  xs: "92%",
+                  sm: "80%",
+                  md: 900
+                },
+
+                maxWidth: 900,
+
+                mx: "auto",
+
+                mb: {
+                  xs: 2.5,
+                  sm: 3
+                },
+
+                display: "flex",
+                alignItems: "center"
+              }}
+            >
+
+              {/* START */}
+
+              <Box
+                sx={{
+                  width: {
+                    xs: 13,
+                    sm: 17
+                  },
+
+                  height: {
+                    xs: 13,
+                    sm: 17
+                  },
+
+                  flexShrink: 0,
+
+                  borderRadius: "50%",
+
+                  backgroundColor:
+                    "#1976d2",
+
+                  animation:
+                    "pulse 2.2s ease-in-out infinite"
+                }}
+              />
+
+              {/* LINE */}
+
+              <Box
+                sx={{
+                  height: 4,
+
+                  flex: 1,
+
+                  borderRadius: 10,
+
+                  background:
+                    "linear-gradient(90deg,#1976d2,#90caf9,#1976d2)",
+
+                  backgroundSize:
+                    "300px 100%",
+
+                  animation:
+                    "lineGlow 2.5s linear infinite"
+                }}
+              />
+
+              {/* =================================================
+            BUS + RIPPLES
+        ================================================= */}
+
+              <Box
+                sx={{
+                  position: "relative",
+
+                  width: {
+                    xs: 65,
+                    sm: 80,
+                    md: 95
+                  },
+
+                  height: {
+                    xs: 65,
+                    sm: 80,
+                    md: 95
+                  },
+
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
+              >
+
+                {/* Ripple 1 */}
+
+                <Box
+                  sx={{
+                    position: "absolute",
+
+                    width: 45,
+                    height: 45,
+
+                    borderRadius: "50%",
+
+                    border:
+                      "2px solid rgba(25,118,210,0.18)",
+
+                    animation:
+                      "ripple 2.5s ease-out infinite"
+                  }}
+                />
+
+                {/* Ripple 2 */}
+
+                <Box
+                  sx={{
+                    position: "absolute",
+
+                    width: 45,
+                    height: 45,
+
+                    borderRadius: "50%",
+
+                    border:
+                      "2px solid rgba(25,118,210,0.13)",
+
+                    animation:
+                      "ripple 2.5s ease-out infinite 1.2s"
+                  }}
+                />
+
+                {/* Rotating ring */}
+
+                <Box
+                  sx={{
+                    position: "absolute",
+
+                    width: 72,
+                    height: 72,
+
+                    borderRadius: "50%",
+
+                    border:
+                      "1px dashed rgba(25,118,210,0.18)",
+
+                    animation:
+                      "rotateSlow 12s linear infinite"
+                  }}
+                />
+
+                {/* BUS */}
+
+                <Box
+                  sx={{
+                    position: "relative",
+                    zIndex: 5,
+
+                    animation:
+                      "busTravel 3s ease-in-out infinite"
+                  }}
+                >
+                  <DirectionsBusIcon
+                    sx={{
+                      fontSize: {
+                        xs: 42,
+                        sm: 52,
+                        md: 60
+                      },
+
+                      color: "#1976d2",
+
+                      filter:
+                        "drop-shadow(0 8px 12px rgba(25,118,210,0.28))"
+                    }}
+                  />
+                </Box>
+              </Box>
+
+              {/* LINE */}
+
+              <Box
+                sx={{
+                  height: 4,
+
+                  flex: 1,
+
+                  borderRadius: 10,
+
+                  background:
+                    "linear-gradient(90deg,#90caf9,#1976d2,#90caf9)",
+
+                  backgroundSize:
+                    "300px 100%",
+
+                  animation:
+                    "lineGlow 2.5s linear infinite reverse"
+                }}
+              />
+
+              {/* DESTINATION */}
+
+              <Box
+                sx={{
+                  width: {
+                    xs: 13,
+                    sm: 17
+                  },
+
+                  height: {
+                    xs: 13,
+                    sm: 17
+                  },
+
+                  flexShrink: 0,
+
+                  borderRadius: "50%",
+
+                  backgroundColor:
+                    "#1565c0",
+
+                  animation:
+                    "pulse 2.2s ease-in-out infinite 1s"
+                }}
+              />
+            </Box>
+
+            {/* =====================================================
+          CTA BUTTON
+      ====================================================== */}
+
+            <Button
+              variant="contained"
+
+              onClick={() =>
+                setCityDialogOpen(true)
+              }
+
+              startIcon={
+                <LocationOnIcon
+                  sx={{
+                    fontSize:
+                      "1.35rem !important"
+                  }}
+                />
+              }
+
+              disableElevation
+
+              sx={{
+                animation:
+                  "fadeUp 0.8s ease-out 0.8s both, buttonPulse 3s ease-in-out 2s infinite",
+
+                position: "relative",
+
+                overflow: "hidden",
+
+                width: {
+                  xs: "100%",
+                  sm: "auto"
+                },
+
+                maxWidth: {
+                  xs: 400,
+                  sm: "none"
+                },
+
+                minWidth: {
+                  sm: 390,
+                  md: 500
+                },
+
+                px: {
+                  xs: 2.5,
+                  sm: 4,
+                  md: 5
+                },
+
+                py: {
+                  xs: 1.35,
+                  sm: 1.5,
+                  md: 1.65
+                },
+
+                borderRadius: "50px",
+
+                textTransform: "none",
+
+                fontSize: {
+                  xs: "0.92rem",
+                  sm: "1rem",
+                  md: "1.08rem"
+                },
+
+                fontWeight: 800,
+
+                background:
+                  "linear-gradient(135deg,#1976d2,#1565c0)",
+
+                transition:
+                  "all .3s cubic-bezier(.4,0,.2,1)",
+
+                "&::before": {
+                  content: '""',
+
+                  position: "absolute",
+
+                  top: 0,
+                  left: "-120%",
+
+                  width: "80%",
+                  height: "100%",
+
+                  background:
+                    "linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent)",
+
+                  transform:
+                    "skewX(-20deg)"
+                },
+
+                "&:hover": {
+                  transform:
+                    "translateY(-5px) scale(1.025)",
+
+                  background:
+                    "linear-gradient(135deg,#1e88e5,#1565c0)",
+
+                  boxShadow:
+                    "0 20px 45px rgba(25,118,210,.38)"
+                },
+
+                "&:hover::before": {
+                  animation:
+                    "shine .9s ease-in-out"
+                }
+              }}
+            >
+              Select Your City to Check the Route
+            </Button>
+
+            {/* =====================================================
+          FEATURE PILLS
+      ====================================================== */}
+
+            <Box
+              sx={{
+                animation:
+                  "fadeUp 0.8s ease-out 1s both",
+
+                display: "flex",
+
+                justifyContent: "center",
+                alignItems: "center",
+
+                flexWrap: "wrap",
+
+                gap: {
+                  xs: 1,
+                  sm: 1.5
+                },
+
+                mt: {
+                  xs: 2.5,
+                  sm: 3
+                }
+              }}
+            >
+
+              {[
+                ["🚌", "Simple Routes"],
+                ["📍", "Multiple Cities"],
+                ["⚡", "Quick Search"]
+              ].map(([icon, text]) => (
+                <Box
+                  key={text}
+                  sx={{
+                    display: "flex",
+
+                    alignItems: "center",
+
+                    gap: 0.7,
+
+                    px: {
+                      xs: 1.2,
+                      sm: 1.5
+                    },
+
+                    py: 0.7,
+
+                    borderRadius: "30px",
+
+                    background:
+                      "rgba(255,255,255,.72)",
+
+                    border:
+                      "1px solid rgba(25,118,210,.08)",
+
+                    color: "#64748b",
+
+                    fontSize: {
+                      xs: ".7rem",
+                      sm: ".78rem"
+                    },
+
+                    fontWeight: 700,
+
+                    backdropFilter:
+                      "blur(10px)",
+
+                    transition:
+                      "all .3s ease",
+
+                    "&:hover": {
+                      transform:
+                        "translateY(-4px)",
+
+                      background:
+                        "#ffffff",
+
+                      color:
+                        "#1976d2",
+
+                      boxShadow:
+                        "0 10px 25px rgba(25,118,210,.12)"
+                    }
+                  }}
+                >
+                  <span>{icon}</span>
+
+                  {text}
+                </Box>
+              ))}
+            </Box>
+
           </Box>
-        ))}
-      </Box>
-
-    </Box>
-  </Box>
-) : (
+        </Box>
+      ) : (
         /* =====================================================
            ROUTE FINDER
         ====================================================== */
@@ -3408,10 +3433,10 @@ function TransferRouteCard({ route }) {
   const lastStop =
     lastLegStops.length > 0
       ? getStop(
-          lastLegStops[
-            lastLegStops.length - 1
-          ]
-        )
+        lastLegStops[
+        lastLegStops.length - 1
+        ]
+      )
       : null;
 
   return (
