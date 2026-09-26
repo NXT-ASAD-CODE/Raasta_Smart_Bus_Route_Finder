@@ -8,7 +8,7 @@ const apiRequest = async (endpoint, options = {}) => {
         {
             ...options,
 
-            // Important for admin authentication cookie
+            // Send admin authentication cookie
             credentials: "include",
 
             headers: {
@@ -87,6 +87,8 @@ export const reactivateCity = async (cityId) => {
         }
     );
 };
+
+
 // =========================
 // Stops
 // =========================
