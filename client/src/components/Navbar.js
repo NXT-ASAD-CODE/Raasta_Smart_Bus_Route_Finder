@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { keyframes } from "@emotion/react";
 
 import {
     AppBar,
@@ -41,6 +42,44 @@ const navigationItems = [
     }
 ];
 
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+
+const slideDown = keyframes`
+    from {
+        opacity: 0;
+        transform: translateY(-16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+`;
+
+const busWiggle = keyframes`
+    0%, 100% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(-8deg);
+    }
+    75% {
+        transform: rotate(8deg);
+    }
+`;
+
+const drawerItemIn = keyframes`
+    from {
+        opacity: 0;
+        transform: translateX(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+`;
+
 export default function Navbar() {
     const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -60,7 +99,8 @@ export default function Navbar() {
                     borderBottom:
                         "1px solid rgba(255, 255, 255, 0.15)",
                     boxShadow:
-                        "0 4px 20px rgba(13, 71, 161, 0.25)"
+                        "0 4px 20px rgba(13, 71, 161, 0.25)",
+                    animation: `${slideDown} 0.5s ease-out both`
                 }}
             >
                 <Toolbar
@@ -93,10 +133,20 @@ export default function Navbar() {
                             mr: {
                                 xs: "auto",
                                 md: 5
+                            },
+                            transition: "transform 0.2s ease",
+
+                            "&:hover": {
+                                transform: "scale(1.04)"
+                            },
+
+                            "&:hover .navbar-bus-icon": {
+                                animation: `${busWiggle} 0.5s ease-in-out`
                             }
                         }}
                     >
                         <Box
+                            className="navbar-bus-icon"
                             sx={{
                                 width: 40,
                                 height: 40,
@@ -110,7 +160,9 @@ export default function Navbar() {
                                 border:
                                     "1px solid rgba(255, 255, 255, 0.2)",
                                 boxShadow:
-                                    "0 6px 18px rgba(0, 0, 0, 0.12)"
+                                    "0 6px 18px rgba(0, 0, 0, 0.12)",
+                                transition:
+                                    "background-color 0.2s ease"
                             }}
                         >
                             <DirectionsBusIcon />
@@ -149,6 +201,7 @@ export default function Navbar() {
                                 component={Link}
                                 href={item.href}
                                 sx={{
+                                    position: "relative",
                                     color:
                                         "rgba(255, 255, 255, 0.9)",
                                     textTransform: "none",
@@ -157,10 +210,36 @@ export default function Navbar() {
                                     px: 1.8,
                                     py: 1,
                                     borderRadius: "10px",
+                                    transition:
+                                        "color 0.2s ease, background-color 0.2s ease",
+
+                                    "&::after": {
+                                        content: '""',
+                                        position: "absolute",
+                                        left: "18%",
+                                        right: "18%",
+                                        bottom: 4,
+                                        height: "2px",
+                                        borderRadius: "2px",
+                                        backgroundColor:
+                                            "#ffffff",
+                                        transform:
+                                            "scaleX(0)",
+                                        transformOrigin:
+                                            "center",
+                                        transition:
+                                            "transform 0.25s ease"
+                                    },
+
                                     "&:hover": {
                                         color: "#ffffff",
                                         backgroundColor:
                                             "rgba(255, 255, 255, 0.12)"
+                                    },
+
+                                    "&:hover::after": {
+                                        transform:
+                                            "scaleX(1)"
                                     }
                                 }}
                             >
@@ -198,9 +277,14 @@ export default function Navbar() {
                                 py: 1.15,
                                 boxShadow:
                                     "0 5px 15px rgba(0, 0, 0, 0.12)",
+                                transition:
+                                    "transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease",
+
                                 "&:hover": {
                                     backgroundColor: "#f5f9ff",
                                     color: "#0d47a1",
+                                    transform:
+                                        "translateY(-2px)",
                                     boxShadow:
                                         "0 7px 18px rgba(0, 0, 0, 0.16)"
                                 }
@@ -224,9 +308,13 @@ export default function Navbar() {
                             height: 44,
                             borderRadius: "12px",
                             color: "#ffffff",
+                            transition:
+                                "background-color 0.2s ease, transform 0.2s ease",
+
                             "&:hover": {
                                 backgroundColor:
-                                    "rgba(255, 255, 255, 0.12)"
+                                    "rgba(255, 255, 255, 0.12)",
+                                transform: "rotate(90deg)"
                             }
                         }}
                     >
@@ -307,6 +395,13 @@ export default function Navbar() {
                     <IconButton
                         onClick={handleDrawerToggle}
                         aria-label="close navigation menu"
+                        sx={{
+                            transition: "transform 0.2s ease",
+
+                            "&:hover": {
+                                transform: "rotate(90deg)"
+                            }
+                        }}
                     >
                         <CloseIcon />
                     </IconButton>
@@ -315,11 +410,17 @@ export default function Navbar() {
                 {/* Drawer Navigation */}
 
                 <List sx={{ mt: 2 }}>
-                    {navigationItems.map((item) => (
+                    {navigationItems.map((item, index) => (
                         <ListItem
                             key={item.label}
                             disablePadding
-                            sx={{ mb: 0.5 }}
+                            sx={{
+                                mb: 0.5,
+                                animation: mobileOpen
+                                    ? `${drawerItemIn} 0.35s ease-out ${index * 0.06
+                                    }s both`
+                                    : "none"
+                            }}
                         >
                             <ListItemButton
                                 component={Link}
@@ -331,9 +432,14 @@ export default function Navbar() {
                                     borderRadius:
                                         "12px",
                                     py: 1.4,
+                                    transition:
+                                        "background-color 0.2s ease, transform 0.2s ease",
+
                                     "&:hover": {
                                         backgroundColor:
-                                            "rgba(25, 118, 210, 0.08)"
+                                            "rgba(25, 118, 210, 0.08)",
+                                        transform:
+                                            "translateX(4px)"
                                     }
                                 }}
                             >
@@ -383,9 +489,16 @@ export default function Navbar() {
                             fontWeight: 700,
                             borderRadius: "12px",
                             py: 1.4,
+                            transition:
+                                "background-color 0.2s ease, transform 0.15s ease",
+
                             "&:hover": {
                                 backgroundColor:
                                     "#1565c0"
+                            },
+
+                            "&:active": {
+                                transform: "scale(0.98)"
                             }
                         }}
                     >
