@@ -1,11 +1,18 @@
 const Stop = require("../models/stop");
 
+// =========================
 // Get all active stops
+// =========================
+
 const getStops = async (req, res, next) => {
     try {
-        const stops = await Stop.find({ isActive: true })
+        const stops = await Stop.find({
+            isActive: true
+        })
             .populate("city", "name slug")
-            .sort({ name: 1 });
+            .sort({
+                name: 1
+            });
 
         res.status(200).json({
             success: true,
@@ -17,11 +24,19 @@ const getStops = async (req, res, next) => {
     }
 };
 
+
+// =========================
 // Get one stop
+// =========================
+
 const getStopById = async (req, res, next) => {
     try {
-        const stop = await Stop.findById(req.params.stopId)
-            .populate("city", "name slug");
+        const stop = await Stop.findById(
+            req.params.stopId
+        ).populate(
+            "city",
+            "name slug"
+        );
 
         if (!stop) {
             return res.status(404).json({
@@ -39,7 +54,11 @@ const getStopById = async (req, res, next) => {
     }
 };
 
-// Create a stop
+
+// =========================
+// Create stop
+// =========================
+
 const createStop = async (req, res, next) => {
     try {
         const {
@@ -50,10 +69,16 @@ const createStop = async (req, res, next) => {
             landmarks
         } = req.body;
 
-        if (!city || !name || !location?.coordinates) {
+        if (
+            !city ||
+            !name ||
+            !location ||
+            !location.coordinates
+        ) {
             return res.status(400).json({
                 success: false,
-                message: "City, name and coordinates are required"
+                message:
+                    "City, name and coordinates are required"
             });
         }
 
@@ -65,10 +90,11 @@ const createStop = async (req, res, next) => {
             landmarks
         });
 
-        const populatedStop = await stop.populate(
-            "city",
-            "name slug"
-        );
+        const populatedStop =
+            await stop.populate(
+                "city",
+                "name slug"
+            );
 
         res.status(201).json({
             success: true,
@@ -78,7 +104,12 @@ const createStop = async (req, res, next) => {
         next(error);
     }
 };
+
+
+// =========================
 // Update stop
+// =========================
+
 const updateStop = async (req, res, next) => {
     try {
         const { stopId } = req.params;
@@ -92,7 +123,9 @@ const updateStop = async (req, res, next) => {
             isActive
         } = req.body;
 
-        const stop = await Stop.findById(stopId);
+        const stop = await Stop.findById(
+            stopId
+        );
 
         if (!stop) {
             return res.status(404).json({
@@ -110,17 +143,11 @@ const updateStop = async (req, res, next) => {
         }
 
         if (nameUrdu !== undefined) {
-            stop.nameUrdu = nameUrdu.trim();
+            stop.nameUrdu =
+                nameUrdu.trim();
         }
 
         if (location !== undefined) {
-            if (!location.coordinates) {
-                return res.status(400).json({
-                    success: false,
-                    message: "Location coordinates are required"
-                });
-            }
-
             stop.location = location;
         }
 
@@ -134,24 +161,40 @@ const updateStop = async (req, res, next) => {
 
         await stop.save();
 
-        const populatedStop = await Stop.findById(stopId)
-            .populate("city", "name slug");
+        const populatedStop =
+            await Stop.findById(stopId)
+                .populate(
+                    "city",
+                    "name slug"
+                );
 
         res.status(200).json({
             success: true,
-            message: "Stop updated successfully",
+            message:
+                "Stop updated successfully",
             data: populatedStop
         });
     } catch (error) {
         next(error);
     }
 };
+
+
+// =========================
 // Deactivate stop
-const deactivateStop = async (req, res, next) => {
+// =========================
+
+const deactivateStop = async (
+    req,
+    res,
+    next
+) => {
     try {
         const { stopId } = req.params;
 
-        const stop = await Stop.findById(stopId);
+        const stop = await Stop.findById(
+            stopId
+        );
 
         if (!stop) {
             return res.status(404).json({
@@ -164,24 +207,33 @@ const deactivateStop = async (req, res, next) => {
 
         await stop.save();
 
-        const populatedStop = await Stop.findById(stopId)
-            .populate("city", "name slug");
-
         res.status(200).json({
             success: true,
-            message: "Stop deactivated successfully",
-            data: populatedStop
+            message:
+                "Stop deactivated successfully",
+            data: stop
         });
     } catch (error) {
         next(error);
     }
 };
+
+
+// =========================
 // Reactivate stop
-const reactivateStop = async (req, res, next) => {
+// =========================
+
+const reactivateStop = async (
+    req,
+    res,
+    next
+) => {
     try {
         const { stopId } = req.params;
 
-        const stop = await Stop.findById(stopId);
+        const stop = await Stop.findById(
+            stopId
+        );
 
         if (!stop) {
             return res.status(404).json({
@@ -194,18 +246,25 @@ const reactivateStop = async (req, res, next) => {
 
         await stop.save();
 
-        const populatedStop = await Stop.findById(stopId)
-            .populate("city", "name slug");
+        const populatedStop =
+            await Stop.findById(stopId)
+                .populate(
+                    "city",
+                    "name slug"
+                );
 
         res.status(200).json({
             success: true,
-            message: "Stop reactivated successfully",
+            message:
+                "Stop reactivated successfully",
             data: populatedStop
         });
     } catch (error) {
         next(error);
     }
 };
+
+
 module.exports = {
     getStops,
     getStopById,
