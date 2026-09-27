@@ -15,7 +15,7 @@ import {
     Alert,
     CircularProgress
 } from "@mui/material";
-
+import { adminLogin } from "../../services/api";
 import EmailIcon from "@mui/icons-material/Email";
 import LockIcon from "@mui/icons-material/Lock";
 import PhoneIcon from "@mui/icons-material/Phone";
@@ -46,27 +46,11 @@ export default function AdminLoginPage() {
         setLoading(true);
 
         try {
-            const response = await fetch(
-                "http://localhost:5000/api/admin/login",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    credentials: "include",
-                    body: JSON.stringify({
-                        email,
-                        password,
-                        mobile
-                    })
-                }
-            );
-
-            const data = await response.json();
+            const data = await adminLogin(email, password, mobile);
 
             console.log("Admin login response:", data);
 
-            if (!response.ok || !data.success) {
+            if (!data.success) {
                 setError(
                     data.message ||
                     "Invalid email, password or mobile number."
