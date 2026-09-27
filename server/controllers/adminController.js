@@ -74,9 +74,8 @@ const adminLogin = async (req, res, next) => {
         // Store token in HTTP-only cookie
         res.cookie("adminToken", token, {
             httpOnly: true,
-            secure:
-                process.env.NODE_ENV === "production",
-            sameSite: "lax",
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "none",
             maxAge: 24 * 60 * 60 * 1000
         });
 
