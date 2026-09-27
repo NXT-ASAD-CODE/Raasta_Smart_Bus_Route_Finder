@@ -1,5 +1,6 @@
 "use client";
-
+import Link from "next/link";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useEffect, useState } from "react";
 
 import {
@@ -200,6 +201,24 @@ export default function AddRoutePage() {
                 }
             }}
         >
+            <Button
+                component={Link}
+                href="/admin/dashboard"
+                startIcon={<ArrowBackIcon />}
+                sx={{
+                    mb: 2,
+                    textTransform: "none",
+                    color: "#64748b",
+                    fontWeight: 600,
+                    px: 0,
+                    "&:hover": {
+                        background: "transparent",
+                        color: "#1976d2"
+                    }
+                }}
+            >
+                Back to Dashboard
+            </Button>
             <Container maxWidth="md">
                 <Paper
                     elevation={3}

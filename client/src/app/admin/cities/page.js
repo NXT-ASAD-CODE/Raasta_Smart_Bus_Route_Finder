@@ -19,7 +19,8 @@ import {
     TextField,
     Typography
 } from "@mui/material";
-
+import Link from "next/link";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
@@ -196,7 +197,24 @@ export default function AdminCitiesPage() {
             <Container maxWidth="lg">
 
                 {/* Header */}
-
+                <Button
+                    component={Link}
+                    href="/admin/dashboard"
+                    startIcon={<ArrowBackIcon />}
+                    sx={{
+                        mb: 2,
+                        textTransform: "none",
+                        color: "#64748b",
+                        fontWeight: 600,
+                        px: 0,
+                        "&:hover": {
+                            background: "transparent",
+                            color: "#1976d2"
+                        }
+                    }}
+                >
+                    Back to Dashboard
+                </Button>
                 <Box
                     sx={{
                         display: "flex",
