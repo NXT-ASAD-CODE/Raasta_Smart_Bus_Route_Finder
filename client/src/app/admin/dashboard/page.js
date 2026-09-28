@@ -13,7 +13,7 @@ import {
     Button,
     CircularProgress
 } from "@mui/material";
-
+import { verifyAdmin } from "../../../services/api";
 import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
 import RouteIcon from "@mui/icons-material/AltRoute";
@@ -52,42 +52,28 @@ export default function AdminDashboardPage() {
         useState(true);
 
     useEffect(() => {
-        const verifyAdmin = async () => {
-            try {
-                const response = await fetch(
-                    "http://localhost:5000/api/admin/verify",
-                    {
-                        method: "GET",
-                        credentials: "include"
-                    }
-                );
+    const checkAdmin = async () => {
+        try {
+            const data = await verifyAdmin();
 
-                if (!response.ok) {
-                    router.replace("/admin");
-                    return;
-                }
-
-                const data = await response.json();
-
-                if (!data.success) {
-                    router.replace("/admin");
-                    return;
-                }
-
-                setCheckingAuth(false);
-
-            } catch (error) {
-                console.error(
-                    "Admin verification failed:",
-                    error
-                );
-
+            if (!data.success) {
                 router.replace("/admin");
+                return;
             }
-        };
 
-        verifyAdmin();
-    }, [router]);
+            setCheckingAuth(false);
+        } catch (error) {
+            console.error(
+                "Admin verification failed:",
+                error
+            );
+
+            router.replace("/admin");
+        }
+    };
+
+    checkAdmin();
+}, [router]);
 
     // Show loading while checking authentication
     if (checkingAuth) {

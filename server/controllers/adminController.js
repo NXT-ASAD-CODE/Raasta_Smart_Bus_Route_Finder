@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
+const isProduction = process.env.NODE_ENV === "production";
 const Admin = require("../models/admin");
 
 /*
@@ -74,8 +74,8 @@ const adminLogin = async (req, res, next) => {
         // Store token in HTTP-only cookie
         res.cookie("adminToken", token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "none",
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
             maxAge: 24 * 60 * 60 * 1000
         });
 
