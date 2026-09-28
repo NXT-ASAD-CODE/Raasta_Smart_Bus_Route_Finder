@@ -162,7 +162,24 @@ export const createRoute = async (routeData) => {
     });
 };
 
+export const updateRoute = async (routeId, routeData) => {
+    return apiRequest(`/routes/${routeId}`, {
+        method: "PATCH",
+        body: JSON.stringify(routeData)
+    });
+};
 
+export const deactivateRoute = async (routeId) => {
+    return apiRequest(`/routes/${routeId}/deactivate`, {
+        method: "PATCH"
+    });
+};
+
+export const reactivateRoute = async (routeId) => {
+    return apiRequest(`/routes/${routeId}/reactivate`, {
+        method: "PATCH"
+    });
+};
 // =========================
 // Admin Authentication
 // =========================
