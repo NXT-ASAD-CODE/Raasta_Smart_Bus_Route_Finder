@@ -25,6 +25,7 @@ import {
     Typography
 } from "@mui/material";
 
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import PlaceIcon from "@mui/icons-material/Place";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -36,6 +37,7 @@ import {
     deactivateStop,
     getCities
 } from "../../../services/api";
+import Link from "next/link";
 
 export default function AdminStopsPage() {
     const [stops, setStops] = useState([]);
@@ -330,7 +332,25 @@ export default function AdminStopsPage() {
             <Container maxWidth="lg">
 
                 {/* Header */}
-
+                <Button
+                    component={Link}
+                    href="/admin/dashboard"
+                    startIcon={<ArrowBackIcon />}
+                    sx={{
+                        mb: 2,
+                        
+                        textTransform: "none",
+                        color: "#64748b",
+                        fontWeight: 600,
+                        px: 0,
+                        "&:hover": {
+                            background: "transparent",
+                            color: "#1976d2"
+                        }
+                    }}
+                >
+                    Back to Dashboard
+                </Button>
                 <Box
                     sx={{
                         display: "flex",
@@ -592,21 +612,21 @@ export default function AdminStopsPage() {
                                         {stop.landmarks
                                             ?.length >
                                             0 && (
-                                            <Typography
-                                                sx={{
-                                                    mt: 1,
-                                                    fontSize:
-                                                        "0.85rem",
-                                                    color:
-                                                        "#64748b"
-                                                }}
-                                            >
-                                                Landmarks:{" "}
-                                                {stop.landmarks.join(
-                                                    ", "
-                                                )}
-                                            </Typography>
-                                        )}
+                                                <Typography
+                                                    sx={{
+                                                        mt: 1,
+                                                        fontSize:
+                                                            "0.85rem",
+                                                        color:
+                                                            "#64748b"
+                                                    }}
+                                                >
+                                                    Landmarks:{" "}
+                                                    {stop.landmarks.join(
+                                                        ", "
+                                                    )}
+                                                </Typography>
+                                            )}
 
                                         <Stack
                                             direction="row"

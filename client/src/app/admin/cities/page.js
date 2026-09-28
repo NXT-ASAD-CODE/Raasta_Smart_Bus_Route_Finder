@@ -20,6 +20,7 @@ import {
     Typography
 } from "@mui/material";
 import Link from "next/link";
+import AddIcon from "@mui/icons-material/Add";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -27,9 +28,18 @@ import LocationCityIcon from "@mui/icons-material/LocationCity";
 
 import {
     getCities,
+    createCity,
     updateCity,
     deactivateCity
 } from "../../../services/api";
+
+// Turns "New York" into "new-york"
+const createSlug = (text) =>
+    text
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, "")
+        .replace(/\s+/g, "-");
 
 export default function AdminCitiesPage() {
     const [cities, setCities] = useState([]);
@@ -39,15 +49,20 @@ export default function AdminCitiesPage() {
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
 
-    const [editOpen, setEditOpen] = useState(false);
+    const [dialogOpen, setDialogOpen] = useState(false);
 
-    const [selectedCity, setSelectedCity] =
+    // null = adding a new city, object = editing that city
+    const [editingCity, setEditingCity] =
         useState(null);
 
     const [name, setName] = useState("");
     const [slug, setSlug] = useState("");
     const [country, setCountry] = useState("");
     const [province, setProvince] = useState("");
+
+    // Stops the slug from auto-updating once the admin edits it by hand
+    const [slugTouched, setSlugTouched] =
+        useState(false);
 
     const [saving, setSaving] = useState(false);
 
@@ -75,43 +90,91 @@ export default function AdminCitiesPage() {
     }, []);
 
     // =========================
-    // Open Edit Dialog
+    // Reset Form
     // =========================
 
-    const handleEdit = (city) => {
-        setSelectedCity(city);
-
-        setName(city.name || "");
-        setSlug(city.slug || "");
-        setCountry(city.country || "");
-        setProvince(city.province || "");
-
-        setEditOpen(true);
-    };
-
-    // =========================
-    // Close Edit Dialog
-    // =========================
-
-    const handleCloseEdit = () => {
-        if (saving) {
-            return;
-        }
-
-        setEditOpen(false);
-        setSelectedCity(null);
+    const resetForm = () => {
+        setEditingCity(null);
 
         setName("");
         setSlug("");
         setCountry("");
         setProvince("");
+        setSlugTouched(false);
     };
 
     // =========================
-    // Update City
+    // Open Add Dialog
     // =========================
 
-    const handleUpdate = async (event) => {
+    const handleAdd = () => {
+        resetForm();
+
+        setCountry("Pakistan");
+
+        setDialogOpen(true);
+    };
+
+    // =========================
+    // Open Edit Dialog
+    // =========================
+
+    const handleEdit = (city) => {
+        setEditingCity(city);
+
+        setName(city.name || "");
+        setSlug(city.slug || "");
+        setCountry(city.country || "");
+        setProvince(city.province || "");
+        setSlugTouched(true);
+
+        setDialogOpen(true);
+    };
+
+    // =========================
+    // Close Dialog
+    // =========================
+
+    const handleClose = () => {
+        if (saving) {
+            return;
+        }
+
+        setDialogOpen(false);
+        resetForm();
+    };
+
+    // =========================
+    // Name / Slug Changes
+    // =========================
+
+    const handleNameChange = (event) => {
+        const value = event.target.value;
+
+        setName(value);
+
+        // While adding, build the slug automatically from the name
+        if (!editingCity && !slugTouched) {
+            setSlug(createSlug(value));
+        }
+    };
+
+    const handleSlugChange = (event) => {
+        setSlugTouched(true);
+
+        setSlug(
+            event.target.value
+                .toLowerCase()
+                .trim()
+                .replace(/\s+/g, "-")
+        );
+    };
+
+    // =========================
+    // Add / Update City
+    // =========================
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
         setError("");
@@ -125,26 +188,35 @@ export default function AdminCitiesPage() {
             return;
         }
 
+        const cityData = {
+            name: name.trim(),
+            slug: slug.toLowerCase().trim(),
+            country: country.trim(),
+            province: province.trim()
+        };
+
         try {
             setSaving(true);
 
-            await updateCity(
-                selectedCity._id,
-                {
-                    name: name.trim(),
-                    slug: slug
-                        .toLowerCase()
-                        .trim(),
-                    country: country.trim(),
-                    province: province.trim()
-                }
-            );
+            if (editingCity) {
+                await updateCity(
+                    editingCity._id,
+                    cityData
+                );
 
-            setSuccess(
-                `${name.trim()} updated successfully.`
-            );
+                setSuccess(
+                    `${cityData.name} updated successfully.`
+                );
+            } else {
+                await createCity(cityData);
 
-            handleCloseEdit();
+                setSuccess(
+                    `${cityData.name} added successfully.`
+                );
+            }
+
+            setDialogOpen(false);
+            resetForm();
 
             await loadCities();
         } catch (error) {
@@ -196,7 +268,8 @@ export default function AdminCitiesPage() {
         >
             <Container maxWidth="lg">
 
-                {/* Header */}
+                {/* Back button */}
+
                 <Button
                     component={Link}
                     href="/admin/dashboard"
@@ -215,6 +288,9 @@ export default function AdminCitiesPage() {
                 >
                     Back to Dashboard
                 </Button>
+
+                {/* Header */}
+
                 <Box
                     sx={{
                         display: "flex",
@@ -256,24 +332,21 @@ export default function AdminCitiesPage() {
                         </Typography>
                     </Box>
 
-                    <Box
+                    <Button
+                        variant="contained"
+                        startIcon={<AddIcon />}
+                        onClick={handleAdd}
+                        disableElevation
                         sx={{
-                            width: 52,
-                            height: 52,
-                            borderRadius: "15px",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            backgroundColor: "#e3f2fd",
-                            color: "#1976d2"
+                            borderRadius: "10px",
+                            textTransform: "none",
+                            fontWeight: 700,
+                            px: 2.5,
+                            py: 1.1
                         }}
                     >
-                        <LocationCityIcon
-                            sx={{
-                                fontSize: 30
-                            }}
-                        />
-                    </Box>
+                        Add City
+                    </Button>
                 </Box>
 
                 {/* Alerts */}
@@ -353,11 +426,26 @@ export default function AdminCitiesPage() {
                             <Typography
                                 sx={{
                                     color: "#64748b",
-                                    mt: 0.5
+                                    mt: 0.5,
+                                    mb: 2.5
                                 }}
                             >
                                 Add a city to see it here.
                             </Typography>
+
+                            <Button
+                                variant="contained"
+                                startIcon={<AddIcon />}
+                                onClick={handleAdd}
+                                disableElevation
+                                sx={{
+                                    borderRadius: "10px",
+                                    textTransform: "none",
+                                    fontWeight: 700
+                                }}
+                            >
+                                Add City
+                            </Button>
                         </CardContent>
                     </Card>
                 ) : (
@@ -503,36 +591,36 @@ export default function AdminCitiesPage() {
 
             </Container>
 
-            {/* Edit City Dialog */}
+            {/* Add / Edit City Dialog */}
 
             <Dialog
-                open={editOpen}
-                onClose={handleCloseEdit}
+                open={dialogOpen}
+                onClose={handleClose}
                 fullWidth
                 maxWidth="sm"
             >
                 <Box
                     component="form"
-                    onSubmit={handleUpdate}
+                    onSubmit={handleSubmit}
                 >
                     <DialogTitle
                         sx={{
                             fontWeight: 900
                         }}
                     >
-                        Edit City
+                        {editingCity
+                            ? "Edit City"
+                            : "Add City"}
                     </DialogTitle>
 
                     <DialogContent>
                         <TextField
                             fullWidth
+                            required
                             label="City Name"
+                            placeholder="Karachi"
                             value={name}
-                            onChange={(event) =>
-                                setName(
-                                    event.target.value
-                                )
-                            }
+                            onChange={handleNameChange}
                             sx={{
                                 mt: 1,
                                 mb: 2
@@ -541,19 +629,12 @@ export default function AdminCitiesPage() {
 
                         <TextField
                             fullWidth
+                            required
                             label="Slug"
+                            placeholder="karachi"
                             value={slug}
-                            onChange={(event) =>
-                                setSlug(
-                                    event.target.value
-                                        .toLowerCase()
-                                        .trim()
-                                        .replace(
-                                            /\s+/g,
-                                            "-"
-                                        )
-                                )
-                            }
+                            onChange={handleSlugChange}
+                            helperText="Used in URLs. Filled in automatically from the city name."
                             sx={{
                                 mb: 2
                             }}
@@ -562,6 +643,7 @@ export default function AdminCitiesPage() {
                         <TextField
                             fullWidth
                             label="Country"
+                            placeholder="Pakistan"
                             value={country}
                             onChange={(event) =>
                                 setCountry(
@@ -576,6 +658,7 @@ export default function AdminCitiesPage() {
                         <TextField
                             fullWidth
                             label="Province / State"
+                            placeholder="Sindh"
                             value={province}
                             onChange={(event) =>
                                 setProvince(
@@ -592,7 +675,7 @@ export default function AdminCitiesPage() {
                         }}
                     >
                         <Button
-                            onClick={handleCloseEdit}
+                            onClick={handleClose}
                             disabled={saving}
                             sx={{
                                 textTransform:
@@ -617,7 +700,9 @@ export default function AdminCitiesPage() {
                         >
                             {saving
                                 ? "Saving..."
-                                : "Save Changes"}
+                                : editingCity
+                                    ? "Save Changes"
+                                    : "Add City"}
                         </Button>
                     </DialogActions>
                 </Box>
