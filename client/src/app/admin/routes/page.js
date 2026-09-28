@@ -529,17 +529,21 @@ export default function RoutesPage() {
                 >
                     <Box>
                         <Typography
-                            variant="h4"
+                            variant="h3"
                             fontWeight={700}
+                            sx={{
+                                color: "#123456"
+                            }}
                         >
                             Routes
                         </Typography>
 
                         <Typography
-                            color="text.secondary"
+                            sx={{
+                                color: "#5f6f82"
+                            }}
                         >
-                            Manage your bus routes
-                            and their stops.
+                            Manage your bus routes and their stops.
                         </Typography>
                     </Box>
 
