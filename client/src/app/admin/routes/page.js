@@ -20,7 +20,7 @@ import {
     Select,
     Stack,
     TextField,
-    Typography
+    Typography,
 } from "@mui/material";
 
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -28,6 +28,10 @@ import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import RestoreIcon from "@mui/icons-material/Restore";
+import LocationCityIcon from "@mui/icons-material/LocationCity";
+import RouteIcon from "@mui/icons-material/Route";
+import PlaceIcon from "@mui/icons-material/Place";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 import {
     getCities,
@@ -36,8 +40,9 @@ import {
     createRoute,
     updateRoute,
     deactivateRoute,
-    reactivateRoute
+    reactivateRoute,
 } from "../../../services/api";
+
 import Link from "next/link";
 
 export default function RoutesPage() {
@@ -75,11 +80,11 @@ export default function RoutesPage() {
             const [
                 citiesResponse,
                 stopsResponse,
-                routesResponse
+                routesResponse,
             ] = await Promise.all([
                 getCities(),
                 getStops(),
-                getRoutes()
+                getRoutes(),
             ]);
 
             setCities(citiesResponse.data || []);
@@ -88,7 +93,7 @@ export default function RoutesPage() {
         } catch (error) {
             setError(
                 error.message ||
-                "Failed to load route data."
+                    "Failed to load route data."
             );
         } finally {
             setLoading(false);
@@ -114,76 +119,6 @@ export default function RoutesPage() {
                 stop.city === city
         );
     }, [stops, city]);
-
-    // =========================
-    // Reset form
-    // =========================
-
-    const resetForm = () => {
-        setCity("");
-        setName("");
-        setRouteNumber("");
-        setStartPoint("");
-        setEndPoint("");
-        setSelectedStop("");
-        setRouteStops([]);
-        setEditingRoute(null);
-    };
-
-    // =========================
-    // Open Add
-    // =========================
-
-    const handleAddRoute = () => {
-        resetForm();
-        setError("");
-        setDialogOpen(true);
-    };
-
-    // =========================
-    // Open Edit
-    // =========================
-
-    const handleEditRoute = (route) => {
-        setEditingRoute(route);
-
-        setCity(
-            route.city?._id ||
-            route.city ||
-            ""
-        );
-
-        setName(route.name || "");
-        setRouteNumber(route.routeNumber || "");
-        setStartPoint(route.startPoint || "");
-        setEndPoint(route.endPoint || "");
-
-        setRouteStops(
-            (route.stops || [])
-                .sort(
-                    (a, b) =>
-                        a.sequence - b.sequence
-                )
-                .map((item) => ({
-                    stop:
-                        item.stop?._id ||
-                        item.stop,
-                    name:
-                        item.stop?.name ||
-                        getStopName(
-                            item.stop?._id ||
-                            item.stop
-                        ),
-                    sequence: item.sequence,
-                    travelTime:
-                        item.travelTime || 0
-                }))
-        );
-
-        setSelectedStop("");
-        setError("");
-        setDialogOpen(true);
-    };
 
     // =========================
     // Stop name
@@ -215,6 +150,78 @@ export default function RoutesPage() {
         );
 
         return foundCity?.name || "Unknown";
+    };
+
+    // =========================
+    // Reset form
+    // =========================
+
+    const resetForm = () => {
+        setCity("");
+        setName("");
+        setRouteNumber("");
+        setStartPoint("");
+        setEndPoint("");
+        setSelectedStop("");
+        setRouteStops([]);
+        setEditingRoute(null);
+    };
+
+    // =========================
+    // Add route
+    // =========================
+
+    const handleAddRoute = () => {
+        resetForm();
+        setError("");
+        setSuccess("");
+        setDialogOpen(true);
+    };
+
+    // =========================
+    // Edit route
+    // =========================
+
+    const handleEditRoute = (route) => {
+        setEditingRoute(route);
+
+        setCity(
+            route.city?._id ||
+                route.city ||
+                ""
+        );
+
+        setName(route.name || "");
+        setRouteNumber(route.routeNumber || "");
+        setStartPoint(route.startPoint || "");
+        setEndPoint(route.endPoint || "");
+
+        setRouteStops(
+            (route.stops || [])
+                .sort(
+                    (a, b) =>
+                        a.sequence - b.sequence
+                )
+                .map((item) => ({
+                    stop:
+                        item.stop?._id ||
+                        item.stop,
+                    name:
+                        item.stop?.name ||
+                        getStopName(
+                            item.stop?._id ||
+                                item.stop
+                        ),
+                    sequence: item.sequence,
+                    travelTime:
+                        item.travelTime || 0,
+                }))
+        );
+
+        setSelectedStop("");
+        setError("");
+        setSuccess("");
+        setDialogOpen(true);
     };
 
     // =========================
@@ -255,8 +262,8 @@ export default function RoutesPage() {
                 name: stop.name,
                 sequence:
                     current.length + 1,
-                travelTime: 0
-            }
+                travelTime: 0,
+            },
         ]);
 
         setSelectedStop("");
@@ -276,7 +283,7 @@ export default function RoutesPage() {
                 )
                 .map((item, index) => ({
                     ...item,
-                    sequence: index + 1
+                    sequence: index + 1,
                 }))
         );
     };
@@ -303,16 +310,16 @@ export default function RoutesPage() {
 
             [
                 updated[index],
-                updated[newIndex]
+                updated[newIndex],
             ] = [
-                    updated[newIndex],
-                    updated[index]
-                ];
+                updated[newIndex],
+                updated[index],
+            ];
 
             return updated.map(
                 (item, index) => ({
                     ...item,
-                    sequence: index + 1
+                    sequence: index + 1,
                 })
             );
         });
@@ -325,8 +332,6 @@ export default function RoutesPage() {
     const handleCityChange = (event) => {
         setCity(event.target.value);
         setSelectedStop("");
-
-        // Don't keep stops from another city
         setRouteStops([]);
     };
 
@@ -375,13 +380,14 @@ export default function RoutesPage() {
                 stops: routeStops.map(
                     (item) => ({
                         stop: item.stop,
-                        sequence: item.sequence,
+                        sequence:
+                            item.sequence,
                         travelTime:
                             Number(
                                 item.travelTime
-                            ) || 0
+                            ) || 0,
                     })
-                )
+                ),
             };
 
             if (editingRoute) {
@@ -410,7 +416,7 @@ export default function RoutesPage() {
         } catch (error) {
             setError(
                 error.message ||
-                "Failed to save route."
+                    "Failed to save route."
             );
         } finally {
             setSaving(false);
@@ -424,9 +430,10 @@ export default function RoutesPage() {
     const handleDeactivate = async (
         routeId
     ) => {
-        const confirmed = window.confirm(
-            "Are you sure you want to deactivate this route?"
-        );
+        const confirmed =
+            window.confirm(
+                "Are you sure you want to deactivate this route?"
+            );
 
         if (!confirmed) {
             return;
@@ -447,7 +454,7 @@ export default function RoutesPage() {
         } catch (error) {
             setError(
                 error.message ||
-                "Failed to deactivate route."
+                    "Failed to deactivate route."
             );
         }
     };
@@ -474,7 +481,7 @@ export default function RoutesPage() {
         } catch (error) {
             setError(
                 error.message ||
-                "Failed to reactivate route."
+                    "Failed to reactivate route."
             );
         }
     };
@@ -483,32 +490,44 @@ export default function RoutesPage() {
         <Box
             sx={{
                 minHeight: "100vh",
-                backgroundColor: "#f5f7fa",
-                py: 5
+                background:
+                    "linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%)",
+                py: { xs: 3, md: 5 },
             }}
         >
-            <Button
-                component={Link}
-                href="/admin/dashboard"
-                startIcon={<ArrowBackIcon />}
-                sx={{
-                    mb: 2,
-                    marginLeft: "50px",
-                    textTransform: "none",
-                    color: "#64748b",
-                    fontWeight: 600,
-                    px: 0,
-                    "&:hover": {
-                        background: "transparent",
-                        color: "#1976d2"
-                    }
-                }}
-            >
-                Back to Dashboard
-            </Button>
             <Container maxWidth="lg">
 
-                {/* Header */}
+                {/* =========================
+                    Back Button
+                ========================= */}
+
+                <Button
+                    component={Link}
+                    href="/admin/dashboard"
+                    startIcon={
+                        <ArrowBackIcon />
+                    }
+                    sx={{
+                        mb: 3,
+                        textTransform:
+                            "none",
+                        color: "#475569",
+                        fontWeight: 600,
+                        px: 0,
+
+                        "&:hover": {
+                            background:
+                                "transparent",
+                            color: "#1976d2",
+                        },
+                    }}
+                >
+                    Back to Dashboard
+                </Button>
+
+                {/* =========================
+                    Header
+                ========================= */}
 
                 <Box
                     sx={{
@@ -517,58 +536,96 @@ export default function RoutesPage() {
                             "space-between",
                         alignItems: {
                             xs: "flex-start",
-                            sm: "center"
+                            sm: "center",
                         },
-                        gap: 2,
+                        gap: 3,
                         mb: 4,
                         flexDirection: {
                             xs: "column",
-                            sm: "row"
-                        }
+                            sm: "row",
+                        },
                     }}
                 >
                     <Box>
-                        <Typography
-                            variant="h3"
-                            fontWeight={700}
-                            sx={{
-                                color: "#123456"
-                            }}
+                        <Stack
+                            direction="row"
+                            spacing={1.5}
+                            alignItems="center"
+                            sx={{ mb: 1 }}
                         >
-                            Routes
-                        </Typography>
+                            <RouteIcon
+                                sx={{
+                                    color: "#1976d2",
+                                    fontSize: 34,
+                                }}
+                            />
+
+                            <Typography
+                                sx={{
+                                    fontSize: {
+                                        xs: "2rem",
+                                        sm: "2.5rem",
+                                    },
+                                    lineHeight: 1.1,
+                                    fontWeight: 800,
+                                    color: "#0f172a",
+                                    letterSpacing:
+                                        "-0.5px",
+                                }}
+                            >
+                                Routes
+                            </Typography>
+                        </Stack>
 
                         <Typography
                             sx={{
-                                color: "#5f6f82"
+                                color: "#64748b",
+                                fontSize:
+                                    "1rem",
+                                maxWidth: 600,
                             }}
                         >
-                            Manage your bus routes and their stops.
+                            Manage your bus
+                            routes, stops,
+                            destinations and
+                            route status.
                         </Typography>
                     </Box>
 
                     <Button
                         variant="contained"
-                        startIcon={<AddIcon />}
+                        startIcon={
+                            <AddIcon />
+                        }
                         onClick={
                             handleAddRoute
                         }
                         sx={{
-                            borderRadius: 2,
+                            borderRadius: 2.5,
                             textTransform:
-                                "none"
+                                "none",
+                            fontWeight: 700,
+                            px: 2.5,
+                            py: 1.25,
+                            boxShadow:
+                                "0 6px 16px rgba(25,118,210,0.22)",
                         }}
                     >
                         Add Route
                     </Button>
                 </Box>
 
-                {/* Alerts */}
+                {/* =========================
+                    Alerts
+                ========================= */}
 
                 {success && (
                     <Alert
                         severity="success"
-                        sx={{ mb: 3 }}
+                        sx={{
+                            mb: 3,
+                            borderRadius: 2,
+                        }}
                         onClose={() =>
                             setSuccess("")
                         }
@@ -580,7 +637,10 @@ export default function RoutesPage() {
                 {error && (
                     <Alert
                         severity="error"
-                        sx={{ mb: 3 }}
+                        sx={{
+                            mb: 3,
+                            borderRadius: 2,
+                        }}
                         onClose={() =>
                             setError("")
                         }
@@ -589,39 +649,65 @@ export default function RoutesPage() {
                     </Alert>
                 )}
 
-                {/* Loading */}
+                {/* =========================
+                    Loading
+                ========================= */}
 
                 {loading ? (
                     <Paper
                         sx={{
-                            p: 5,
-                            textAlign: "center"
+                            p: 6,
+                            textAlign:
+                                "center",
+                            borderRadius: 3,
+                            border:
+                                "1px solid #e2e8f0",
                         }}
                     >
-                        <Typography>
+                        <Typography
+                            color="text.secondary"
+                        >
                             Loading routes...
                         </Typography>
                     </Paper>
                 ) : routes.length === 0 ? (
                     <Paper
                         sx={{
-                            p: 6,
-                            textAlign: "center"
+                            p: 7,
+                            textAlign:
+                                "center",
+                            borderRadius: 3,
+                            border:
+                                "1px solid #e2e8f0",
                         }}
                     >
+                        <RouteIcon
+                            sx={{
+                                fontSize: 55,
+                                color: "#94a3b8",
+                                mb: 1,
+                            }}
+                        />
+
                         <Typography
                             variant="h6"
-                            fontWeight={600}
+                            fontWeight={700}
+                            color="#0f172a"
                         >
                             No routes found
                         </Typography>
 
                         <Typography
                             color="text.secondary"
-                            sx={{ mt: 1, mb: 3 }}
+                            sx={{
+                                mt: 1,
+                                mb: 3,
+                            }}
                         >
-                            Create your first bus
-                            route.
+                            Create your
+                            first bus
+                            route to get
+                            started.
                         </Typography>
 
                         <Button
@@ -632,331 +718,561 @@ export default function RoutesPage() {
                             onClick={
                                 handleAddRoute
                             }
+                            sx={{
+                                textTransform:
+                                    "none",
+                                borderRadius: 2,
+                            }}
                         >
                             Add Route
                         </Button>
                     </Paper>
                 ) : (
-                    <Stack spacing={2}>
+                    <Stack spacing={2.5}>
 
-                        {routes.map((route) => (
-                            <Paper
-                                key={route._id}
-                                elevation={0}
-                                sx={{
-                                    p: {
-                                        xs: 2,
-                                        sm: 3
-                                    },
-                                    borderRadius: 3,
-                                    border: "1px solid #e2e8f0",
-                                    backgroundColor: "#ffffff",
-                                    transition: "all 0.2s ease",
-                                    "&:hover": {
-                                        boxShadow:
-                                            "0 8px 24px rgba(15, 23, 42, 0.08)",
-                                        borderColor: "#cbd5e1"
+                        {routes.map(
+                            (route) => (
+                                <Paper
+                                    key={
+                                        route._id
                                     }
-                                }}
-                            >
-                                {/* Top section */}
-                                <Box
+                                    elevation={0}
                                     sx={{
-                                        display: "flex",
-                                        justifyContent: "space-between",
-                                        alignItems: {
-                                            xs: "flex-start",
-                                            md: "center"
-                                        },
-                                        gap: 3,
-                                        flexDirection: {
-                                            xs: "column",
-                                            md: "row"
-                                        }
+                                        overflow:
+                                            "hidden",
+                                        borderRadius: 3,
+                                        border:
+                                            "1px solid #e2e8f0",
+                                        backgroundColor:
+                                            "#ffffff",
+                                        transition:
+                                            "all 0.2s ease",
+
+                                        "&:hover":
+                                            {
+                                                borderColor:
+                                                    "#bfdbfe",
+                                                boxShadow:
+                                                    "0 12px 30px rgba(15,23,42,0.08)",
+                                                transform:
+                                                    "translateY(-1px)",
+                                            },
                                     }}
                                 >
-                                    {/* Route information */}
+                                    {/* Card top accent */}
                                     <Box
                                         sx={{
-                                            flex: 1,
-                                            minWidth: 0
+                                            height: 4,
+                                            background:
+                                                route.isActive
+                                                    ? "linear-gradient(90deg, #1976d2, #42a5f5)"
+                                                    : "#94a3b8",
                                         }}
-                                    >
-                                        {/* Route number + status */}
-                                        <Stack
-                                            direction="row"
-                                            spacing={1}
-                                            sx={{
-                                                alignItems: "center",
-                                                flexWrap: "wrap"
-                                            }}
-                                        >
-                                            <Typography
-                                                sx={{
-                                                    fontSize: "0.9rem",
-                                                    fontWeight: 700,
-                                                    color: "#64748b",
-                                                    letterSpacing: "0.5px"
-                                                }}
-                                            >
-                                                {route.routeNumber}
-                                            </Typography>
+                                    />
 
-                                            <Chip
-                                                label={
-                                                    route.isActive
-                                                        ? "Active"
-                                                        : "Inactive"
-                                                }
-                                                size="small"
-                                                sx={{
-                                                    height: 26,
-                                                    fontWeight: 600,
-                                                    backgroundColor:
-                                                        route.isActive
-                                                            ? "#dcfce7"
-                                                            : "#e2e8f0",
-                                                    color:
-                                                        route.isActive
-                                                            ? "#15803d"
-                                                            : "#475569"
-                                                }}
-                                            />
-                                        </Stack>
-
-                                        {/* Route name */}
-                                        <Typography
-                                            sx={{
-                                                mt: 1,
-                                                fontSize: {
-                                                    xs: "1.25rem",
-                                                    sm: "1.4rem"
-                                                },
-                                                fontWeight: 700,
-                                                color: "#0f172a"
-                                            }}
-                                        >
-                                            {route.name}
-                                        </Typography>
-
-                                        {/* City */}
-                                        <Typography
-                                            sx={{
-                                                mt: 0.75,
-                                                fontSize: "0.95rem",
-                                                fontWeight: 500,
-                                                color: "#64748b"
-                                            }}
-                                        >
-                                            {getCityName(route.city)}
-                                        </Typography>
-
-                                        {/* Route direction */}
-                                        <Box
-                                            sx={{
-                                                mt: 2,
-                                                display: "inline-flex",
-                                                alignItems: "center",
-                                                gap: 1,
-                                                px: 1.5,
-                                                py: 0.9,
-                                                borderRadius: 2,
-                                                backgroundColor: "#f1f5f9"
-                                            }}
-                                        >
-                                            <Typography
-                                                sx={{
-                                                    fontWeight: 700,
-                                                    color: "#1e293b"
-                                                }}
-                                            >
-                                                {route.startPoint}
-                                            </Typography>
-
-                                            <Typography
-                                                sx={{
-                                                    fontSize: "1.2rem",
-                                                    fontWeight: 700,
-                                                    color: "#1976d2"
-                                                }}
-                                            >
-                                                →
-                                            </Typography>
-
-                                            <Typography
-                                                sx={{
-                                                    fontWeight: 700,
-                                                    color: "#1e293b"
-                                                }}
-                                            >
-                                                {route.endPoint}
-                                            </Typography>
-                                        </Box>
-
-                                        {/* Stop count */}
-                                        <Typography
-                                            sx={{
-                                                mt: 1.5,
-                                                fontSize: "0.9rem",
-                                                color: "#64748b"
-                                            }}
-                                        >
-                                            {(route.stops || []).length} stops
-                                        </Typography>
-                                    </Box>
-
-                                    {/* Actions */}
-                                    <Stack
-                                        direction={{
-                                            xs: "row",
-                                            sm: "row"
-                                        }}
-                                        spacing={1}
-                                        sx={{
-                                            alignItems: "center",
-                                            flexWrap: "wrap"
-                                        }}
-                                    >
-                                        <Button
-                                            variant="outlined"
-                                            startIcon={<EditIcon />}
-                                            onClick={() =>
-                                                handleEditRoute(route)
-                                            }
-                                            sx={{
-                                                textTransform: "none",
-                                                borderRadius: 2,
-                                                fontWeight: 600,
-                                                minWidth: 100
-                                            }}
-                                        >
-                                            Edit
-                                        </Button>
-
-                                        {route.isActive ? (
-                                            <Button
-                                                color="error"
-                                                variant="outlined"
-                                                startIcon={<DeleteIcon />}
-                                                onClick={() =>
-                                                    handleDeactivate(
-                                                        route._id
-                                                    )
-                                                }
-                                                sx={{
-                                                    textTransform: "none",
-                                                    borderRadius: 2,
-                                                    fontWeight: 600
-                                                }}
-                                            >
-                                                Deactivate
-                                            </Button>
-                                        ) : (
-                                            <Button
-                                                color="success"
-                                                variant="outlined"
-                                                startIcon={<RestoreIcon />}
-                                                onClick={() =>
-                                                    handleReactivate(
-                                                        route._id
-                                                    )
-                                                }
-                                                sx={{
-                                                    textTransform: "none",
-                                                    borderRadius: 2,
-                                                    fontWeight: 600
-                                                }}
-                                            >
-                                                Reactivate
-                                            </Button>
-                                        )}
-                                    </Stack>
-                                </Box>
-
-                                {/* Route Stops */}
-                                {route.stops?.length > 0 && (
                                     <Box
                                         sx={{
-                                            mt: 3,
-                                            pt: 2.5,
-                                            borderTop:
-                                                "1px solid #e2e8f0"
+                                            p: {
+                                                xs: 2.5,
+                                                md: 3,
+                                            },
                                         }}
                                     >
+
+                                        {/* =====================
+                                            Card Header
+                                        ===================== */}
+
                                         <Box
                                             sx={{
-                                                display: "flex",
+                                                display:
+                                                    "flex",
                                                 justifyContent:
                                                     "space-between",
-                                                alignItems: "center",
-                                                mb: 1.5
+                                                alignItems:
+                                                    {
+                                                        xs: "flex-start",
+                                                        md: "center",
+                                                    },
+                                                gap: 3,
+                                                flexDirection:
+                                                    {
+                                                        xs: "column",
+                                                        md: "row",
+                                                    },
+                                            }}
+                                        >
+
+                                            <Box
+                                                sx={{
+                                                    flex: 1,
+                                                    minWidth: 0,
+                                                }}
+                                            >
+
+                                                {/* Route Number + Status */}
+
+                                                <Stack
+                                                    direction="row"
+                                                    spacing={
+                                                        1
+                                                    }
+                                                    alignItems="center"
+                                                    sx={{
+                                                        flexWrap:
+                                                            "wrap",
+                                                        mb: 1,
+                                                    }}
+                                                >
+                                                    <Chip
+                                                        icon={
+                                                            <RouteIcon />
+                                                        }
+                                                        label={
+                                                            route.routeNumber
+                                                        }
+                                                        size="small"
+                                                        sx={{
+                                                            fontWeight:
+                                                                700,
+                                                            color:
+                                                                "#1d4ed8",
+                                                            backgroundColor:
+                                                                "#eff6ff",
+                                                            border:
+                                                                "1px solid #bfdbfe",
+                                                        }}
+                                                    />
+
+                                                    <Chip
+                                                        label={
+                                                            route.isActive
+                                                                ? "Active"
+                                                                : "Inactive"
+                                                        }
+                                                        size="small"
+                                                        sx={{
+                                                            fontWeight:
+                                                                700,
+                                                            backgroundColor:
+                                                                route.isActive
+                                                                    ? "#dcfce7"
+                                                                    : "#f1f5f9",
+                                                            color:
+                                                                route.isActive
+                                                                    ? "#15803d"
+                                                                    : "#64748b",
+                                                        }}
+                                                    />
+                                                </Stack>
+
+                                                {/* Route Name */}
+
+                                                <Typography
+                                                    sx={{
+                                                        fontSize:
+                                                            {
+                                                                xs: "1.35rem",
+                                                                md: "1.55rem",
+                                                            },
+                                                        fontWeight:
+                                                            800,
+                                                        color:
+                                                            "#0f172a",
+                                                        mb: 1,
+                                                    }}
+                                                >
+                                                    {
+                                                        route.name
+                                                    }
+                                                </Typography>
+
+                                                {/* City */}
+
+                                                <Stack
+                                                    direction="row"
+                                                    spacing={
+                                                        1
+                                                    }
+                                                    alignItems="center"
+                                                >
+                                                    <LocationCityIcon
+                                                        sx={{
+                                                            fontSize: 19,
+                                                            color: "#64748b",
+                                                        }}
+                                                    />
+
+                                                    <Typography
+                                                        sx={{
+                                                            color:
+                                                                "#64748b",
+                                                            fontWeight:
+                                                                600,
+                                                        }}
+                                                    >
+                                                        {
+                                                            getCityName(
+                                                                route.city
+                                                            )
+                                                        }
+                                                    </Typography>
+                                                </Stack>
+                                            </Box>
+
+                                            {/* =====================
+                                                Actions
+                                            ===================== */}
+
+                                            <Stack
+                                                direction="row"
+                                                spacing={1}
+                                                sx={{
+                                                    flexWrap:
+                                                        "wrap",
+                                                    alignItems:
+                                                        "center",
+                                                }}
+                                            >
+                                                <Button
+                                                    variant="outlined"
+                                                    startIcon={
+                                                        <EditIcon />
+                                                    }
+                                                    onClick={() =>
+                                                        handleEditRoute(
+                                                            route
+                                                        )
+                                                    }
+                                                    sx={{
+                                                        textTransform:
+                                                            "none",
+                                                        borderRadius: 2,
+                                                        fontWeight:
+                                                            700,
+                                                        minWidth:
+                                                            95,
+                                                    }}
+                                                >
+                                                    Edit
+                                                </Button>
+
+                                                {route.isActive ? (
+                                                    <Button
+                                                        color="error"
+                                                        variant="outlined"
+                                                        startIcon={
+                                                            <DeleteIcon />
+                                                        }
+                                                        onClick={() =>
+                                                            handleDeactivate(
+                                                                route._id
+                                                            )
+                                                        }
+                                                        sx={{
+                                                            textTransform:
+                                                                "none",
+                                                            borderRadius: 2,
+                                                            fontWeight:
+                                                                700,
+                                                        }}
+                                                    >
+                                                        Deactivate
+                                                    </Button>
+                                                ) : (
+                                                    <Button
+                                                        color="success"
+                                                        variant="outlined"
+                                                        startIcon={
+                                                            <RestoreIcon />
+                                                        }
+                                                        onClick={() =>
+                                                            handleReactivate(
+                                                                route._id
+                                                            )
+                                                        }
+                                                        sx={{
+                                                            textTransform:
+                                                                "none",
+                                                            borderRadius: 2,
+                                                            fontWeight:
+                                                                700,
+                                                        }}
+                                                    >
+                                                        Reactivate
+                                                    </Button>
+                                                )}
+                                            </Stack>
+                                        </Box>
+
+                                        {/* =====================
+                                            Route Direction
+                                        ===================== */}
+
+                                        <Box
+                                            sx={{
+                                                mt: 3,
+                                                p: 2,
+                                                borderRadius: 2.5,
+                                                backgroundColor:
+                                                    "#f8fafc",
+                                                border:
+                                                    "1px solid #e2e8f0",
                                             }}
                                         >
                                             <Typography
                                                 sx={{
-                                                    fontSize: "0.95rem",
-                                                    fontWeight: 700,
-                                                    color: "#334155"
+                                                    fontSize:
+                                                        "0.78rem",
+                                                    fontWeight:
+                                                        700,
+                                                    color:
+                                                        "#94a3b8",
+                                                    textTransform:
+                                                        "uppercase",
+                                                    letterSpacing:
+                                                        "0.7px",
+                                                    mb: 1,
                                                 }}
                                             >
-                                                Route Stops
+                                                Route Direction
                                             </Typography>
 
-                                            <Typography
-                                                sx={{
-                                                    fontSize: "0.8rem",
-                                                    color: "#94a3b8"
+                                            <Stack
+                                                direction={{
+                                                    xs: "column",
+                                                    sm: "row",
+                                                }}
+                                                spacing={1}
+                                                alignItems={{
+                                                    xs: "flex-start",
+                                                    sm: "center",
                                                 }}
                                             >
-                                                {route.stops.length} total
-                                            </Typography>
-                                        </Box>
-
-                                        <Stack
-                                            direction="row"
-                                            spacing={1}
-                                            flexWrap="wrap"
-                                            useFlexGap
-                                        >
-                                            {[...route.stops]
-                                                .sort(
-                                                    (a, b) =>
-                                                        a.sequence -
-                                                        b.sequence
-                                                )
-                                                .map((item) => (
-                                                    <Chip
-                                                        key={`${route._id}-${item.sequence}`}
-                                                        label={`${item.sequence}. ${item.stop?.name ||
-                                                            getStopName(
-                                                                item.stop
-                                                            )
-                                                            }`}
-                                                        variant="outlined"
+                                                <Stack
+                                                    direction="row"
+                                                    spacing={
+                                                        1
+                                                    }
+                                                    alignItems="center"
+                                                >
+                                                    <PlaceIcon
                                                         sx={{
-                                                            borderColor:
-                                                                "#cbd5e1",
-                                                            color: "#334155",
-                                                            backgroundColor:
-                                                                "#f8fafc",
-                                                            fontWeight: 500,
-                                                            borderRadius: 2,
-                                                            "&:hover": {
-                                                                backgroundColor:
-                                                                    "#f1f5f9"
-                                                            }
+                                                            color:
+                                                                "#1976d2",
+                                                            fontSize: 20,
                                                         }}
                                                     />
-                                                ))}
-                                        </Stack>
+
+                                                    <Typography
+                                                        sx={{
+                                                            fontWeight:
+                                                                700,
+                                                            color:
+                                                                "#1e293b",
+                                                        }}
+                                                    >
+                                                        {
+                                                            route.startPoint
+                                                        }
+                                                    </Typography>
+                                                </Stack>
+
+                                                <ArrowForwardIcon
+                                                    sx={{
+                                                        display:
+                                                            {
+                                                                xs: "none",
+                                                                sm: "block",
+                                                            },
+                                                        color:
+                                                            "#1976d2",
+                                                    }}
+                                                />
+
+                                                <Typography
+                                                    sx={{
+                                                        display:
+                                                            {
+                                                                xs: "block",
+                                                                sm: "none",
+                                                            },
+                                                        color:
+                                                            "#1976d2",
+                                                        fontWeight:
+                                                            700,
+                                                    }}
+                                                >
+                                                    ↓
+                                                </Typography>
+
+                                                <Stack
+                                                    direction="row"
+                                                    spacing={
+                                                        1
+                                                    }
+                                                    alignItems="center"
+                                                >
+                                                    <PlaceIcon
+                                                        sx={{
+                                                            color:
+                                                                "#16a34a",
+                                                            fontSize: 20,
+                                                        }}
+                                                    />
+
+                                                    <Typography
+                                                        sx={{
+                                                            fontWeight:
+                                                                700,
+                                                            color:
+                                                                "#1e293b",
+                                                        }}
+                                                    >
+                                                        {
+                                                            route.endPoint
+                                                        }
+                                                    </Typography>
+                                                </Stack>
+                                            </Stack>
+                                        </Box>
+
+                                        {/* =====================
+                                            Stop Section
+                                        ===================== */}
+
+                                        {route.stops?.length >
+                                            0 && (
+                                            <Box
+                                                sx={{
+                                                    mt: 3,
+                                                    pt: 2.5,
+                                                    borderTop:
+                                                        "1px solid #e2e8f0",
+                                                }}
+                                            >
+                                                <Stack
+                                                    direction="row"
+                                                    justifyContent="space-between"
+                                                    alignItems="center"
+                                                    sx={{
+                                                        mb: 1.5,
+                                                    }}
+                                                >
+                                                    <Stack
+                                                        direction="row"
+                                                        spacing={
+                                                            1
+                                                        }
+                                                        alignItems="center"
+                                                    >
+                                                        <PlaceIcon
+                                                            sx={{
+                                                                fontSize: 20,
+                                                                color:
+                                                                    "#1976d2",
+                                                            }}
+                                                        />
+
+                                                        <Typography
+                                                            sx={{
+                                                                fontSize:
+                                                                    "0.95rem",
+                                                                fontWeight:
+                                                                    800,
+                                                                color:
+                                                                    "#334155",
+                                                            }}
+                                                        >
+                                                            Route Stops
+                                                        </Typography>
+                                                    </Stack>
+
+                                                    <Chip
+                                                        label={`${route.stops.length} stops`}
+                                                        size="small"
+                                                        sx={{
+                                                            backgroundColor:
+                                                                "#f1f5f9",
+                                                            color:
+                                                                "#64748b",
+                                                            fontWeight:
+                                                                600,
+                                                        }}
+                                                    />
+                                                </Stack>
+
+                                                <Stack
+                                                    direction="row"
+                                                    spacing={1}
+                                                    sx={{
+                                                        flexWrap:
+                                                            "wrap",
+                                                        gap: 1,
+                                                    }}
+                                                >
+                                                    {[
+                                                        ...route.stops,
+                                                    ]
+                                                        .sort(
+                                                            (
+                                                                a,
+                                                                b
+                                                            ) =>
+                                                                a.sequence -
+                                                                b.sequence
+                                                        )
+                                                        .map(
+                                                            (
+                                                                item
+                                                            ) => (
+                                                                <Chip
+                                                                    key={`${route._id}-${item.sequence}`}
+                                                                    label={`${item.sequence}. ${
+                                                                        item
+                                                                            .stop
+                                                                            ?.name ||
+                                                                        getStopName(
+                                                                            item.stop
+                                                                        )
+                                                                    }`}
+                                                                    variant="outlined"
+                                                                    sx={{
+                                                                        borderColor:
+                                                                            "#cbd5e1",
+                                                                        color:
+                                                                            "#334155",
+                                                                        backgroundColor:
+                                                                            "#ffffff",
+                                                                        fontWeight:
+                                                                            600,
+                                                                        borderRadius:
+                                                                            2,
+
+                                                                        "&:hover":
+                                                                            {
+                                                                                borderColor:
+                                                                                    "#90caf9",
+                                                                                backgroundColor:
+                                                                                    "#eff6ff",
+                                                                            },
+                                                                    }}
+                                                                />
+                                                            )
+                                                        )}
+                                                </Stack>
+                                            </Box>
+                                        )}
                                     </Box>
-                                )}
-                            </Paper>
-                        ))}
+                                </Paper>
+                            )
+                        )}
                     </Stack>
                 )}
 
-                {/* Add / Edit Dialog */}
+                {/* =========================
+                    Add / Edit Dialog
+                ========================= */}
 
                 <Dialog
                     open={dialogOpen}
@@ -970,7 +1286,12 @@ export default function RoutesPage() {
                     fullWidth
                     maxWidth="md"
                 >
-                    <DialogTitle>
+                    <DialogTitle
+                        sx={{
+                            fontWeight: 800,
+                            color: "#0f172a",
+                        }}
+                    >
                         {editingRoute
                             ? "Edit Route"
                             : "Add Route"}
@@ -1080,9 +1401,11 @@ export default function RoutesPage() {
 
                             <Box>
                                 <Typography
-                                    fontWeight={700}
+                                    fontWeight={800}
                                     sx={{
-                                        mb: 1.5
+                                        mb: 1.5,
+                                        color:
+                                            "#0f172a",
                                     }}
                                 >
                                     Route Stops
@@ -1091,7 +1414,7 @@ export default function RoutesPage() {
                                 <Stack
                                     direction={{
                                         xs: "column",
-                                        sm: "row"
+                                        sm: "row",
                                     }}
                                     spacing={2}
                                 >
@@ -1153,7 +1476,13 @@ export default function RoutesPage() {
                                         }
                                         sx={{
                                             minWidth:
-                                                140
+                                                140,
+                                            textTransform:
+                                                "none",
+                                            fontWeight:
+                                                700,
+                                            borderRadius:
+                                                2,
                                         }}
                                     >
                                         Add Stop
@@ -1161,7 +1490,7 @@ export default function RoutesPage() {
                                 </Stack>
                             </Box>
 
-                            {/* Selected stops */}
+                            {/* Selected Stops */}
 
                             {routeStops.map(
                                 (
@@ -1174,19 +1503,24 @@ export default function RoutesPage() {
                                         }
                                         variant="outlined"
                                         sx={{
-                                            p: 2
+                                            p: 2,
+                                            borderRadius:
+                                                2,
+                                            borderColor:
+                                                "#e2e8f0",
                                         }}
                                     >
                                         <Stack
                                             direction={{
                                                 xs: "column",
-                                                sm: "row"
+                                                sm: "row",
                                             }}
                                             spacing={2}
                                             sx={{
-                                                alignItems: {
-                                                    sm: "center"
-                                                }
+                                                alignItems:
+                                                    {
+                                                        sm: "center",
+                                                    },
                                             }}
                                         >
                                             <Chip
@@ -1194,11 +1528,17 @@ export default function RoutesPage() {
                                                     item.sequence
                                                 }
                                                 color="primary"
+                                                sx={{
+                                                    fontWeight:
+                                                        700,
+                                                }}
                                             />
 
                                             <Typography
                                                 sx={{
-                                                    flex: 1
+                                                    flex: 1,
+                                                    fontWeight:
+                                                        600,
                                                 }}
                                             >
                                                 {
@@ -1230,18 +1570,21 @@ export default function RoutesPage() {
                                                                     stop
                                                                 ) =>
                                                                     stop.stop ===
-                                                                        item.stop
+                                                                    item.stop
                                                                         ? {
                                                                             ...stop,
                                                                             travelTime:
-                                                                                value
+                                                                                value,
                                                                         }
                                                                         : stop
                                                             )
                                                     );
                                                 }}
                                                 sx={{
-                                                    width: 170
+                                                    width: {
+                                                        xs: "100%",
+                                                        sm: 170,
+                                                    },
                                                 }}
                                             />
 
@@ -1273,7 +1616,7 @@ export default function RoutesPage() {
                                                     disabled={
                                                         index ===
                                                         routeStops.length -
-                                                        1
+                                                            1
                                                     }
                                                 >
                                                     ↓
@@ -1298,7 +1641,10 @@ export default function RoutesPage() {
                     </DialogContent>
 
                     <DialogActions
-                        sx={{ p: 2 }}
+                        sx={{
+                            p: 2.5,
+                            gap: 1,
+                        }}
                     >
                         <Button
                             onClick={() => {
@@ -1308,6 +1654,11 @@ export default function RoutesPage() {
                                 resetForm();
                             }}
                             disabled={saving}
+                            sx={{
+                                textTransform:
+                                    "none",
+                                fontWeight: 600,
+                            }}
                         >
                             Cancel
                         </Button>
@@ -1318,12 +1669,18 @@ export default function RoutesPage() {
                                 handleSubmit
                             }
                             disabled={saving}
+                            sx={{
+                                textTransform:
+                                    "none",
+                                fontWeight: 700,
+                                borderRadius: 2,
+                            }}
                         >
                             {saving
                                 ? "Saving..."
                                 : editingRoute
-                                    ? "Update Route"
-                                    : "Create Route"}
+                                ? "Update Route"
+                                : "Create Route"}
                         </Button>
                     </DialogActions>
                 </Dialog>
