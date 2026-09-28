@@ -180,6 +180,21 @@ export default function Home() {
     setResults(null);
     setError("");
   };
+  const handleRemoveRecentSearch = (event, searchId) => {
+    // Stops the click from also opening the search
+    event.stopPropagation();
+
+    const updatedSearches = recentSearches.filter(
+      (search) => search.id !== searchId
+    );
+
+    setRecentSearches(updatedSearches);
+
+    localStorage.setItem(
+      "raastaRecentSearches",
+      JSON.stringify(updatedSearches)
+    );
+  };
 
   const handleFindRoute = async () => {
     setError("");
@@ -2478,6 +2493,26 @@ export default function Home() {
                                   flexShrink: 0
                                 }}
                               />
+                              
+
+                              <IconButton
+                                size="small"
+                                aria-label="Remove this recent search"
+                                onClick={(event) =>
+                                  handleRemoveRecentSearch(event, search.id)
+                                }
+                                sx={{
+                                  color: "#94a3b8",
+                                  flexShrink: 0,
+                                  transition: "all 0.2s ease",
+                                  "&:hover": {
+                                    color: "#dc2626",
+                                    backgroundColor: "#fef2f2"
+                                  }
+                                }}
+                              >
+                                <CloseIcon fontSize="small" />
+                              </IconButton>
                             </Box>
                           </CardContent>
                         </Card>
