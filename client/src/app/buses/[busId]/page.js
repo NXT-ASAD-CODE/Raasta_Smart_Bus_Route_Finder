@@ -9,6 +9,7 @@ import {
     Alert
 } from "@mui/material";
 
+import Link from "next/link";
 import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 
@@ -242,7 +243,7 @@ function RouteSection({ route }) {
                                                     "50%",
                                                 backgroundColor:
                                                     isFirst ||
-                                                    isLast
+                                                        isLast
                                                         ? "#1976d2"
                                                         : "#90caf9",
                                                 border:
@@ -297,7 +298,7 @@ function RouteSection({ route }) {
                                                     sx={{
                                                         fontWeight:
                                                             isFirst ||
-                                                            isLast
+                                                                isLast
                                                                 ? 800
                                                                 : 600,
                                                         color:
@@ -334,7 +335,7 @@ function RouteSection({ route }) {
 
                                             {!isLast &&
                                                 travelTime >
-                                                    0 && (
+                                                0 && (
                                                     <Chip
                                                         size="small"
                                                         label={`${travelTime} min`}
@@ -449,7 +450,25 @@ export default async function BusDetailsPage({
             >
 
                 <Container maxWidth="lg">
+                    {/* Back to Buses */}
 
+                    <Box sx={{ mb: 3 }}>
+                        <Button
+                            component={Link}
+                            href="/buses"
+                            startIcon={<ArrowBackIcon />}
+                            variant="outlined"
+                            sx={{
+                                borderRadius: "10px",
+                                textTransform: "none",
+                                fontWeight: 700,
+                                px: 2,
+                                py: 1
+                            }}
+                        >
+                            Back to Buses
+                        </Button>
+                    </Box>
                     <Alert severity="error">
                         {errorMessage}
                     </Alert>
