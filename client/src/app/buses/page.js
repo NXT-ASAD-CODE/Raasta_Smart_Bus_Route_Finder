@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import {
@@ -13,54 +13,135 @@ import {
     MenuItem,
     Grid,
     Card,
-    CardMedia,
     CardContent,
-    Chip
+    Chip,
+    CircularProgress,
+    Alert
 } from "@mui/material";
 
 import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
 
-const cities = [
-    {
-        id: "karachi",
-        name: "Karachi"
-    },
-    {
-        id: "lahore",
-        name: "Lahore"
-    }
-];
-
-const buses = [
-    {
-        id: "11c",
-        number: "11C",
-        city: "karachi",
-        name: "11C Bus",
-        image: "/buses/11c.jpg"
-    },
-    {
-        id: "9c",
-        number: "9C",
-        city: "karachi",
-        name: "9C Bus",
-        image: "/buses/9c.jpg"
-    }
-];
+import { getCities, getRoutes } from "../../lib/api";
 
 export default function BusesPage() {
     const router = useRouter();
 
-    const [selectedCity, setSelectedCity] =
-        useState("karachi");
+    const [cities, setCities] = useState([]);
+    const [routes, setRoutes] = useState([]);
 
-    const filteredBuses = buses.filter(
-        (bus) => bus.city === selectedCity
+    const [selectedCity, setSelectedCity] =
+        useState("");
+
+    const [loading, setLoading] =
+        useState(true);
+
+    const [error, setError] =
+        useState("");
+
+    useEffect(() => {
+        const loadData = async () => {
+            try {
+                setLoading(true);
+                setError("");
+
+                const [
+                    citiesResponse,
+                    routesResponse
+                ] = await Promise.all([
+                    getCities(),
+                    getRoutes()
+                ]);
+
+                const citiesData =
+                    citiesResponse.data || [];
+
+                const routesData =
+                    routesResponse.data || [];
+
+                setCities(citiesData);
+                setRoutes(routesData);
+
+                if (citiesData.length > 0) {
+                    setSelectedCity(
+                        citiesData[0]._id
+                    );
+                }
+            } catch (err) {
+                console.error(err);
+
+                setError(
+                    err.message ||
+                    "Failed to load buses"
+                );
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadData();
+    }, []);
+
+    /*
+    |--------------------------------------------------------------------------
+    | Get routes for selected city
+    |--------------------------------------------------------------------------
+    */
+
+    const filteredRoutes =
+        routes.filter(
+            (route) =>
+                route.city?._id === selectedCity
+        );
+
+    /*
+    |--------------------------------------------------------------------------
+    | Remove duplicate route numbers
+    |--------------------------------------------------------------------------
+    |
+    | If 11C has an UP route and DOWN route,
+    | both may have routeNumber = 11C.
+    |
+    | We only want one 11C card.
+    |
+    */
+
+    const buses = Array.from(
+        new Map(
+            filteredRoutes.map(
+                (route) => [
+                    route.routeNumber,
+                    route
+                ]
+            )
+        ).values()
     );
 
-    const handleBusClick = (bus) => {
-        router.push(`/buses/${bus.id}`);
+    const handleBusClick = (route) => {
+        router.push(
+            `/buses/${route._id}`
+        );
     };
+
+    /*
+    |--------------------------------------------------------------------------
+    | Loading
+    |--------------------------------------------------------------------------
+    */
+
+    if (loading) {
+        return (
+            <Box
+                sx={{
+                    minHeight: "100vh",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center"
+                }}
+            >
+                <CircularProgress />
+            </Box>
+        );
+    }
 
     return (
         <Box
@@ -71,6 +152,17 @@ export default function BusesPage() {
             }}
         >
             <Container maxWidth="lg">
+
+                {/* Error */}
+
+                {error && (
+                    <Alert
+                        severity="error"
+                        sx={{ mb: 3 }}
+                    >
+                        {error}
+                    </Alert>
+                )}
 
                 {/* Header */}
 
@@ -92,6 +184,7 @@ export default function BusesPage() {
                 >
 
                     <Box>
+
                         <Typography
                             sx={{
                                 fontSize: {
@@ -115,6 +208,7 @@ export default function BusesPage() {
                             Find bus routes, stops and
                             complete journey information.
                         </Typography>
+
                     </Box>
 
                     {/* City Selector */}
@@ -126,6 +220,7 @@ export default function BusesPage() {
                             backgroundColor: "#ffffff"
                         }}
                     >
+
                         <InputLabel>
                             Select City
                         </InputLabel>
@@ -139,15 +234,20 @@ export default function BusesPage() {
                                 )
                             }
                         >
-                            {cities.map((city) => (
-                                <MenuItem
-                                    key={city.id}
-                                    value={city.id}
-                                >
-                                    {city.name}
-                                </MenuItem>
-                            ))}
+
+                            {cities.map(
+                                (city) => (
+                                    <MenuItem
+                                        key={city._id}
+                                        value={city._id}
+                                    >
+                                        {city.name}
+                                    </MenuItem>
+                                )
+                            )}
+
                         </Select>
+
                     </FormControl>
 
                 </Box>
@@ -158,103 +258,165 @@ export default function BusesPage() {
                     container
                     spacing={3}
                 >
-                    {filteredBuses.map((bus) => (
-                        <Grid
-                            xs={12}
-                            sm={6}
-                            md={4}
-                            key={bus.id}
-                        >
-                            <Card
-                                onClick={() =>
-                                    handleBusClick(bus)
-                                }
-                                sx={{
-                                    borderRadius: "20px",
-                                    overflow: "hidden",
-                                    cursor: "pointer",
-                                    border:
-                                        "1px solid #dbe5f0",
-                                    transition:
-                                        "all 0.2s ease",
 
-                                    "&:hover": {
-                                        transform:
-                                            "translateY(-5px)",
-                                        boxShadow:
-                                            "0 15px 35px rgba(15,23,42,0.12)"
-                                    }
+                    {buses.map(
+                        (bus) => (
+                            <Grid
+                                size={{
+                                    xs: 12,
+                                    sm: 6,
+                                    md: 4
                                 }}
+                                key={
+                                    bus.routeNumber
+                                }
                             >
 
-                                <CardMedia
-                                    component="img"
-                                    height="190"
-                                    image={bus.image}
-                                    alt={`Bus ${bus.number}`}
-                                />
-
-                                <CardContent
+                                <Card
+                                    onClick={() =>
+                                        handleBusClick(
+                                            bus
+                                        )
+                                    }
                                     sx={{
-                                        p: 2.5
+                                        borderRadius:
+                                            "20px",
+                                        overflow:
+                                            "hidden",
+                                        cursor:
+                                            "pointer",
+                                        border:
+                                            "1px solid #dbe5f0",
+                                        transition:
+                                            "all 0.2s ease",
+
+                                        "&:hover": {
+                                            transform:
+                                                "translateY(-5px)",
+                                            boxShadow:
+                                                "0 15px 35px rgba(15,23,42,0.12)"
+                                        }
                                     }}
                                 >
 
+                                    {/* Bus visual */}
+
                                     <Box
                                         sx={{
-                                            display: "flex",
+                                            height: 190,
+                                            display:
+                                                "flex",
                                             alignItems:
                                                 "center",
-                                            gap: 1
+                                            justifyContent:
+                                                "center",
+                                            background:
+                                                "linear-gradient(135deg, #0d47a1, #42a5f5)"
                                         }}
                                     >
+
                                         <DirectionsBusIcon
                                             sx={{
+                                                fontSize:
+                                                    90,
                                                 color:
-                                                    "#1976d2"
+                                                    "#ffffff"
                                             }}
                                         />
 
-                                        <Typography
-                                            sx={{
-                                                fontWeight: 900,
-                                                fontSize:
-                                                    "1.3rem"
-                                            }}
-                                        >
-                                            {bus.number}
-                                        </Typography>
                                     </Box>
 
-                                    <Typography
+                                    <CardContent
                                         sx={{
-                                            color: "#64748b",
-                                            mt: 0.7
+                                            p: 2.5
                                         }}
                                     >
-                                        View complete
-                                        route information
-                                    </Typography>
 
-                                    <Chip
-                                        label="View Route"
-                                        size="small"
-                                        sx={{
-                                            mt: 2,
-                                            backgroundColor:
-                                                "#e3f2fd",
-                                            color:
-                                                "#1565c0",
-                                            fontWeight: 700
-                                        }}
-                                    />
+                                        <Box
+                                            sx={{
+                                                display:
+                                                    "flex",
+                                                alignItems:
+                                                    "center",
+                                                gap: 1
+                                            }}
+                                        >
 
-                                </CardContent>
+                                            <DirectionsBusIcon
+                                                sx={{
+                                                    color:
+                                                        "#1976d2"
+                                                }}
+                                            />
 
-                            </Card>
-                        </Grid>
-                    ))}
+                                            <Typography
+                                                sx={{
+                                                    fontWeight:
+                                                        900,
+                                                    fontSize:
+                                                        "1.3rem"
+                                                }}
+                                            >
+                                                {
+                                                    bus.routeNumber
+                                                }
+                                            </Typography>
+
+                                        </Box>
+
+                                        <Typography
+                                            sx={{
+                                                color:
+                                                    "#64748b",
+                                                mt: 0.7
+                                            }}
+                                        >
+                                            {
+                                                bus.name
+                                            }
+                                        </Typography>
+
+                                        <Chip
+                                            label="View Route"
+                                            size="small"
+                                            sx={{
+                                                mt: 2,
+                                                backgroundColor:
+                                                    "#e3f2fd",
+                                                color:
+                                                    "#1565c0",
+                                                fontWeight:
+                                                    700
+                                            }}
+                                        />
+
+                                    </CardContent>
+
+                                </Card>
+
+                            </Grid>
+                        )
+                    )}
+
                 </Grid>
+
+                {/* No buses */}
+
+                {buses.length === 0 &&
+                    !error && (
+                        <Typography
+                            sx={{
+                                textAlign:
+                                    "center",
+                                color:
+                                    "#64748b",
+                                py: 8
+                            }}
+                        >
+                            No buses found for
+                            this city.
+                        </Typography>
+                    )}
 
             </Container>
         </Box>

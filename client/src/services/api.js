@@ -154,7 +154,9 @@ export const searchRoutes = async (
 export const getRoutes = async () => {
     return apiRequest("/routes");
 };
-
+export const getRouteById = async (routeId) => {
+    return apiRequest(`/routes/${routeId}`);
+};
 export const createRoute = async (routeData) => {
     return apiRequest("/routes", {
         method: "POST",
@@ -180,6 +182,7 @@ export const reactivateRoute = async (routeId) => {
         method: "PATCH"
     });
 };
+
 // =========================
 // Admin Authentication
 // =========================
