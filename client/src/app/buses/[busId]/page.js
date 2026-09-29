@@ -4,148 +4,53 @@ import {
     Typography,
     Card,
     Chip,
-    Divider
+    Divider,
+    CircularProgress,
+    Alert
 } from "@mui/material";
 
 import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 
-const busData = {
-    "11c": {
-        number: "11C",
-        name: "11C Bus",
-        city: "Karachi",
+import { getRouteById } from "../../../services/api";
 
-        upRoute: {
-            firstStop: "Saadi Town / Safoora Goth",
-            lastStop: "Azam Basti",
 
-            stops: [
-                { en: "Saadi Town / Safoora Goth", ur: "سعدی ٹاؤن / صفورہ گوٹھ" },
-                { en: "Mosamiyat / Samama", ur: "موسمیات / ثمامہ" },
-                { en: "N.I.P.A. Chowrangi", ur: "نیپا چورنگی" },
-                { en: "Urdu College / Civic Centre", ur: "اردو کالج / سوک سینٹر" },
-                { en: "Sabzi Mandi (Old)", ur: "سبزی منڈی (پرانی)" },
-                { en: "New Town / Islamia College", ur: "نیو ٹاؤن / اسلامیہ کالج" },
-                { en: "Guru Mandir / Numaish Chowrangi", ur: "گرو مندر / نمائش چورنگی" },
-                { en: "7th Day Hospital", ur: "سیونتھ ڈے ہسپتال" },
-                { en: "Saddar (Empress Market area)", ur: "صدر (ایمپریس مارکیٹ ایریا)" },
-                { en: "Jinnah Postgraduate Medical Centre (JPMC)", ur: "جناح پوسٹ گریجویٹ میڈیکل سینٹر (جے پی ایم سی)" },
-                { en: "Kala Pul", ur: "کالا پل" },
-                { en: "Corporation / Parsi Colony", ur: "کارپوریشن / پارسی کالونی" },
-                { en: "Azam Basti", ur: "اعظم بستی" }
-            ],
-
-            roads: [
-                "University Road",
-                "Gulshan-e-Iqbal",
-                "National Stadium flyover",
-                "Jail Chowrangi",
-                "M.A. Jinnah Road",
-                "Rafiqui Shaheed Road"
-            ]
-        },
-
-        downRoute: {
-            firstStop: "Azam Basti",
-            lastStop: "Saadi Town / Safoora Goth",
-
-            stops: [
-                { en: "Azam Basti", ur: "اعظم بستی" },
-                { en: "Corporation / Parsi Colony", ur: "کارپوریشن / پارسی کالونی" },
-                { en: "Kala Pul", ur: "کالا پل" },
-                { en: "Jinnah Hospital (JPMC)", ur: "جناح ہسپتال (جے پی ایم سی)" },
-                { en: "Saddar", ur: "صدر" },
-                { en: "7th Day Hospital", ur: "سیونتھ ڈے ہسپتال" },
-                { en: "Numaish Chowrangi / Guru Mandir", ur: "نمائش چورنگی / گرو مندر" },
-                { en: "Islamia College / New Town", ur: "اسلامیہ کالج / نیو ٹاؤن" },
-                { en: "Jail Chowrangi / Sabzi Mandi (Old)", ur: "جیل چورنگی / سبزی منڈی (پرانی)" },
-                { en: "Civic Centre / Urdu College", ur: "سوک سینٹر / اردو کالج" },
-                { en: "N.I.P.A. Chowrangi", ur: "نیپا چورنگی" },
-                { en: "Safari Park / Karachi University", ur: "سفاری پارک / کراچی یونیورسٹی" },
-                { en: "Samama / Mosamiyat", ur: "ثمامہ / موسمیات" },
-                { en: "Safoora Goth / Saadi Town", ur: "صفورہ گوٹھ / سعدی ٹاؤن" }
-            ],
-
-            roads: [
-                "Rafiqui Shaheed Road",
-                "M.A. Jinnah Road",
-                "Jail Road",
-                "University Road"
-            ]
-        }
-    },
-
-    "9c": {
-        number: "9C",
-        name: "9C Bus",
-        city: "Karachi",
-
-        upRoute: {
-            firstStop: "Model Colony Mor",
-            lastStop: "Shireen Jinnah Colony",
-
-            stops: [
-                { en: "Model Colony Mor", ur: "ماڈل کالونی موڑ" },
-                { en: "Malir Halt", ur: "ملیر ہالٹ" },
-                { en: "Drigh Road Station", ur: "ڈرگ روڈ اسٹیشن" },
-                { en: "FTC Building", ur: "ایف ٹی سی بلڈنگ" },
-                { en: "Jinnah Postgraduate Medical Centre (JPMC)", ur: "جناح پوسٹ گریجویٹ میڈیکل سینٹر (جے پی ایم سی)" },
-                { en: "Cantt Station", ur: "چھاؤنی اسٹیشن" },
-                { en: "Delhi Colony", ur: "دہلی کالونی" },
-                { en: "Punjab Chowrangi", ur: "پنجاب چورنگی" },
-                { en: "Gizri Road", ur: "گزری روڈ" },
-                { en: "Teen Talwar & Do Talwar", ur: "تین تلوار اور دو تلوار" },
-                { en: "Abdullah Shah Ghazi Shrine", ur: "عبداللہ شاہ غازی کا مزار" },
-                { en: "Shireen Jinnah Colony", ur: "شیریں جناح کالونی" }
-            ],
-
-            roads: [
-                "Jinnah Avenue",
-                "Shahrah-e-Faisal",
-                "Baloch Colony Flyover",
-                "Korangi Road",
-                "Rafiqui Shaheed Road",
-                "Sarwar Shaheed Road",
-                "Khayaban-e-Jami",
-                "Sunset Boulevard",
-                "Shahrah-e-Iran",
-                "Khayaban-e-Saadi"
-            ]
-        },
-
-        downRoute: {
-            firstStop: "Shireen Jinnah Colony",
-            lastStop: "Model Colony Mor",
-
-            stops: [
-                { en: "Shireen Jinnah Colony", ur: "شیریں جناح کالونی" },
-                { en: "Abdullah Shah Ghazi Shrine", ur: "عبداللہ شاہ غازی کا مزار" },
-                { en: "Do Talwar & Teen Talwar", ur: "دو تلوار اور تین تلوار" },
-                { en: "Punjab Chowrangi", ur: "پنجاب چورنگی" },
-                { en: "Delhi Colony", ur: "دہلی کالونی" },
-                { en: "Cantt Station", ur: "چھاؤنی اسٹیشن" },
-                { en: "Jinnah Hospital (JPMC)", ur: "جناح ہسپتال (جے پی ایم سی)" },
-                { en: "Nursery / Karsaz / Drigh Road", ur: "نرسری / کارساز / ڈرگ روڈ" },
-                { en: "Malir Halt", ur: "ملیر ہالٹ" },
-                { en: "Jinnah Avenue", ur: "جناح ایونیو" },
-                { en: "Model Colony Mor", ur: "ماڈل کالونی موڑ" }
-            ],
-
-            roads: [
-                "Marine Promenade",
-                "Shahrah-e-Iran",
-                "Gizri Road",
-                "Khayaban-e-Jami",
-                "Rafiqui Shaheed Road",
-                "Shahrah-e-Faisal",
-                "FTC Building Area"
-            ]
-        }
+function getTotalTravelTime(stops) {
+    if (!stops || stops.length < 2) {
+        return 0;
     }
-};
 
-function RouteSection({ title, route }) {
+    return stops.reduce(
+        (total, item, index) => {
+            if (index === stops.length - 1) {
+                return total;
+            }
+
+            return total + (Number(item.travelTime) || 0);
+        },
+        0
+    );
+}
+
+
+function RouteSection({ route }) {
+    const stops = [...(route.stops || [])].sort(
+        (a, b) => a.sequence - b.sequence
+    );
+
+    const totalTravelTime =
+        getTotalTravelTime(stops);
+
+    const firstStop =
+        stops[0]?.stop?.name ||
+        route.startPoint ||
+        "Starting Point";
+
+    const lastStop =
+        stops[stops.length - 1]?.stop?.name ||
+        route.endPoint ||
+        "Destination";
+
     return (
         <Card
             elevation={0}
@@ -155,6 +60,7 @@ function RouteSection({ title, route }) {
                 overflow: "hidden"
             }}
         >
+
             {/* Route Header */}
 
             <Box
@@ -167,6 +73,7 @@ function RouteSection({ title, route }) {
                     backgroundColor: "#f8fbff"
                 }}
             >
+
                 <Typography
                     sx={{
                         fontSize: "0.75rem",
@@ -175,25 +82,30 @@ function RouteSection({ title, route }) {
                         letterSpacing: "1px"
                     }}
                 >
-                    {title}
+                    ROUTE
                 </Typography>
 
                 <Box
                     sx={{
                         display: "flex",
                         alignItems: "center",
+                        flexWrap: "wrap",
                         gap: 1,
                         mt: 1
                     }}
                 >
+
                     <Typography
                         sx={{
-                            fontSize: "1.2rem",
+                            fontSize: {
+                                xs: "1rem",
+                                sm: "1.2rem"
+                            },
                             fontWeight: 900,
                             color: "#0f172a"
                         }}
                     >
-                        {route.firstStop}
+                        {firstStop}
                     </Typography>
 
                     <ArrowDownwardIcon
@@ -204,14 +116,52 @@ function RouteSection({ title, route }) {
 
                     <Typography
                         sx={{
-                            fontSize: "1.2rem",
+                            fontSize: {
+                                xs: "1rem",
+                                sm: "1.2rem"
+                            },
                             fontWeight: 900,
                             color: "#0f172a"
                         }}
                     >
-                        {route.lastStop}
+                        {lastStop}
                     </Typography>
+
                 </Box>
+
+                <Box
+                    sx={{
+                        display: "flex",
+                        gap: 1,
+                        flexWrap: "wrap",
+                        mt: 2
+                    }}
+                >
+
+                    <Chip
+                        size="small"
+                        label={`${stops.length} Stops`}
+                        sx={{
+                            backgroundColor:
+                                "#e3f2fd",
+                            color: "#1565c0",
+                            fontWeight: 700
+                        }}
+                    />
+
+                    <Chip
+                        size="small"
+                        label={`${totalTravelTime} min`}
+                        sx={{
+                            backgroundColor:
+                                "#ecfdf5",
+                            color: "#047857",
+                            fontWeight: 700
+                        }}
+                    />
+
+                </Box>
+
             </Box>
 
             <Divider />
@@ -226,6 +176,7 @@ function RouteSection({ title, route }) {
                     }
                 }}
             >
+
                 <Typography
                     sx={{
                         fontWeight: 800,
@@ -237,35 +188,52 @@ function RouteSection({ title, route }) {
                 </Typography>
 
                 <Box>
-                    {route.stops.map(
-                        (stop, index) => {
+
+                    {stops.map(
+                        (routeStop, index) => {
+
+                            const stop =
+                                routeStop.stop;
+
                             const isFirst =
                                 index === 0;
 
                             const isLast =
                                 index ===
-                                route.stops.length - 1;
+                                stops.length - 1;
+
+                            const travelTime =
+                                Number(
+                                    routeStop.travelTime
+                                ) || 0;
 
                             return (
                                 <Box
-                                    key={`${stop.en}-${index}`}
+                                    key={
+                                        stop?._id ||
+                                        index
+                                    }
                                     sx={{
                                         display: "flex",
                                         gap: 2
                                     }}
                                 >
+
                                     {/* Timeline */}
 
                                     <Box
                                         sx={{
                                             width: 24,
-                                            display: "flex",
+                                            display:
+                                                "flex",
                                             flexDirection:
                                                 "column",
                                             alignItems:
-                                                "center"
+                                                "center",
+                                            flexShrink: 0
                                         }}
                                     >
+
                                         <Box
                                             sx={{
                                                 width: 16,
@@ -274,7 +242,7 @@ function RouteSection({ title, route }) {
                                                     "50%",
                                                 backgroundColor:
                                                     isFirst ||
-                                                        isLast
+                                                    isLast
                                                         ? "#1976d2"
                                                         : "#90caf9",
                                                 border:
@@ -288,64 +256,99 @@ function RouteSection({ title, route }) {
                                                 sx={{
                                                     width: 3,
                                                     flex: 1,
-                                                    minHeight: 45,
+                                                    minHeight: 50,
                                                     backgroundColor:
                                                         "#bfdbfe"
                                                 }}
                                             />
                                         )}
+
                                     </Box>
 
-                                    {/* Stop information */}
+                                    {/* Stop Information */}
 
                                     <Box
                                         sx={{
                                             pb: isLast
                                                 ? 0
-                                                : 3
+                                                : 3,
+                                            minWidth: 0,
+                                            flex: 1
                                         }}
                                     >
+
                                         <Box
                                             sx={{
-                                                display: "flex",
+                                                display:
+                                                    "flex",
                                                 alignItems:
                                                     "center",
-                                                flexWrap: "wrap",
-                                                columnGap: 1.5
+                                                justifyContent:
+                                                    "space-between",
+                                                gap: 2,
+                                                flexWrap:
+                                                    "wrap"
                                             }}
                                         >
-                                            <Typography
-                                                component="span"
-                                                sx={{
-                                                    fontWeight:
-                                                        isFirst ||
-                                                            isLast
-                                                            ? 800
-                                                            : 600,
-                                                    color:
-                                                        "#0f172a"
-                                                }}
-                                            >
-                                                {stop.en}
-                                            </Typography>
 
-                                            {stop.ur && (
+                                            <Box>
+
                                                 <Typography
-                                                    component="span"
-                                                    lang="ur"
-                                                    dir="rtl"
                                                     sx={{
-                                                        fontSize:
-                                                            "1.15rem",
-                                                        fontWeight: 700,
+                                                        fontWeight:
+                                                            isFirst ||
+                                                            isLast
+                                                                ? 800
+                                                                : 600,
                                                         color:
-                                                            "#1976d2",
-                                                        lineHeight: 1.6
+                                                            "#0f172a"
                                                     }}
                                                 >
-                                                    {stop.ur}
+                                                    {stop?.name ||
+                                                        "Unknown Stop"}
                                                 </Typography>
-                                            )}
+
+                                                {stop?.nameUrdu && (
+                                                    <Typography
+                                                        lang="ur"
+                                                        dir="rtl"
+                                                        sx={{
+                                                            fontSize:
+                                                                "1.1rem",
+                                                            fontWeight:
+                                                                700,
+                                                            color:
+                                                                "#1976d2",
+                                                            lineHeight:
+                                                                1.6,
+                                                            mt: 0.2
+                                                        }}
+                                                    >
+                                                        {
+                                                            stop.nameUrdu
+                                                        }
+                                                    </Typography>
+                                                )}
+
+                                            </Box>
+
+                                            {!isLast &&
+                                                travelTime >
+                                                    0 && (
+                                                    <Chip
+                                                        size="small"
+                                                        label={`${travelTime} min`}
+                                                        sx={{
+                                                            backgroundColor:
+                                                                "#f1f5f9",
+                                                            color:
+                                                                "#475569",
+                                                            fontWeight:
+                                                                700
+                                                        }}
+                                                    />
+                                                )}
+
                                         </Box>
 
                                         {isFirst && (
@@ -379,99 +382,146 @@ function RouteSection({ title, route }) {
                                                 LAST STOP
                                             </Typography>
                                         )}
+
                                     </Box>
+
                                 </Box>
                             );
                         }
                     )}
+
                 </Box>
+
             </Box>
 
-            <Divider />
-
-            {/* Roads */}
-
-            <Box
-                sx={{
-                    p: {
-                        xs: 2.5,
-                        sm: 3
-                    }
-                }}
-            >
-                <Typography
-                    sx={{
-                        fontWeight: 800,
-                        color: "#334155",
-                        mb: 1.5
-                    }}
-                >
-                    Roads Covered
-                </Typography>
-
-                <Box
-                    sx={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        gap: 1
-                    }}
-                >
-                    {route.roads.map(
-                        (road, index) => (
-                            <Chip
-                                key={`${road}-${index}`}
-                                label={road}
-                                size="small"
-                                sx={{
-                                    backgroundColor:
-                                        "#eff6ff",
-                                    color:
-                                        "#1565c0",
-                                    fontWeight: 600
-                                }}
-                            />
-                        )
-                    )}
-                </Box>
-            </Box>
         </Card>
     );
 }
 
+
 export default async function BusDetailsPage({
     params
 }) {
+
     const { busId } = await params;
 
-    const bus = busData[busId];
+    let route = null;
+    let errorMessage = "";
 
-    if (!bus) {
+    try {
+
+        const response =
+            await getRouteById(busId);
+
+        route = response?.data;
+
+    } catch (error) {
+
+        console.error(
+            "Failed to load route:",
+            error
+        );
+
+        errorMessage =
+            error.message ||
+            "Failed to load route";
+
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Error
+    |--------------------------------------------------------------------------
+    */
+
+    if (errorMessage) {
         return (
-            <Container
-                maxWidth="lg"
-                sx={{ py: 8 }}
+            <Box
+                sx={{
+                    minHeight: "100vh",
+                    backgroundColor:
+                        "#f8fafc",
+                    py: {
+                        xs: 4,
+                        md: 6
+                    }
+                }}
             >
-                <Typography
-                    variant="h4"
-                    fontWeight={800}
-                >
-                    Bus not found
-                </Typography>
-            </Container>
+
+                <Container maxWidth="lg">
+
+                    <Alert severity="error">
+                        {errorMessage}
+                    </Alert>
+
+                </Container>
+
+            </Box>
         );
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Route not found
+    |--------------------------------------------------------------------------
+    */
+
+    if (!route) {
+        return (
+            <Box
+                sx={{
+                    minHeight: "100vh",
+                    backgroundColor:
+                        "#f8fafc",
+                    py: 8
+                }}
+            >
+
+                <Container maxWidth="lg">
+
+                    <Typography
+                        variant="h4"
+                        fontWeight={800}
+                    >
+                        Bus route not found
+                    </Typography>
+
+                    <Typography
+                        sx={{
+                            mt: 1,
+                            color: "#64748b"
+                        }}
+                    >
+                        The requested bus route
+                        does not exist or is no
+                        longer available.
+                    </Typography>
+
+                </Container>
+
+            </Box>
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Main Page
+    |--------------------------------------------------------------------------
+    */
 
     return (
         <Box
             sx={{
                 minHeight: "100vh",
-                backgroundColor: "#f8fafc",
+                backgroundColor:
+                    "#f8fafc",
                 py: {
                     xs: 3,
                     md: 5
                 }
             }}
         >
+
             <Container maxWidth="lg">
 
                 {/* Bus Header */}
@@ -486,6 +536,7 @@ export default async function BusDetailsPage({
                         mb: 4
                     }}
                 >
+
                     <Box
                         sx={{
                             p: {
@@ -497,13 +548,16 @@ export default async function BusDetailsPage({
                             color: "#ffffff"
                         }}
                     >
+
                         <Box
                             sx={{
                                 display: "flex",
-                                alignItems: "center",
+                                alignItems:
+                                    "center",
                                 gap: 2
                             }}
                         >
+
                             <Box
                                 sx={{
                                     width: 58,
@@ -517,22 +571,27 @@ export default async function BusDetailsPage({
                                     justifyContent:
                                         "center",
                                     backgroundColor:
-                                        "rgba(255,255,255,0.16)"
+                                        "rgba(255,255,255,0.16)",
+                                    flexShrink: 0
                                 }}
                             >
+
                                 <DirectionsBusIcon
                                     sx={{
                                         fontSize: 34
                                     }}
                                 />
+
                             </Box>
 
                             <Box>
+
                                 <Typography
                                     sx={{
                                         fontSize:
                                             "0.8rem",
-                                        fontWeight: 700,
+                                        fontWeight:
+                                            700,
                                         opacity: 0.8,
                                         letterSpacing:
                                             "1px"
@@ -547,10 +606,14 @@ export default async function BusDetailsPage({
                                             xs: "1.6rem",
                                             sm: "2rem"
                                         },
-                                        fontWeight: 900
+                                        fontWeight:
+                                            900
                                     }}
                                 >
-                                    Bus {bus.number}
+                                    Bus{" "}
+                                    {
+                                        route.routeNumber
+                                    }
                                 </Typography>
 
                                 <Typography
@@ -559,11 +622,100 @@ export default async function BusDetailsPage({
                                         mt: 0.3
                                     }}
                                 >
-                                    {bus.city}
+                                    {
+                                        route.city
+                                            ?.name ||
+                                        "Unknown City"
+                                    }
                                 </Typography>
+
                             </Box>
+
                         </Box>
+
                     </Box>
+
+                    {/* Route Summary */}
+
+                    <Box
+                        sx={{
+                            p: {
+                                xs: 2.5,
+                                sm: 3
+                            },
+                            display: "grid",
+                            gridTemplateColumns: {
+                                xs: "1fr",
+                                sm: "1fr 1fr"
+                            },
+                            gap: 2
+                        }}
+                    >
+
+                        <Box>
+
+                            <Typography
+                                sx={{
+                                    fontSize:
+                                        "0.75rem",
+                                    color:
+                                        "#64748b",
+                                    fontWeight:
+                                        700,
+                                    mb: 0.5
+                                }}
+                            >
+                                START POINT
+                            </Typography>
+
+                            <Typography
+                                sx={{
+                                    fontWeight:
+                                        800,
+                                    color:
+                                        "#0f172a"
+                                }}
+                            >
+                                {
+                                    route.startPoint
+                                }
+                            </Typography>
+
+                        </Box>
+
+                        <Box>
+
+                            <Typography
+                                sx={{
+                                    fontSize:
+                                        "0.75rem",
+                                    color:
+                                        "#64748b",
+                                    fontWeight:
+                                        700,
+                                    mb: 0.5
+                                }}
+                            >
+                                END POINT
+                            </Typography>
+
+                            <Typography
+                                sx={{
+                                    fontWeight:
+                                        800,
+                                    color:
+                                        "#0f172a"
+                                }}
+                            >
+                                {
+                                    route.endPoint
+                                }
+                            </Typography>
+
+                        </Box>
+
+                    </Box>
+
                 </Card>
 
                 {/* Route Heading */}
@@ -582,23 +734,14 @@ export default async function BusDetailsPage({
                     Complete Route
                 </Typography>
 
-                {/* Up Route */}
-
-                <Box sx={{ mb: 3 }}>
-                    <RouteSection
-                        title="UP ROUTE"
-                        route={bus.upRoute}
-                    />
-                </Box>
-
-                {/* Down Route */}
+                {/* Route */}
 
                 <RouteSection
-                    title="DOWN / RETURN ROUTE"
-                    route={bus.downRoute}
+                    route={route}
                 />
 
             </Container>
+
         </Box>
     );
 }
