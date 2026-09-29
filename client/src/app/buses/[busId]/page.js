@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import {
     Box,
     Container,
@@ -5,13 +7,12 @@ import {
     Card,
     Chip,
     Divider,
-    CircularProgress,
-    Alert
+    Button
 } from "@mui/material";
 
-import Link from "next/link";
 import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 import { getRouteById } from "../../../services/api";
 
@@ -450,25 +451,6 @@ export default async function BusDetailsPage({
             >
 
                 <Container maxWidth="lg">
-                    {/* Back to Buses */}
-
-                    <Box sx={{ mb: 3 }}>
-                        <Button
-                            component={Link}
-                            href="/buses"
-                            startIcon={<ArrowBackIcon />}
-                            variant="outlined"
-                            sx={{
-                                borderRadius: "10px",
-                                textTransform: "none",
-                                fontWeight: 700,
-                                px: 2,
-                                py: 1
-                            }}
-                        >
-                            Back to Buses
-                        </Button>
-                    </Box>
                     <Alert severity="error">
                         {errorMessage}
                     </Alert>
@@ -542,7 +524,31 @@ export default async function BusDetailsPage({
         >
 
             <Container maxWidth="lg">
+                {/* Back Button */}
 
+                <Box sx={{ mb: 3 }}>
+                    <Button
+                        component={Link}
+                        href="/buses"
+                        variant="contained"
+                        startIcon={<ArrowBackIcon />}
+                        sx={{
+                            backgroundColor: "#1976d2",
+                            color: "#ffffff",
+                            fontWeight: 700,
+                            textTransform: "none",
+                            borderRadius: "10px",
+                            px: 2.5,
+                            py: 1,
+
+                            "&:hover": {
+                                backgroundColor: "#1565c0"
+                            }
+                        }}
+                    >
+                        Back to Buses
+                    </Button>
+                </Box>
                 {/* Bus Header */}
 
                 <Card
