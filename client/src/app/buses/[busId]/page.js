@@ -1,4 +1,3 @@
-import Link from "next/link";
 
 import {
     Box,
@@ -524,11 +523,9 @@ export default async function BusDetailsPage({
         >
 
             <Container maxWidth="lg">
-                {/* Back Button */}
-
                 <Box sx={{ mb: 3 }}>
                     <Button
-                        component={Link}
+                        component="a"
                         href="/buses"
                         variant="contained"
                         startIcon={<ArrowBackIcon />}
