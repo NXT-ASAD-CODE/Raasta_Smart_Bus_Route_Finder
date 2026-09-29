@@ -13,6 +13,7 @@ import {
     MenuItem,
     Grid,
     Card,
+    CardMedia,
     CardContent,
     Chip,
     CircularProgress,
@@ -21,112 +22,76 @@ import {
 
 import DirectionsBusIcon from "@mui/icons-material/DirectionsBus";
 
-import { getCities, getRoutes } from "../../lib/api";
+import { getRoutes } from "../../services/api";
 
 export default function BusesPage() {
     const router = useRouter();
 
-    const [cities, setCities] = useState([]);
     const [routes, setRoutes] = useState([]);
-
-    const [selectedCity, setSelectedCity] =
-        useState("");
-
-    const [loading, setLoading] =
-        useState(true);
-
-    const [error, setError] =
-        useState("");
+    const [selectedCity, setSelectedCity] = useState("");
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     useEffect(() => {
-        const loadData = async () => {
+        const loadRoutes = async () => {
             try {
                 setLoading(true);
                 setError("");
 
-                const [
-                    citiesResponse,
-                    routesResponse
-                ] = await Promise.all([
-                    getCities(),
-                    getRoutes()
-                ]);
+                const response = await getRoutes();
 
-                const citiesData =
-                    citiesResponse.data || [];
+                const routeData = response?.data || [];
 
-                const routesData =
-                    routesResponse.data || [];
+                setRoutes(routeData);
 
-                setCities(citiesData);
-                setRoutes(routesData);
+                if (routeData.length > 0) {
+                    const firstCity =
+                        routeData[0]?.city?._id ||
+                        routeData[0]?.city;
 
-                if (citiesData.length > 0) {
-                    setSelectedCity(
-                        citiesData[0]._id
-                    );
+                    setSelectedCity(firstCity || "");
                 }
             } catch (err) {
-                console.error(err);
+                console.error("Failed to load routes:", err);
 
                 setError(
                     err.message ||
-                    "Failed to load buses"
+                    "Unable to load bus routes."
                 );
             } finally {
                 setLoading(false);
             }
         };
 
-        loadData();
+        loadRoutes();
     }, []);
 
-    /*
-    |--------------------------------------------------------------------------
-    | Get routes for selected city
-    |--------------------------------------------------------------------------
-    */
-
-    const filteredRoutes =
-        routes.filter(
-            (route) =>
-                route.city?._id === selectedCity
-        );
-
-    /*
-    |--------------------------------------------------------------------------
-    | Remove duplicate route numbers
-    |--------------------------------------------------------------------------
-    |
-    | If 11C has an UP route and DOWN route,
-    | both may have routeNumber = 11C.
-    |
-    | We only want one 11C card.
-    |
-    */
-
-    const buses = Array.from(
+    const cities = Array.from(
         new Map(
-            filteredRoutes.map(
-                (route) => [
-                    route.routeNumber,
-                    route
-                ]
-            )
+            routes
+                .filter((route) => route.city)
+                .map((route) => [
+                    route.city._id,
+                    route.city
+                ])
         ).values()
     );
 
-    const handleBusClick = (route) => {
+    const filteredRoutes = routes.filter(
+        (route) => {
+            const cityId =
+                route.city?._id ||
+                route.city;
+
+            return cityId === selectedCity;
+        }
+    );
+
+    const handleRouteClick = (route) => {
         router.push(
             `/buses/${route._id}`
         );
     };
-
-    /*
-    |--------------------------------------------------------------------------
-    | Loading
-    |--------------------------------------------------------------------------
-    */
 
     if (loading) {
         return (
@@ -135,7 +100,8 @@ export default function BusesPage() {
                     minHeight: "100vh",
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center"
+                    justifyContent: "center",
+                    backgroundColor: "#f8fafc"
                 }}
             >
                 <CircularProgress />
@@ -148,21 +114,13 @@ export default function BusesPage() {
             sx={{
                 minHeight: "100vh",
                 backgroundColor: "#f8fafc",
-                py: 5
+                py: {
+                    xs: 3,
+                    md: 5
+                }
             }}
         >
             <Container maxWidth="lg">
-
-                {/* Error */}
-
-                {error && (
-                    <Alert
-                        severity="error"
-                        sx={{ mb: 3 }}
-                    >
-                        {error}
-                    </Alert>
-                )}
 
                 {/* Header */}
 
@@ -182,9 +140,7 @@ export default function BusesPage() {
                         mb: 4
                     }}
                 >
-
                     <Box>
-
                         <Typography
                             sx={{
                                 fontSize: {
@@ -208,74 +164,75 @@ export default function BusesPage() {
                             Find bus routes, stops and
                             complete journey information.
                         </Typography>
-
                     </Box>
 
                     {/* City Selector */}
 
-                    <FormControl
-                        size="small"
-                        sx={{
-                            minWidth: 190,
-                            backgroundColor: "#ffffff"
-                        }}
-                    >
-
-                        <InputLabel>
-                            Select City
-                        </InputLabel>
-
-                        <Select
-                            value={selectedCity}
-                            label="Select City"
-                            onChange={(event) =>
-                                setSelectedCity(
-                                    event.target.value
-                                )
-                            }
+                    {cities.length > 0 && (
+                        <FormControl
+                            size="small"
+                            sx={{
+                                minWidth: 190,
+                                backgroundColor: "#ffffff"
+                            }}
                         >
+                            <InputLabel>
+                                Select City
+                            </InputLabel>
 
-                            {cities.map(
-                                (city) => (
+                            <Select
+                                value={selectedCity}
+                                label="Select City"
+                                onChange={(event) =>
+                                    setSelectedCity(
+                                        event.target.value
+                                    )
+                                }
+                            >
+                                {cities.map((city) => (
                                     <MenuItem
                                         key={city._id}
                                         value={city._id}
                                     >
                                         {city.name}
                                     </MenuItem>
-                                )
-                            )}
-
-                        </Select>
-
-                    </FormControl>
-
+                                ))}
+                            </Select>
+                        </FormControl>
+                    )}
                 </Box>
 
-                {/* Bus Cards */}
+                {/* Error */}
+
+                {error && (
+                    <Alert
+                        severity="error"
+                        sx={{ mb: 3 }}
+                    >
+                        {error}
+                    </Alert>
+                )}
+
+                {/* Routes */}
 
                 <Grid
                     container
                     spacing={3}
                 >
-
-                    {buses.map(
-                        (bus) => (
+                    {filteredRoutes.map(
+                        (route) => (
                             <Grid
                                 size={{
                                     xs: 12,
                                     sm: 6,
                                     md: 4
                                 }}
-                                key={
-                                    bus.routeNumber
-                                }
+                                key={route._id}
                             >
-
                                 <Card
                                     onClick={() =>
-                                        handleBusClick(
-                                            bus
+                                        handleRouteClick(
+                                            route
                                         )
                                     }
                                     sx={{
@@ -298,40 +255,18 @@ export default function BusesPage() {
                                         }
                                     }}
                                 >
-
-                                    {/* Bus visual */}
-
-                                    <Box
-                                        sx={{
-                                            height: 190,
-                                            display:
-                                                "flex",
-                                            alignItems:
-                                                "center",
-                                            justifyContent:
-                                                "center",
-                                            background:
-                                                "linear-gradient(135deg, #0d47a1, #42a5f5)"
-                                        }}
-                                    >
-
-                                        <DirectionsBusIcon
-                                            sx={{
-                                                fontSize:
-                                                    90,
-                                                color:
-                                                    "#ffffff"
-                                            }}
-                                        />
-
-                                    </Box>
+                                    <CardMedia
+                                        component="img"
+                                        height="190"
+                                        image="/buses/11c.jpg"
+                                        alt={`Bus ${route.routeNumber}`}
+                                    />
 
                                     <CardContent
                                         sx={{
                                             p: 2.5
                                         }}
                                     >
-
                                         <Box
                                             sx={{
                                                 display:
@@ -341,7 +276,6 @@ export default function BusesPage() {
                                                 gap: 1
                                             }}
                                         >
-
                                             <DirectionsBusIcon
                                                 sx={{
                                                     color:
@@ -357,12 +291,21 @@ export default function BusesPage() {
                                                         "1.3rem"
                                                 }}
                                             >
-                                                {
-                                                    bus.routeNumber
-                                                }
+                                                {route.routeNumber}
                                             </Typography>
-
                                         </Box>
+
+                                        <Typography
+                                            sx={{
+                                                fontWeight:
+                                                    700,
+                                                mt: 0.5,
+                                                color:
+                                                    "#334155"
+                                            }}
+                                        >
+                                            {route.name}
+                                        </Typography>
 
                                         <Typography
                                             sx={{
@@ -371,9 +314,9 @@ export default function BusesPage() {
                                                 mt: 0.7
                                             }}
                                         >
-                                            {
-                                                bus.name
-                                            }
+                                            {route.startPoint}
+                                            {" → "}
+                                            {route.endPoint}
                                         </Typography>
 
                                         <Chip
@@ -389,36 +332,53 @@ export default function BusesPage() {
                                                     700
                                             }}
                                         />
-
                                     </CardContent>
-
                                 </Card>
-
                             </Grid>
                         )
                     )}
-
                 </Grid>
 
-                {/* No buses */}
+                {/* No Routes */}
 
-                {buses.length === 0 &&
-                    !error && (
-                        <Typography
+                {!error &&
+                    filteredRoutes.length === 0 && (
+                        <Box
                             sx={{
-                                textAlign:
-                                    "center",
-                                color:
-                                    "#64748b",
+                                textAlign: "center",
                                 py: 8
                             }}
                         >
-                            No buses found for
-                            this city.
-                        </Typography>
+                            <DirectionsBusIcon
+                                sx={{
+                                    fontSize: 60,
+                                    color: "#94a3b8"
+                                }}
+                            />
+
+                            <Typography
+                                sx={{
+                                    mt: 2,
+                                    fontWeight: 800,
+                                    color: "#334155"
+                                }}
+                            >
+                                No buses found
+                            </Typography>
+
+                            <Typography
+                                sx={{
+                                    mt: 0.5,
+                                    color: "#64748b"
+                                }}
+                            >
+                                There are no active routes
+                                for this city.
+                            </Typography>
+                        </Box>
                     )}
 
             </Container>
         </Box>
     );
-}
+} 
